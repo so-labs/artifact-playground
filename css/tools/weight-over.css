@@ -1,0 +1,126 @@
+﻿/* --- ウエイトオーバー --- */
+.wo-layout {
+    display: flex;
+    gap: 1.5rem;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+.wo-input-wrap {
+    flex: 1 1 320px;
+    min-width: 0;
+    width: 100%;
+}
+
+.wo-input-wrap label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+#wo-input {
+    min-height: 320px;
+}
+
+.wo-side {
+    width: 220px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.wo-limit-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.wo-limit-input {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    color: var(--text-color);
+    background-color: var(--panel-bg);
+}
+
+.wo-counter {
+    background-color: var(--code-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.wo-count-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-color);
+}
+
+.wo-count-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 0.25rem;
+}
+
+.wo-limit-display {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    opacity: 0.7;
+}
+
+/* 警告状態 */
+.wo-counter.warning {
+    border-color: #facc15;
+}
+.wo-counter.over {
+    border-color: #ef4444;
+}
+
+@keyframes wo-flash-yellow {
+    0%, 100% { background-color: var(--panel-bg); }
+    50% { background-color: #facc15; }
+}
+
+@keyframes wo-flash-red {
+    0%, 100% { background-color: var(--panel-bg); }
+    50% { background-color: #ef4444; }
+}
+
+#tool-weight-over.wo-warning {
+    animation: wo-flash-yellow 1s ease-in-out infinite;
+}
+
+#tool-weight-over.wo-over {
+    animation: wo-flash-red 0.7s ease-in-out infinite;
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+    .wo-layout {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .wo-input-wrap {
+        width: 100%;
+    }
+    .wo-side {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .wo-limit-group {
+        flex: 1;
+    }
+    .wo-counter {
+        flex: 1;
+        margin-left: 1rem;
+    }
+}

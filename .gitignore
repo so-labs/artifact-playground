@@ -5,6 +5,7 @@
 export_*.md
 __pycache__
 *.diff
+*.txt
 
 # 作業中ファイル
 *.local.*
