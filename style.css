@@ -4,10 +4,30 @@
     --secondary-color: #64748b;
     --secondary-hover: #475569;
     --bg-color: #f8fafc;
-    --text-color: #1e293b;
+    --panel-bg: #ffffff;
+    --text-color: #334155;
     --border-color: #cbd5e1;
+    --code-bg: #f1f5f9;
+    --btn-small-bg: #e2e8f0;
+    --btn-small-text: #1e293b;
+    --btn-small-hover: #cbd5e1;
     --sidebar-width: 250px;
     --header-height: 60px;
+}
+
+[data-theme="dark"] {
+    --primary-color: #3b82f6;
+    --primary-hover: #60a5fa;
+    --secondary-color: #475569;
+    --secondary-hover: #64748b;
+    --bg-color: #1e293b;
+    --panel-bg: #0f172a;
+    --text-color: #cbd5e1;
+    --border-color: #334155;
+    --code-bg: #1e293b;
+    --btn-small-bg: #334155;
+    --btn-small-text: #cbd5e1;
+    --btn-small-hover: #475569;
 }
 
 * {
@@ -29,7 +49,7 @@ body {
     justify-content: space-between;
     align-items: center;
     height: var(--header-height);
-    background-color: #fff;
+    background-color: var(--panel-bg);
     padding: 0 1.5rem;
     border-bottom: 1px solid var(--border-color);
     position: sticky;
@@ -72,9 +92,22 @@ body {
 /* Sidebar */
 .sidebar {
     width: var(--sidebar-width);
-    background-color: #fff;
+    background-color: var(--panel-bg);
     border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
     padding: 1.5rem 0;
+}
+
+.sidebar-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    position: relative;
 }
 
 .tool-list {
@@ -110,7 +143,7 @@ body {
 
 .tool-section {
     display: none;
-    background-color: #fff;
+    background-color: var(--panel-bg);
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -160,11 +193,13 @@ textarea {
     font-family: inherit;
     font-size: 1rem;
     line-height: 1.5;
+    color: var(--text-color);
+    background-color: var(--panel-bg);
 }
 
 #output-text {
     font-family: "Courier New", Consolas, monospace;
-    background-color: #f1f5f9;
+    background-color: var(--code-bg);
 }
 
 /* Buttons */
@@ -205,12 +240,12 @@ textarea {
 .btn.small {
     padding: 0.25rem 0.75rem;
     font-size: 0.875rem;
-    background-color: #e2e8f0;
-    color: #1e293b;
+    background-color: var(--btn-small-bg);
+    color: var(--btn-small-text);
 }
 
 .btn.small:hover {
-    background-color: #cbd5e1;
+    background-color: var(--btn-small-hover);
 }
 
 /* Responsive (Mobile View) */
@@ -241,4 +276,85 @@ textarea {
     .tool-section {
         padding: 1.5rem 1rem;
     }
+}
+
+/* Theme Settings Menu */
+.settings-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--btn-small-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.settings-btn:hover {
+    background-color: var(--btn-small-hover);
+}
+
+.theme-menu {
+    position: absolute;
+    bottom: 60px;
+    left: 1.5rem;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 0.5rem 0;
+    min-width: 180px;
+    z-index: 1000;
+    display: none;
+}
+
+.theme-menu.show {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+.theme-menu ul {
+    list-style: none;
+}
+
+.theme-option {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    text-align: left;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.theme-option:hover {
+    background-color: var(--bg-color);
+}
+
+.theme-option.active {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Theme Transition */
+body.theme-ready,
+body.theme-ready .app-header,
+body.theme-ready .sidebar,
+body.theme-ready .tool-section,
+body.theme-ready .tool-list li a,
+body.theme-ready .btn,
+body.theme-ready textarea,
+body.theme-ready .theme-menu,
+body.theme-ready .settings-btn {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }

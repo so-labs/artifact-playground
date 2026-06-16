@@ -1,4 +1,75 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
+    // テーマ切り替え機能
+    const themeSettingsBtn = document.getElementById('theme-settings-btn');
+    const themeMenu = document.getElementById('theme-menu');
+    const themeOptions = document.querySelectorAll('.theme-option');
+
+    let currentThemeSetting = localStorage.getItem('app-theme') || 'system';
+
+    const applyTheme = (setting) => {
+        let isDark = false;
+        if (setting === 'dark') {
+            isDark = true;
+        } else if (setting === 'light') {
+            isDark = false;
+        } else {
+            isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+
+        if (isDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+
+        themeOptions.forEach(opt => {
+            if (opt.getAttribute('data-value') === setting) {
+                opt.classList.add('active');
+            } else {
+                opt.classList.remove('active');
+            }
+        });
+    };
+
+    // 初期状態の反映
+    applyTheme(currentThemeSetting);
+
+    // ロード時のアニメーションちらつき防止のため、少し遅延させて transition 用クラスを追加
+    setTimeout(() => {
+        document.body.classList.add('theme-ready');
+    }, 100);
+
+    // テーマ設定メニューの開閉
+    if (themeSettingsBtn && themeMenu) {
+        themeSettingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            themeMenu.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!themeMenu.contains(e.target) && !themeSettingsBtn.contains(e.target)) {
+                themeMenu.classList.remove('show');
+            }
+        });
+
+        themeOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                const val = opt.getAttribute('data-value');
+                currentThemeSetting = val;
+                localStorage.setItem('app-theme', val);
+                applyTheme(val);
+                themeMenu.classList.remove('show');
+            });
+        });
+    }
+
+    // OSのテーマ設定変更を監視
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (currentThemeSetting === 'system') {
+            applyTheme('system');
+        }
+    });
+
     // UI 要素の取得
     const menuToggle = document.getElementById('menu-toggle');
     const sidebar = document.getElementById('sidebar');
@@ -46,14 +117,23 @@
             if (N === 0) return ''; // 空行はそのまま
 
             // 削る文字数を算出 (指定割合・切り捨て)
-            const D = Math.floor(N * percent);
+            let D = Math.floor(N * percent);
+
+            // 短文対策: 2文字以上ある場合は最低1文字は削除
+            if (D === 0 && N > 1) {
+                D = 1;
+            }
             
             if (D === 0) return line; // 削る文字がない場合はそのまま
+
+            // 先頭1文字は削除対象から除外するため、削除可能上限を調整
+            D = Math.min(D, N - 1);
 
             // 削除するインデックスをランダムに決定
             const indicesToRemove = new Set();
             while (indicesToRemove.size < D) {
-                const randIndex = Math.floor(Math.random() * N);
+                // 先頭文字(0)を除外し、1〜N-1から選択
+                const randIndex = Math.floor(Math.random() * (N - 1)) + 1;
                 indicesToRemove.add(randIndex);
             }
 
@@ -73,16 +153,18 @@
     });
 
     // クリップボードへコピー
+    let copyResetTimer = null;
     btnCopy.addEventListener('click', async () => {
         const textToCopy = outputText.value;
         if (!textToCopy) return;
 
         try {
             await navigator.clipboard.writeText(textToCopy);
-            const originalText = btnCopy.textContent;
+            if (copyResetTimer) clearTimeout(copyResetTimer);
             btnCopy.textContent = 'コピー完了！';
-            setTimeout(() => {
-                btnCopy.textContent = originalText;
+            copyResetTimer = setTimeout(() => {
+                btnCopy.textContent = 'コピー';
+                copyResetTimer = null;
             }, 2000);
         } catch (err) {
             console.error('Failed to copy text: ', err);

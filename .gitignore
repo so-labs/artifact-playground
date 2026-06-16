@@ -3,6 +3,8 @@
 .DS_Store
 .eslintcache
 export_*.md
+__pycache__
+*.diff
 
 # 作業中ファイル
 *.local.*
