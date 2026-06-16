@@ -1,0 +1,244 @@
+﻿:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --secondary-color: #64748b;
+    --secondary-hover: #475569;
+    --bg-color: #f8fafc;
+    --text-color: #1e293b;
+    --border-color: #cbd5e1;
+    --sidebar-width: 250px;
+    --header-height: 60px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    line-height: 1.6;
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--header-height);
+    background-color: #fff;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.app-header h1 {
+    font-size: 1.25rem;
+}
+
+/* Hamburger Menu Toggle */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 101;
+}
+
+.menu-toggle span {
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-color);
+    border-radius: 2px;
+    transition: all 0.3s linear;
+}
+
+/* Main Container Layout */
+.app-container {
+    display: flex;
+    min-height: calc(100vh - var(--header-height));
+}
+
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: #fff;
+    border-right: 1px solid var(--border-color);
+    padding: 1.5rem 0;
+}
+
+.tool-list {
+    list-style: none;
+}
+
+.tool-list li a {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: background-color 0.2s;
+    font-weight: 500;
+}
+
+.tool-list li a:hover {
+    background-color: var(--bg-color);
+}
+
+.tool-list li a.active {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.tool-section {
+    display: none;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.tool-section.active {
+    display: block;
+}
+
+.tool-section h2 {
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+/* Tool UI Elements */
+.input-group, .output-group, .settings-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label, .output-header label, .settings-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.slider {
+    width: 100%;
+    max-width: 300px;
+    cursor: pointer;
+}
+
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+#output-text {
+    font-family: "Courier New", Consolas, monospace;
+    background-color: #f1f5f9;
+}
+
+/* Buttons */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn {
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn.primary {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.btn.primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn.secondary {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+.btn.secondary:hover {
+    background-color: var(--secondary-hover);
+}
+
+.btn.small {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    background-color: #e2e8f0;
+    color: #1e293b;
+}
+
+.btn.small:hover {
+    background-color: #cbd5e1;
+}
+
+/* Responsive (Mobile View) */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        top: var(--header-height);
+        height: calc(100vh - var(--header-height));
+        width: 250px;
+        transition: left 0.3s ease-in-out;
+        box-shadow: 4px 0 6px rgba(0, 0, 0, 0.05);
+        z-index: 99;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .main-content {
+        padding: 1rem;
+    }
+    
+    .tool-section {
+        padding: 1.5rem 1rem;
+    }
+}

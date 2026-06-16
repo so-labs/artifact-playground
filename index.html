@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Artifact Playground</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <h1>Artifact Playground</h1>
+        <button id="menu-toggle" class="menu-toggle" aria-label="メニューを開く">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <div class="app-container">
+        <aside id="sidebar" class="sidebar">
+            <nav>
+                <ul class="tool-list">
+                    <li><a href="#" class="active">20% Off</a></li>
+                    <!-- 追加のツールはここに記述 -->
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <section id="tool-20-off" class="tool-section active">
+                <h2>20% Off（テキストを指定%削る）</h2>
+                <div class="tool-ui">
+                    <div class="input-group">
+                        <label for="input-text">入力テキスト</label>
+                        <textarea id="input-text" rows="8">吾輩は猫である。名前はまだ無い。
+どこで生れたかとんと見当がつかぬ。
+何でも薄暗いジメジメした所でニャーニャー泣いていた事だけは記憶している。</textarea>
+                    </div>
+                    <div class="settings-group">
+                        <label for="percent-slider">削る割合: <span id="percent-display">20</span>%</label>
+                        <input type="range" id="percent-slider" min="1" max="30" value="20" class="slider">
+                    </div>
+                    <div class="button-group">
+                        <button id="btn-reduce" class="btn primary">20%削る</button>
+                        <button id="btn-clear" class="btn secondary">クリア</button>
+                    </div>
+                    <div class="output-group">
+                        <div class="output-header">
+                            <label for="output-text">出力結果</label>
+                            <button id="btn-copy" class="btn small">コピー</button>
+                        </div>
+                        <textarea id="output-text" rows="8" readonly></textarea>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

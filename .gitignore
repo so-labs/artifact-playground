@@ -1,0 +1,12 @@
+# ログファイルやキャッシュ
+*.log
+.DS_Store
+.eslintcache
+export_*.md
+
+# 作業中ファイル
+*.local.*
+
+# ツールファイル
+devtools/
+ai_dev_assistant.py
