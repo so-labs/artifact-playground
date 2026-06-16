@@ -1,0 +1,168 @@
+﻿/* Tool UI Elements */
+.input-group, .output-group, .settings-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label, .output-header label, .settings-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.slider {
+    width: 100%;
+    max-width: 300px;
+    cursor: pointer;
+}
+
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text-color);
+    background-color: var(--panel-bg);
+}
+
+#output-text {
+    font-family: "Courier New", Consolas, monospace;
+    background-color: var(--code-bg);
+}
+
+/* Buttons */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn {
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn.primary {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.btn.primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn.secondary {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+.btn.secondary:hover {
+    background-color: var(--secondary-hover);
+}
+
+.btn.small {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    background-color: var(--btn-small-bg);
+    color: var(--btn-small-text);
+}
+
+.btn.small:hover {
+    background-color: var(--btn-small-hover);
+}
+
+/* Theme Settings Menu */
+.settings-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--btn-small-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.settings-btn:hover {
+    background-color: var(--btn-small-hover);
+}
+
+.theme-menu {
+    position: absolute;
+    bottom: 60px;
+    left: 1.5rem;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 0.5rem 0;
+    min-width: 180px;
+    z-index: 1000;
+    display: none;
+}
+
+.theme-menu.show {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+.theme-menu ul {
+    list-style: none;
+}
+
+.theme-option {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    text-align: left;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.theme-option:hover {
+    background-color: var(--bg-color);
+}
+
+.theme-option.active {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Theme Transition */
+body.theme-ready,
+body.theme-ready .app-header,
+body.theme-ready .sidebar,
+body.theme-ready .tool-section,
+body.theme-ready .tool-list li a,
+body.theme-ready .btn,
+body.theme-ready textarea,
+body.theme-ready .theme-menu,
+body.theme-ready .settings-btn {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
