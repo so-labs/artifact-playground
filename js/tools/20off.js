@@ -10,11 +10,29 @@ export function initTool20Off() {
 
     if (!btnReduce || !inputText) return;
 
+    // LocalStorageから状態を復元
+    const savedPercent = localStorage.getItem('20off-percent');
+    if (savedPercent) {
+        percentSlider.value = savedPercent;
+        percentDisplay.textContent = savedPercent;
+        btnReduce.textContent = `${savedPercent}%削る`;
+    }
+    const savedText = localStorage.getItem('20off-text');
+    if (savedText !== null && savedText !== '') {
+        inputText.value = savedText;
+    }
+
+    // 入力テキストの変更を保存
+    inputText.addEventListener('input', () => {
+        localStorage.setItem('20off-text', inputText.value);
+    });
+
     // スライダーの表示とボタンのテキストを連動
     percentSlider.addEventListener('input', (e) => {
         const val = e.target.value;
         percentDisplay.textContent = val;
         btnReduce.textContent = `${val}%削る`;
+        localStorage.setItem('20off-percent', val);
     });
 
     // 「削る」処理ロジック
@@ -65,6 +83,7 @@ export function initTool20Off() {
     btnClear.addEventListener('click', () => {
         inputText.value = '';
         outputText.value = '';
+        localStorage.removeItem('20off-text');
     });
 
     // クリップボードへコピー
@@ -80,7 +99,7 @@ export function initTool20Off() {
             copyResetTimer = setTimeout(() => {
                 btnCopy.textContent = 'コピー';
                 copyResetTimer = null;
-            }, 2000);
+            }, 1000);
         } catch (err) {
             console.error('Failed to copy text: ', err);
             alert('クリップボードへのコピーに失敗しました。');

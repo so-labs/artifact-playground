@@ -6,8 +6,19 @@ export function initToolWeightOver() {
     const woLimitDisplay = document.getElementById('wo-limit-display');
     const woCounter = document.getElementById('wo-counter');
     const woSection = document.getElementById('tool-weight-over');
+    const quickButtons = document.querySelectorAll('.quick-limit-btn');
 
     if (!woInput || !woLimitInput) return;
+
+    // LocalStorageから状態を復元
+    const savedLimit = localStorage.getItem('wo-limit');
+    if (savedLimit) {
+        woLimitInput.value = savedLimit;
+    }
+    const savedText = localStorage.getItem('wo-text');
+    if (savedText !== null) {
+        woInput.value = savedText;
+    }
 
     const updateWoCount = () => {
         let limit = parseInt(woLimitInput.value, 10) || 1000;
@@ -29,9 +40,25 @@ export function initToolWeightOver() {
             woSection.classList.add('wo-warning');
             woCounter.classList.add('warning');
         }
+
+        // 状態を保存
+        localStorage.setItem('wo-limit', limit);
+        localStorage.setItem('wo-text', text);
     };
 
     woInput.addEventListener('input', updateWoCount);
     woLimitInput.addEventListener('input', updateWoCount);
+
+    // クイックボタンのイベント設定
+    quickButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const limit = btn.getAttribute('data-limit');
+            if (limit) {
+                woLimitInput.value = limit;
+                updateWoCount();
+            }
+        });
+    });
+
     updateWoCount();
 }

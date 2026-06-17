@@ -80,27 +80,45 @@ export function initShell() {
     const toolLinks = document.querySelectorAll('.tool-link');
     const toolSections = document.querySelectorAll('.tool-section');
 
-    toolLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetTool = link.getAttribute('data-tool');
-
-            toolLinks.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-
-            toolSections.forEach(section => {
-                section.classList.remove('active');
-            });
-            const targetSection = document.getElementById(`tool-${targetTool}`);
-            if (targetSection) {
-                targetSection.classList.add('active');
-            }
-
-            // モバイルでメニューを閉じる
-            if (window.innerWidth <= 768) {
-                sidebar.classList.remove('open');
+    const switchTool = (targetTool) => {
+        let found = false;
+        toolLinks.forEach(l => {
+            if (l.getAttribute('data-tool') === targetTool) {
+                l.classList.add('active');
+                found = true;
+            } else {
+                l.classList.remove('active');
             }
         });
+
+        if (!found) return; // 該当するツールがなければ何もしない
+
+        toolSections.forEach(section => {
+            section.classList.remove('active');
+        });
+        const targetSection = document.getElementById(`tool-${targetTool}`);
+        if (targetSection) {
+            targetSection.classList.add('active');
+        }
+
+        // モバイルでメニューを閉じる
+        if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+        }
+    };
+
+    // 初期ロード時にハッシュからツールを選択
+    const initialHash = window.location.hash.replace('#', '');
+    if (initialHash) {
+        switchTool(initialHash);
+    }
+
+    // ハッシュの変更を検知
+    window.addEventListener('hashchange', () => {
+        const hash = window.location.hash.replace('#', '');
+        if (hash) {
+            switchTool(hash);
+        }
     });
 
     // ハンバーガーメニューの開閉（スマホ用）
