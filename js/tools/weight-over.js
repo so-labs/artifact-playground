@@ -7,6 +7,7 @@ export function initToolWeightOver() {
     const woCounter = document.getElementById('wo-counter');
     const woSection = document.getElementById('tool-weight-over');
     const quickButtons = document.querySelectorAll('.quick-limit-btn');
+    const woBtnClear = document.getElementById('wo-btn-clear');
 
     if (!woInput || !woLimitInput) return;
 
@@ -59,6 +60,13 @@ export function initToolWeightOver() {
             }
         });
     });
+
+    if (woBtnClear) {
+        woBtnClear.addEventListener('click', () => {
+            woInput.value = '';
+            updateWoCount();
+        });
+    }
 
     updateWoCount();
 }

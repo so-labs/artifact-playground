@@ -3,10 +3,14 @@
     margin-bottom: 1.5rem;
 }
 
-.input-group label, .output-header label, .settings-group label {
+.input-group label, .input-header label, .output-header label, .settings-group label {
     display: block;
     font-weight: bold;
     margin-bottom: 0.5rem;
+}
+
+.input-header label, .output-header label {
+    margin-bottom: 0;
 }
 
 .slider {
@@ -15,7 +19,7 @@
     cursor: pointer;
 }
 
-.output-header {
+.input-header, .output-header {
     display: flex;
     justify-content: space-between;
     align-items: center;

@@ -10,12 +10,6 @@
     min-width: 0;
 }
 
-.wo-input-wrap label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
 #wo-input {
     min-height: 320px;
 }

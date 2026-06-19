@@ -84,7 +84,10 @@
                 <h2>20% Off（テキストを削る）</h2>
                 <div class="tool-ui">
                     <div class="input-group">
-                        <label for="input-text">入力テキスト</label>
+                        <div class="input-header">
+                            <label for="input-text">入力テキスト</label>
+                            <button id="btn-clear" class="btn small">クリア</button>
+                        </div>
                         <textarea id="input-text" rows="8">吾輩は猫である。名前はまだ無い。
 どこで生れたかとんと見当がつかぬ。
 何でも薄暗いジメジメした所でニャーニャー泣いていた事だけは記憶している。</textarea>
@@ -95,7 +98,6 @@
                     </div>
                     <div class="button-group">
                         <button id="btn-reduce" class="btn primary">20%削る</button>
-                        <button id="btn-clear" class="btn secondary">クリア</button>
                     </div>
                     <div class="output-group">
                         <div class="output-header">
@@ -111,7 +113,10 @@
                 <h2>ウエイトオーバー（文字数制限）</h2>
                 <div class="wo-layout">
                     <div class="wo-input-wrap">
-                        <label for="wo-input">入力テキスト</label>
+                        <div class="input-header">
+                            <label for="wo-input">入力テキスト</label>
+                            <button id="wo-btn-clear" class="btn small">クリア</button>
+                        </div>
                         <textarea id="wo-input" rows="12" placeholder="ここにテキストを入力..."></textarea>
                     </div>
                     <div class="wo-side">
