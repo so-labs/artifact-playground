@@ -163,7 +163,6 @@ textarea {
 /* Theme Transition */
 body.theme-ready,
 body.theme-ready .app-header,
-body.theme-ready .sidebar,
 body.theme-ready .tool-section,
 body.theme-ready .tool-list li a,
 body.theme-ready .btn,
@@ -171,4 +170,9 @@ body.theme-ready textarea,
 body.theme-ready .theme-menu,
 body.theme-ready .settings-btn {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* サイドバーのみ、開閉アニメーション（margin-left, transform）を共存させる */
+body.theme-ready .sidebar {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, margin-left 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
