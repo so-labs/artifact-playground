@@ -1,6 +1,18 @@
 ﻿/* Tool UI Elements */
+.tool-ui {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
 .input-group, .output-group, .settings-group {
     margin-bottom: 1.5rem;
+}
+
+.input-group, .output-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .input-group label, .input-header label, .output-header label, .settings-group label {
@@ -24,6 +36,10 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
+}
+
+.input-group textarea, .output-group textarea {
+    flex: 1;
 }
 
 textarea {
@@ -174,5 +190,5 @@ body.theme-ready .settings-btn {
 
 /* サイドバーのみ、開閉アニメーション（margin-left, transform）を共存させる */
 body.theme-ready .sidebar {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, margin-left 0.3s ease-in-out, transform 0.3s ease-in-out;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, margin-left 0.2s cubic-bezier(0.1, 0.9, 0.2, 1), transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
 }

@@ -47,7 +47,7 @@
 /* Main Container Layout */
 .app-container {
     display: flex;
-    align-items: flex-start;
+    align-items: stretch;
     min-height: calc(100vh - var(--header-height));
 }
 
@@ -62,7 +62,7 @@
     top: var(--header-height);
     height: calc(100vh - var(--header-height));
     flex-shrink: 0;
-    transition: margin-left 0.3s ease-in-out;
+    transition: margin-left 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
     overflow: hidden;
 }
 
@@ -132,9 +132,11 @@ body.sidebar-collapsed #sidebar-toggle svg {
 .main-content {
     flex: 1;
     padding: 2rem;
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .tool-section {
@@ -146,7 +148,9 @@ body.sidebar-collapsed #sidebar-toggle svg {
 }
 
 .tool-section.active {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .tool-section h2 {
@@ -174,7 +178,7 @@ body.sidebar-collapsed #sidebar-toggle svg {
         top: var(--header-height);
         height: calc(100vh - var(--header-height));
         width: 250px;
-        transition: transform 0.3s ease-in-out;
+        transition: transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
         box-shadow: 4px 0 6px rgba(0, 0, 0, 0.05);
         z-index: 99;
     }
