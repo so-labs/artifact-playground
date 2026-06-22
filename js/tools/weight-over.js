@@ -1,5 +1,5 @@
 ﻿// Tool: ウエイトオーバー
-export function initToolWeightOver() {
+export default function init() {
     const woInput = document.getElementById('wo-input');
     const woLimitInput = document.getElementById('wo-limit');
     const woCountEl = document.getElementById('wo-count');

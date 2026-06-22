@@ -1,5 +1,5 @@
 ﻿// Tool: 20% Off
-export function initTool20Off() {
+export default function init() {
     const btnReduce = document.getElementById('btn-reduce');
     const btnClear = document.getElementById('btn-clear');
     const btnCopy = document.getElementById('btn-copy');

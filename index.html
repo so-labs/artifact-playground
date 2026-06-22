@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/tools/20off.css">
+    <link rel="stylesheet" href="css/tools/20-off.css">
     <link rel="stylesheet" href="css/tools/weight-over.css">
     <link rel="stylesheet" href="css/tools/norinori-note.css">
     <script>
@@ -61,7 +61,7 @@
             <div class="sidebar-content">
                 <nav>
                     <ul class="tool-list">
-                        <li><a href="#20-off" class="tool-link active" data-tool="20-off">20% Off</a></li>
+                        <li><a href="#20-off" class="tool-link" data-tool="20-off">20% Off</a></li>
                         <li><a href="#weight-over" class="tool-link" data-tool="weight-over">ウエイトオーバー</a></li>
                         <li><a href="#norinori-note" class="tool-link" data-tool="norinori-note">ノリノリ音符</a></li>
                     </ul>
@@ -87,96 +87,8 @@
             </div>
         </aside>
 
-        <main class="main-content">
-            <section id="tool-20-off" class="tool-section active">
-                <h2>20% Off（テキストを削る）</h2>
-                <div class="tool-ui">
-                    <div class="input-group">
-                        <div class="input-header">
-                            <label for="input-text">入力テキスト</label>
-                            <button id="btn-clear" class="btn small">クリア</button>
-                        </div>
-                        <textarea id="input-text" rows="8">吾輩は猫である。名前はまだ無い。
-どこで生れたかとんと見当がつかぬ。
-何でも薄暗いジメジメした所でニャーニャー泣いていた事だけは記憶している。</textarea>
-                    </div>
-                    <div class="settings-group">
-                        <label for="percent-slider">削る割合: <span id="percent-display">20</span>%</label>
-                        <input type="range" id="percent-slider" min="1" max="30" value="20" class="slider">
-                    </div>
-                    <div class="button-group">
-                        <button id="btn-reduce" class="btn primary">20%削る</button>
-                    </div>
-                    <div class="output-group">
-                        <div class="output-header">
-                            <label for="output-text">出力結果</label>
-                            <button id="btn-copy" class="btn small">コピー</button>
-                        </div>
-                        <textarea id="output-text" rows="8" readonly></textarea>
-                    </div>
-                </div>
-            </section>
-
-            <section id="tool-weight-over" class="tool-section">
-                <h2>ウエイトオーバー（文字数制限）</h2>
-                <div class="wo-layout">
-                    <div class="wo-input-wrap">
-                        <div class="input-header">
-                            <label for="wo-input">入力テキスト</label>
-                            <button id="wo-btn-clear" class="btn small">クリア</button>
-                        </div>
-                        <textarea id="wo-input" rows="12" placeholder="ここにテキストを入力..."></textarea>
-                    </div>
-                    <div class="wo-side">
-                        <div class="wo-limit-group">
-                            <label for="wo-limit">上限文字数</label>
-                            <input type="number" id="wo-limit" min="1" max="50000" value="1000" class="wo-limit-input">
-                            <div class="wo-quick-buttons">
-                                <button type="button" class="btn small quick-limit-btn" data-limit="140"
-                                    title="X (Twitter)">140</button>
-                                <button type="button" class="btn small quick-limit-btn" data-limit="400"
-                                    title="原稿用紙1枚">400</button>
-                                <button type="button" class="btn small quick-limit-btn" data-limit="1000">1,000</button>
-                                <button type="button" class="btn small quick-limit-btn" data-limit="2000">2,000</button>
-                                <button type="button" class="btn small quick-limit-btn" data-limit="2200"
-                                    title="Instagram / TikTok">2,200</button>
-                                <button type="button" class="btn small quick-limit-btn" data-limit="3000">3,000</button>
-                                <button type="button" class="btn small quick-limit-btn" data-limit="4000">4,000</button>
-                                <button type="button" class="btn small quick-limit-btn"
-                                    data-limit="10000">10,000</button>
-                            </div>
-                        </div>
-                        <div class="wo-counter" id="wo-counter">
-                            <div class="wo-count-number" id="wo-count">0</div>
-                            <div class="wo-count-label">文字</div>
-                            <div class="wo-limit-display">/ <span id="wo-limit-display">1000</span></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="tool-norinori-note" class="tool-section">
-                <h2>ノリノリ音符</h2>
-                <div class="tool-ui">
-                    <div class="input-group">
-                        <div class="input-header">
-                            <label for="nn-input">入力テキスト（歌詞）</label>
-                            <button id="nn-btn-clear" class="btn small">クリア</button>
-                        </div>
-                        <textarea id="nn-input" rows="8" placeholder="ここに歌詞などのテキストを入力..."></textarea>
-                    </div>
-                    <div class="button-group">
-                        <button id="nn-btn-convert" class="btn primary">ノリノリにする</button>
-                    </div>
-                    <div class="output-group">
-                        <div class="output-header">
-                            <label for="nn-output">出力結果</label>
-                            <button id="nn-btn-copy" class="btn small">コピー</button>
-                        </div>
-                        <textarea id="nn-output" rows="8" readonly></textarea>
-                    </div>
-                </div>
-            </section>
+        <main class="main-content" id="main-content">
+            <!-- ツールが動的に読み込まれます -->
         </main>
     </div>
 

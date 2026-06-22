@@ -1,5 +1,5 @@
 ﻿// Tool: ノリノリ音符
-export function initToolNorinoriNote() {
+export default function init() {
     const inputEl = document.getElementById('nn-input');
     const outputEl = document.getElementById('nn-output');
     const btnConvert = document.getElementById('nn-btn-convert');

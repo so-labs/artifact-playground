@@ -78,9 +78,10 @@ export function initShell() {
 
     // ツール切り替え
     const toolLinks = document.querySelectorAll('.tool-link');
-    const toolSections = document.querySelectorAll('.tool-section');
+    const mainContent = document.getElementById('main-content');
+    const loadedTools = new Set();
 
-    const switchTool = (targetTool) => {
+    const switchTool = async (targetTool) => {
         let found = false;
         toolLinks.forEach(l => {
             if (l.getAttribute('data-tool') === targetTool) {
@@ -93,9 +94,36 @@ export function initShell() {
 
         if (!found) return; // 該当するツールがなければ何もしない
 
-        toolSections.forEach(section => {
+        // いったん全て非表示
+        document.querySelectorAll('.tool-section').forEach(section => {
             section.classList.remove('active');
         });
+
+        // まだロードされていなければ、HTMLとJSを取得して初期化
+        if (!loadedTools.has(targetTool)) {
+            try {
+                // 1. HTMLを非同期ロード
+                const response = await fetch(`views/${targetTool}.html`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const html = await response.text();
+                
+                // 2. DOMに追加
+                mainContent.insertAdjacentHTML('beforeend', html);
+                
+                // 3. JSモジュールを動的インポートして default関数 を実行
+                const module = await import(`../tools/${targetTool}.js`);
+                if (module.default) {
+                    module.default();
+                }
+
+                loadedTools.add(targetTool);
+            } catch (error) {
+                console.error(`Failed to load tool: ${targetTool}`, error);
+                return;
+            }
+        }
+
+        // 該当セクションを表示
         const targetSection = document.getElementById(`tool-${targetTool}`);
         if (targetSection) {
             targetSection.classList.add('active');
@@ -111,6 +139,12 @@ export function initShell() {
     const initialHash = window.location.hash.replace('#', '');
     if (initialHash) {
         switchTool(initialHash);
+    } else {
+        // ハッシュがない場合は最初のツールを選択
+        const firstTool = toolLinks[0]?.getAttribute('data-tool');
+        if (firstTool) {
+            switchTool(firstTool);
+        }
     }
 
     // ハッシュの変更を検知
