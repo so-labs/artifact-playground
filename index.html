@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/tools/20off.css">
     <link rel="stylesheet" href="css/tools/weight-over.css">
+    <link rel="stylesheet" href="css/tools/norinori-note.css">
     <script>
         (function () {
             try {
@@ -62,6 +63,7 @@
                     <ul class="tool-list">
                         <li><a href="#20-off" class="tool-link active" data-tool="20-off">20% Off</a></li>
                         <li><a href="#weight-over" class="tool-link" data-tool="weight-over">ウエイトオーバー</a></li>
+                        <li><a href="#norinori-note" class="tool-link" data-tool="norinori-note">ノリノリ音符</a></li>
                     </ul>
                 </nav>
             </div>
@@ -149,6 +151,29 @@
                             <div class="wo-count-label">文字</div>
                             <div class="wo-limit-display">/ <span id="wo-limit-display">1000</span></div>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tool-norinori-note" class="tool-section">
+                <h2>ノリノリ音符</h2>
+                <div class="tool-ui">
+                    <div class="input-group">
+                        <div class="input-header">
+                            <label for="nn-input">入力テキスト（歌詞）</label>
+                            <button id="nn-btn-clear" class="btn small">クリア</button>
+                        </div>
+                        <textarea id="nn-input" rows="8" placeholder="ここに歌詞などのテキストを入力..."></textarea>
+                    </div>
+                    <div class="button-group">
+                        <button id="nn-btn-convert" class="btn primary">ノリノリにする</button>
+                    </div>
+                    <div class="output-group">
+                        <div class="output-header">
+                            <label for="nn-output">出力結果</label>
+                            <button id="nn-btn-copy" class="btn small">コピー</button>
+                        </div>
+                        <textarea id="nn-output" rows="8" readonly></textarea>
                     </div>
                 </div>
             </section>
