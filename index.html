@@ -26,6 +26,12 @@
                 } else {
                     document.documentElement.setAttribute('data-theme', 'light');
                 }
+
+                // 描画前にサイドバーの折りたたみ状態を判定して適用（チラつき防止）
+                var sidebarCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (sidebarCollapsed && window.innerWidth > 768) {
+                    document.documentElement.classList.add('sidebar-collapsed');
+                }
             } catch (e) { }
         })();
     </script>
