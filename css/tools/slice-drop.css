@@ -1,0 +1,204 @@
+﻿/* --- スライスドロップ 固有スタイル --- */
+.sd-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 1.5rem;
+    grid-template-areas:
+        "input limit"
+        "output stats"
+        "output pagination";
+}
+
+.sd-input-wrap {
+    grid-area: input;
+    display: flex;
+    flex-direction: column;
+}
+
+#sd-input {
+    min-height: 200px;
+}
+
+.sd-limit-group {
+    grid-area: limit;
+}
+
+.sd-limit-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.sd-limit-input {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    color: var(--text-color);
+    background-color: var(--panel-bg);
+}
+
+.sd-quick-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.sd-quick-buttons .btn {
+    flex: 1 1 calc(25% - 0.5rem);
+    padding: 0.35rem 0.1rem;
+    font-size: 0.8rem;
+    min-width: 42px;
+    text-align: center;
+}
+
+.sd-output-area {
+    grid-area: output;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+#sd-output-text {
+    flex: 1;
+    min-height: 140px;
+}
+
+/* 統計情報エリア（PC表示時は右サイドバーの中央） */
+.sd-stats-area {
+    grid-area: stats;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem;
+    align-self: start;
+}
+
+.sd-stat-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sd-stat-label {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.sd-stat-value {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* ページ切り替えエリア（PC表示時は右サイドバーの下部） */
+.sd-pagination-area {
+    grid-area: pagination;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem;
+    align-self: start;
+    align-items: stretch;
+}
+
+.sd-pagination-info {
+    order: 1; /* テキストを最上部に配置 */
+    font-weight: bold;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 0.25rem;
+}
+
+#sd-btn-prev {
+    order: 2; /* 前のページボタンを2番目に配置 */
+}
+
+#sd-btn-next {
+    order: 3; /* 次のページボタンを3番目に配置 */
+}
+
+.sd-pagination-area .btn {
+    width: 100%;
+    white-space: nowrap;
+}
+
+.sd-pagination-area .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* モバイル対応（画面幅 768px 以下） */
+@media (max-width: 768px) {
+    .sd-grid-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    #sd-output-text {
+        min-height: 120px;
+    }
+
+    /* モバイル時：総文字数は小さく下に表示するため枠線や背景を排除 */
+    .sd-stats-area {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        gap: 0.5rem;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: stretch;
+    }
+
+    .sd-stat-box {
+        display: inline-flex;
+        gap: 0.25rem;
+    }
+
+    .sd-stat-label {
+        font-size: 0.85rem;
+    }
+
+    .sd-stat-value {
+        font-size: 0.85rem;
+    }
+
+    /* モバイル時：ページ切り替えはシンプルな枠なし配置に */
+    .sd-pagination-area {
+        display: flex;
+        flex-direction: row; /* 横並びに戻す */
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        justify-content: center;
+        gap: 1rem;
+        align-self: stretch;
+        align-items: center;
+    }
+
+    .sd-pagination-info {
+        order: initial; /* 並び順を元に戻す */
+        margin-bottom: 0;
+        flex: none;
+        font-size: 0.95rem;
+    }
+
+    #sd-btn-prev,
+    #sd-btn-next {
+        order: initial; /* 順番を初期値に戻す */
+    }
+
+    .sd-pagination-area .btn {
+        width: auto;
+    }
+}

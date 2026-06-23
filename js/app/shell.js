@@ -4,7 +4,8 @@
 const TOOLS_CONFIG = [
     { id: '20-off', title: '20% Off' },
     { id: 'weight-over', title: 'ウエイトオーバー' },
-    { id: 'norinori-note', title: 'ノリノリ音符' }
+    { id: 'norinori-note', title: 'ノリノリ音符' },
+    { id: 'slice-drop', title: 'スライスドロップ' }
 ];
 
 export function initShell() {
@@ -139,10 +140,10 @@ export function initShell() {
                 const response = await fetch(`views/${targetTool}.html`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const html = await response.text();
-                
+
                 // 2. DOMに追加
                 mainContent.insertAdjacentHTML('beforeend', html);
-                
+
                 // 3. JSモジュールを動的インポートして default関数 を実行
                 const module = await import(`../tools/${targetTool}.js`);
                 if (module.default) {

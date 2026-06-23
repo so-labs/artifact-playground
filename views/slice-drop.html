@@ -1,0 +1,74 @@
+﻿<section id="tool-slice-drop" class="tool-section">
+    <div class="tool-title-area">
+        <h2>スライスドロップ</h2>
+        <button class="help-btn" aria-label="説明を表示" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+        </button>
+    </div>
+    <div class="tool-description">
+        長い文章を指定した上限文字数で自動的に分割（スライス）します。分割された各部分はページ単位で切り替えることができ、ワンクリックでコピーできます。SNSなどで文字数制限のある投稿を分割して行う際などに便利です。
+    </div>
+    <div class="sd-grid-container">
+        <!-- 1. 入力欄 -->
+        <div class="sd-input-wrap">
+            <div class="input-header">
+                <label for="sd-input">入力テキスト</label>
+                <button id="sd-btn-clear" class="btn small">クリア</button>
+            </div>
+            <textarea id="sd-input" rows="10"
+                placeholder="ここに長いテキストを入力してください...">吾輩は猫である。名前はまだ無い。
+どこで生れたかとんと見当がつかぬ。何でも薄暗いジメジメした所でニャーニャー泣いていた事だけは記憶している。吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは書生という人間中で一番獰悪な種族であったそうだ。この書生というのは時々我々を捕えて煮て食うという話である。しかしその当時は何という考もなかったから別段恐ろしいとも思わなかった。ただ彼の掌に載せられてスーと持ち上げられた時何だかフワフワした感じがあったばかりである。</textarea>
+        </div>
+
+        <!-- 2. 文字数設定 -->
+        <div class="sd-limit-group">
+            <label for="sd-limit">分割文字数上限</label>
+            <input type="number" id="sd-limit" min="10" max="50000" value="140" class="sd-limit-input">
+            <div class="sd-quick-buttons">
+                <button type="button" class="btn small quick-limit-btn" data-limit="140"
+                    title="X (Twitter)">140</button>
+                <button type="button" class="btn small quick-limit-btn" data-limit="400" title="原稿用紙1枚">400</button>
+                <button type="button" class="btn small quick-limit-btn" data-limit="1000">1,000</button>
+                <button type="button" class="btn small quick-limit-btn" data-limit="2000">2,000</button>
+                <button type="button" class="btn small quick-limit-btn" data-limit="2200"
+                    title="Instagram / TikTok">2,200</button>
+                <button type="button" class="btn small quick-limit-btn" data-limit="3000">3,000</button>
+                <button type="button" class="btn small quick-limit-btn" data-limit="4000">4,000</button>
+                <button type="button" class="btn small quick-limit-btn" data-limit="10000">10,000</button>
+            </div>
+        </div>
+
+        <!-- 3. 分割結果 -->
+        <div class="sd-output-area">
+            <div class="output-header">
+                <label for="sd-output-text">分割結果（<span id="sd-current-page-label">0/0</span> ページ）</label>
+                <button id="sd-btn-copy" class="btn small">コピー</button>
+            </div>
+            <textarea id="sd-output-text" rows="6" readonly></textarea>
+        </div>
+
+        <!-- 4. 総文字数・分割数（PCでは右カラム、モバイルでは下に小さく表示） -->
+        <div class="sd-stats-area">
+            <div class="sd-stat-box">
+                <span class="sd-stat-label">総文字数</span>
+                <span class="sd-stat-value sd-total-chars">0</span>
+            </div>
+            <div class="sd-stat-box">
+                <span class="sd-stat-label">分割数</span>
+                <span class="sd-stat-value sd-total-pages">0</span>
+            </div>
+        </div>
+
+        <!-- 5. ページ切り替え（PCでは右カラム、モバイルでは総文字数の下に配置） -->
+        <div class="sd-pagination-area">
+            <button id="sd-btn-prev" class="btn secondary small">&lt; 前のページ</button>
+            <span id="sd-pagination-info" class="sd-pagination-info">ページ 0 / 0</span>
+            <button id="sd-btn-next" class="btn secondary small">次のページ &gt;</button>
+        </div>
+    </div>
+</section>
