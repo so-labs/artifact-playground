@@ -1,12 +1,27 @@
 ﻿<section id="tool-norinori-note" class="tool-section">
-    <h2>ノリノリ音符</h2>
+    <div class="tool-title-area">
+        <h2>ノリノリ音符</h2>
+        <button class="help-btn" aria-label="説明を表示" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+        </button>
+    </div>
+    <div class="tool-description">
+        入力されたテキストの改行を整理し、各行の末尾にランダムな音符（♪、♫、♬）を追加して1行に結合します。文章をリズム感のある「ノリノリ」な見た目に変換できます。
+    </div>
     <div class="tool-ui">
         <div class="input-group">
             <div class="input-header">
                 <label for="nn-input">入力テキスト（歌詞）</label>
                 <button id="nn-btn-clear" class="btn small">クリア</button>
             </div>
-            <textarea id="nn-input" rows="8" placeholder="ここに歌詞などのテキストを入力..."></textarea>
+            <textarea id="nn-input" rows="8" placeholder="ここに歌詞などのテキストを入力...">どんぐりころころ どんぶりこ
+お池にはまって さあ大変
+どじょうが出て来て こんにちは
+坊っちゃん一緒に 遊びましょう</textarea>
         </div>
         <div class="button-group">
             <button id="nn-btn-convert" class="btn primary">ノリノリにする</button>

@@ -17,11 +17,11 @@ export default function init() {
         woLimitInput.value = savedLimit;
     }
     const savedText = localStorage.getItem('wo-text');
-    if (savedText !== null) {
+    if (savedText !== null && savedText !== '') {
         woInput.value = savedText;
     }
 
-    const updateWoCount = () => {
+    const updateWoCount = (shouldSave = true) => {
         let limit = parseInt(woLimitInput.value, 10) || 1000;
         limit = Math.min(50000, Math.max(1, limit));
         woLimitInput.value = limit;
@@ -43,12 +43,14 @@ export default function init() {
         }
 
         // 状態を保存
-        localStorage.setItem('wo-limit', limit);
-        localStorage.setItem('wo-text', text);
+        if (shouldSave) {
+            localStorage.setItem('wo-limit', limit);
+            localStorage.setItem('wo-text', text);
+        }
     };
 
-    woInput.addEventListener('input', updateWoCount);
-    woLimitInput.addEventListener('input', updateWoCount);
+    woInput.addEventListener('input', () => updateWoCount(true));
+    woLimitInput.addEventListener('input', () => updateWoCount(true));
 
     // クイックボタンのイベント設定
     quickButtons.forEach(btn => {
@@ -56,7 +58,7 @@ export default function init() {
             const limit = btn.getAttribute('data-limit');
             if (limit) {
                 woLimitInput.value = limit;
-                updateWoCount();
+                updateWoCount(true);
             }
         });
     });
@@ -64,9 +66,10 @@ export default function init() {
     if (woBtnClear) {
         woBtnClear.addEventListener('click', () => {
             woInput.value = '';
-            updateWoCount();
+            updateWoCount(true);
         });
     }
 
-    updateWoCount();
+    // 初期ロード時はLocalStorageへの自動保存を行わない
+    updateWoCount(false);
 }

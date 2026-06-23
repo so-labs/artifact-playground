@@ -189,4 +189,21 @@ export function initShell() {
             }
         }
     });
+
+    // ヘルプボタンの開閉制御
+    if (mainContent) {
+        mainContent.addEventListener('click', (e) => {
+            const helpBtn = e.target.closest('.help-btn');
+            if (helpBtn) {
+                const section = helpBtn.closest('.tool-section');
+                if (section) {
+                    const desc = section.querySelector('.tool-description');
+                    if (desc) {
+                        const isShown = desc.classList.toggle('show');
+                        helpBtn.setAttribute('aria-expanded', isShown ? 'true' : 'false');
+                    }
+                }
+            }
+        });
+    }
 }

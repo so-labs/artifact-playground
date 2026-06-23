@@ -192,3 +192,45 @@ body.theme-ready .settings-btn {
 body.theme-ready .sidebar {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, margin-left 0.2s cubic-bezier(0.1, 0.9, 0.2, 1), transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
 }
+
+/* Help Button & Description */
+.help-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background-color: var(--btn-small-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    padding: 0;
+}
+
+.help-btn:hover {
+    background-color: var(--btn-small-hover);
+    color: var(--primary-color);
+}
+
+.help-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.tool-description {
+    display: none;
+    background-color: var(--code-bg);
+    border-left: 4px solid var(--primary-color);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.tool-description.show {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}

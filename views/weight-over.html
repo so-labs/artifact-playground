@@ -1,23 +1,39 @@
 ﻿<section id="tool-weight-over" class="tool-section">
-    <h2>ウエイトオーバー（文字数制限）</h2>
+    <div class="tool-title-area">
+        <h2>ウエイトオーバー</h2>
+        <button class="help-btn" aria-label="説明を表示" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+        </button>
+    </div>
+    <div class="tool-description">
+        テキストの文字数をリアルタイムにカウントし、設定した上限文字数を超えていないかチェックします。上限に近づくと黄色、超えると赤色に変化してお知らせします。
+    </div>
     <div class="wo-layout">
         <div class="wo-input-wrap">
             <div class="input-header">
                 <label for="wo-input">入力テキスト</label>
                 <button id="wo-btn-clear" class="btn small">クリア</button>
             </div>
-            <textarea id="wo-input" rows="12" placeholder="ここにテキストを入力..."></textarea>
+            <textarea id="wo-input" rows="12" placeholder="ここにテキストを入力...">メロスは激怒した。必ず、かの邪智暴虐の王を除かなければならぬと決意した。
+メロスには政治がわからぬ。メロスは、村の牧人である。笛を吹き、羊と遊んで暮して来た。けれども邪悪に対しては、人一倍に敏感であった。
+きょう未明メロスは村を出発し、野を越え山越え、十里はなれた此のシラクスの市にやって来た。メロスには父も、母も無い。女房も無い。十六の、内気な妹と二人暮しだ。</textarea>
         </div>
         <div class="wo-side">
             <div class="wo-limit-group">
                 <label for="wo-limit">上限文字数</label>
                 <input type="number" id="wo-limit" min="1" max="50000" value="1000" class="wo-limit-input">
                 <div class="wo-quick-buttons">
-                    <button type="button" class="btn small quick-limit-btn" data-limit="140" title="X (Twitter)">140</button>
+                    <button type="button" class="btn small quick-limit-btn" data-limit="140"
+                        title="X (Twitter)">140</button>
                     <button type="button" class="btn small quick-limit-btn" data-limit="400" title="原稿用紙1枚">400</button>
                     <button type="button" class="btn small quick-limit-btn" data-limit="1000">1,000</button>
                     <button type="button" class="btn small quick-limit-btn" data-limit="2000">2,000</button>
-                    <button type="button" class="btn small quick-limit-btn" data-limit="2200" title="Instagram / TikTok">2,200</button>
+                    <button type="button" class="btn small quick-limit-btn" data-limit="2200"
+                        title="Instagram / TikTok">2,200</button>
                     <button type="button" class="btn small quick-limit-btn" data-limit="3000">3,000</button>
                     <button type="button" class="btn small quick-limit-btn" data-limit="4000">4,000</button>
                     <button type="button" class="btn small quick-limit-btn" data-limit="10000">10,000</button>

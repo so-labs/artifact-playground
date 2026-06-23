@@ -154,10 +154,16 @@ body.sidebar-collapsed #sidebar-toggle svg {
     flex: 1;
 }
 
-.tool-section h2 {
-    margin-bottom: 1.5rem;
+.tool-title-area {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     border-bottom: 2px solid var(--primary-color);
     padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.tool-section h2 {
     display: inline-block;
 }
 
