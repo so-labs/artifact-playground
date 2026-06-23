@@ -132,12 +132,12 @@ export function initShell() {
                     const link = document.createElement('link');
                     link.id = cssId;
                     link.rel = 'stylesheet';
-                    link.href = `css/tools/${targetTool}.css`;
+                    link.href = `tools/${targetTool}/${targetTool}.css`;
                     document.head.appendChild(link);
                 }
 
                 // 1. HTMLを非同期ロード
-                const response = await fetch(`views/${targetTool}.html`);
+                const response = await fetch(`tools/${targetTool}/${targetTool}.html`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const html = await response.text();
 
@@ -145,7 +145,7 @@ export function initShell() {
                 mainContent.insertAdjacentHTML('beforeend', html);
 
                 // 3. JSモジュールを動的インポートして default関数 を実行
-                const module = await import(`../tools/${targetTool}.js`);
+                const module = await import(`../../tools/${targetTool}/${targetTool}.js`);
                 if (module.default) {
                     module.default();
                 }
