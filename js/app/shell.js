@@ -1,4 +1,12 @@
 ﻿// App Shell: テーマ / サイドバー / ツール切替
+
+// ツールのメタデータを一元管理する定義リスト
+const TOOLS_CONFIG = [
+    { id: '20-off', title: '20% Off' },
+    { id: 'weight-over', title: 'ウエイトオーバー' },
+    { id: 'norinori-note', title: 'ノリノリ音符' }
+];
+
 export function initShell() {
     // テーマ切り替え機能
     const themeSettingsBtn = document.getElementById('theme-settings-btn');
@@ -76,6 +84,21 @@ export function initShell() {
     const sidebar = document.getElementById('sidebar');
     const appContainer = document.querySelector('.app-container');
 
+    // ツールリストの動的生成
+    const toolListContainer = document.getElementById('tool-list');
+    if (toolListContainer) {
+        TOOLS_CONFIG.forEach(tool => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = `#${tool.id}`;
+            a.className = 'tool-link';
+            a.setAttribute('data-tool', tool.id);
+            a.textContent = tool.title;
+            li.appendChild(a);
+            toolListContainer.appendChild(li);
+        });
+    }
+
     // ツール切り替え
     const toolLinks = document.querySelectorAll('.tool-link');
     const mainContent = document.getElementById('main-content');
@@ -102,6 +125,16 @@ export function initShell() {
         // まだロードされていなければ、HTMLとJSを取得して初期化
         if (!loadedTools.has(targetTool)) {
             try {
+                // 0. CSSを動的にロード
+                const cssId = `css-tool-${targetTool}`;
+                if (!document.getElementById(cssId)) {
+                    const link = document.createElement('link');
+                    link.id = cssId;
+                    link.rel = 'stylesheet';
+                    link.href = `css/tools/${targetTool}.css`;
+                    document.head.appendChild(link);
+                }
+
                 // 1. HTMLを非同期ロード
                 const response = await fetch(`views/${targetTool}.html`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
