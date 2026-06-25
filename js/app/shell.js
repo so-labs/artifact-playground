@@ -4,8 +4,8 @@
 const TOOLS_CONFIG = [
     { id: '20-off', title: '20% Off' },
     { id: 'weight-over', title: 'ウエイトオーバー' },
-    { id: 'norinori-note', title: 'ノリノリ音符' },
-    { id: 'slice-drop', title: 'スライスドロップ' }
+    { id: 'slice-drop', title: 'スライスドロップ' },
+    { id: 'norinori-note', title: 'ノリノリ音符' }
 ];
 
 export function initShell() {
