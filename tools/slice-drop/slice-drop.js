@@ -35,17 +35,35 @@ export default function init() {
 
         const text = sdInput.value;
         const chars = Array.from(text);
-        const totalCharsCount = chars.length;
+        
+        // 外部の文字数カウント（サロゲートペアを2文字とカウントする仕様）に合わせた文字数計算
+        let totalCharsCount = 0;
+        for (const char of chars) {
+            totalCharsCount += char.length;
+        }
 
         sdTotalCharsElements.forEach(el => {
             el.textContent = totalCharsCount.toLocaleString();
         });
 
-        // 分割処理
+        // 分割処理（絵文字が途中で切れないようにしつつ、外部仕様の文字数制限に合わせて分割）
         chunks = [];
-        if (totalCharsCount > 0) {
-            for (let i = 0; i < totalCharsCount; i += limit) {
-                chunks.push(chars.slice(i, i + limit).join(''));
+        if (chars.length > 0) {
+            let currentChunk = [];
+            let currentLength = 0;
+            for (const char of chars) {
+                const charWeight = char.length;
+                if (currentLength + charWeight > limit) {
+                    chunks.push(currentChunk.join(''));
+                    currentChunk = [char];
+                    currentLength = charWeight;
+                } else {
+                    currentChunk.push(char);
+                    currentLength += charWeight;
+                }
+            }
+            if (currentChunk.length > 0) {
+                chunks.push(currentChunk.join(''));
             }
         }
 
