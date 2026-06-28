@@ -1,4 +1,122 @@
-﻿// App Shell: テーマ / サイドバー / ツール切替
+// App Shell: テーマ / サイドバー / ツール切替
+
+// ============================
+// アクセントカラーアニメーション
+// ============================
+
+// ライトテーマ: 青 #2563eb (HSL 220,84%,54%) <-> オレンジ #ea580c (HSL 24,88%,48%)
+// ダークテーマ: 青 #3b82f6 (HSL 217,91%,60%) <-> オレンジ #f97316 (HSL 25,95%,53%)
+const ACCENT_COLORS = {
+    light: {
+        blue: { h: 220, s: 84, l: 54 },
+        blueHover: { h: 220, s: 84, l: 43 },
+        orange: { h: 24, s: 88, l: 48 },
+        orangeHover: { h: 24, s: 88, l: 38 },
+    },
+    dark: {
+        blue: { h: 217, s: 91, l: 60 },
+        blueHover: { h: 217, s: 91, l: 73 },
+        orange: { h: 25, s: 95, l: 53 },
+        orangeHover: { h: 25, s: 95, l: 61 },
+    }
+};
+
+// サイクル設定
+// 1サイクル = ホールド × 2 + 遷移 × 2
+const HOLD_MS = 5000; // 各色で止まっている時間
+const TRANS_MS = 2000; // 色の遷移にかかる時間
+const CYCLE_MS = (HOLD_MS + TRANS_MS) * 2; // 合計14秒
+
+let accentAnimFrameId = null;
+let accentAnimStartTime = null;
+
+function lerp(a, b, t) {
+    return a + (b - a) * t;
+}
+
+function hslStr(h, s, l) {
+    return `hsl(${Math.round(h)}, ${Math.round(s)}%, ${Math.round(l)}%)`;
+}
+
+function lerpColor(c1, c2, t) {
+    return {
+        h: lerp(c1.h, c2.h, t),
+        s: lerp(c1.s, c2.s, t),
+        l: lerp(c1.l, c2.l, t),
+    };
+}
+
+// smoothstep: 入力0〜1を滑らかなS字カーブで変換
+function smoothstep(t) {
+    return t * t * (3 - 2 * t);
+}
+
+// 経過時間から補間係数 t（0=青, 1=オレンジ）を算出する区分関数
+// 区間: [青ホールド] → [青→オレンジ遷移] → [オレンジホールド] → [オレンジ→青遷移]
+function getAccentT(elapsed) {
+    const phase = (elapsed % CYCLE_MS); // 0 〜 CYCLE_MS
+
+    if (phase < HOLD_MS) {
+        // 青でホールド
+        return 0;
+    } else if (phase < HOLD_MS + TRANS_MS) {
+        // 青 → オレンジ へ遷移
+        return smoothstep((phase - HOLD_MS) / TRANS_MS);
+    } else if (phase < HOLD_MS + TRANS_MS + HOLD_MS) {
+        // オレンジでホールド
+        return 1;
+    } else {
+        // オレンジ → 青 へ遷移
+        return 1 - smoothstep((phase - HOLD_MS - TRANS_MS - HOLD_MS) / TRANS_MS);
+    }
+}
+
+function applyAccentColors(primaryColor, primaryHover) {
+    const root = document.documentElement;
+    root.style.setProperty('--primary-color', primaryColor);
+    root.style.setProperty('--primary-hover', primaryHover);
+}
+
+function resetAccentToBlue() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const colors = isDark ? ACCENT_COLORS.dark : ACCENT_COLORS.light;
+    applyAccentColors(hslStr(colors.blue.h, colors.blue.s, colors.blue.l),
+        hslStr(colors.blueHover.h, colors.blueHover.s, colors.blueHover.l));
+}
+
+function tickAccentAnimation(timestamp) {
+    if (!accentAnimStartTime) accentAnimStartTime = timestamp;
+    const elapsed = timestamp - accentAnimStartTime;
+
+    const t = getAccentT(elapsed);
+
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const colors = isDark ? ACCENT_COLORS.dark : ACCENT_COLORS.light;
+
+    const primary = lerpColor(colors.blue, colors.orange, t);
+    const hover = lerpColor(colors.blueHover, colors.orangeHover, t);
+
+    applyAccentColors(hslStr(primary.h, primary.s, primary.l),
+        hslStr(hover.h, hover.s, hover.l));
+
+    accentAnimFrameId = requestAnimationFrame(tickAccentAnimation);
+}
+
+function startAccentAnimation() {
+    if (accentAnimFrameId) return;
+    accentAnimStartTime = null;
+    accentAnimFrameId = requestAnimationFrame(tickAccentAnimation);
+}
+
+function stopAccentAnimation() {
+    if (accentAnimFrameId) {
+        cancelAnimationFrame(accentAnimFrameId);
+        accentAnimFrameId = null;
+    }
+    resetAccentToBlue();
+}
+
+// ============================
 
 // ツールのメタデータを一元管理する定義リスト
 const TOOLS_CONFIG = [
@@ -13,8 +131,43 @@ export function initShell() {
     const themeSettingsBtn = document.getElementById('theme-settings-btn');
     const themeMenu = document.getElementById('theme-menu');
     const themeOptions = document.querySelectorAll('.theme-option');
+    const accentToggleBtn = document.getElementById('accent-animate-toggle');
 
     let currentThemeSetting = localStorage.getItem('app-theme') || 'system';
+
+    // アクセントカラーアニメーションの初期状態（デフォルト: オン）
+    const savedAccentAnimate = localStorage.getItem('accent-animate');
+    let isAccentAnimating = savedAccentAnimate === null ? true : savedAccentAnimate === 'true';
+
+    // トグルUIを同期
+    function syncAccentToggleUI() {
+        if (accentToggleBtn) {
+            accentToggleBtn.setAttribute('aria-checked', isAccentAnimating ? 'true' : 'false');
+        }
+    }
+
+    // アニメーション初期化
+    syncAccentToggleUI();
+    if (isAccentAnimating) {
+        startAccentAnimation();
+    } else {
+        resetAccentToBlue();
+    }
+
+    // トグルボタンのクリックハンドラ
+    if (accentToggleBtn) {
+        accentToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isAccentAnimating = !isAccentAnimating;
+            localStorage.setItem('accent-animate', isAccentAnimating);
+            syncAccentToggleUI();
+            if (isAccentAnimating) {
+                startAccentAnimation();
+            } else {
+                stopAccentAnimation();
+            }
+        });
+    }
 
     const applyTheme = (setting) => {
         let isDark = false;

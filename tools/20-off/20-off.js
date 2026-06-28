@@ -1,4 +1,4 @@
-﻿// Tool: 20% Off
+// Tool: 20% Off
 import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
 
 export default function init() {
@@ -12,6 +12,15 @@ export default function init() {
 
     if (!btnReduce || !inputText) return;
 
+    // スライダーの充填割合をCSS変数に反映する関数
+    const updateSliderFill = (slider) => {
+        const min = parseFloat(slider.min) || 0;
+        const max = parseFloat(slider.max) || 100;
+        const val = parseFloat(slider.value) || 0;
+        const pct = ((val - min) / (max - min)) * 100;
+        slider.style.setProperty('--slider-fill', `${pct.toFixed(1)}%`);
+    };
+
     const storage = createToolStorage('20off');
 
     // LocalStorageから状態を復元
@@ -21,6 +30,8 @@ export default function init() {
         percentDisplay.textContent = savedPercent;
         btnReduce.textContent = `${savedPercent}%削る`;
     }
+    // 初期値をCSS変数に反映
+    updateSliderFill(percentSlider);
     const savedText = storage.get('text');
     if (savedText) {
         inputText.value = savedText;
@@ -37,6 +48,7 @@ export default function init() {
         percentDisplay.textContent = val;
         btnReduce.textContent = `${val}%削る`;
         storage.set('percent', val);
+        updateSliderFill(percentSlider);
     });
 
     // 「削る」処理ロジック
