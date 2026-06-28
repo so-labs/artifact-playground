@@ -1,12 +1,12 @@
-// App Shell: テーマ / サイドバー / ツール切替
+﻿// App Shell: テーマ / サイドバー / ツール切替
 
 // ============================
-// アクセントカラーアニメーション
+// プライマリーカラーアニメーション
 // ============================
 
 // ライトテーマ: 青 #2563eb (HSL 220,84%,54%) <-> オレンジ #ea580c (HSL 24,88%,48%)
 // ダークテーマ: 青 #3b82f6 (HSL 217,91%,60%) <-> オレンジ #f97316 (HSL 25,95%,53%)
-const ACCENT_COLORS = {
+const PRIMARY_COLORS = {
     light: {
         blue: { h: 220, s: 84, l: 54 },
         blueHover: { h: 220, s: 84, l: 43 },
@@ -27,8 +27,8 @@ const HOLD_MS = 5000; // 各色で止まっている時間
 const TRANS_MS = 2000; // 色の遷移にかかる時間
 const CYCLE_MS = (HOLD_MS + TRANS_MS) * 2; // 合計14秒
 
-let accentAnimFrameId = null;
-let accentAnimStartTime = null;
+let primaryAnimFrameId = null;
+let primaryAnimStartTime = null;
 
 function lerp(a, b, t) {
     return a + (b - a) * t;
@@ -53,7 +53,7 @@ function smoothstep(t) {
 
 // 経過時間から補間係数 t（0=青, 1=オレンジ）を算出する区分関数
 // 区間: [青ホールド] → [青→オレンジ遷移] → [オレンジホールド] → [オレンジ→青遷移]
-function getAccentT(elapsed) {
+function getPrimaryT(elapsed) {
     const phase = (elapsed % CYCLE_MS); // 0 〜 CYCLE_MS
 
     if (phase < HOLD_MS) {
@@ -71,49 +71,49 @@ function getAccentT(elapsed) {
     }
 }
 
-function applyAccentColors(primaryColor, primaryHover) {
+function applyPrimaryColors(primaryColor, primaryHover) {
     const root = document.documentElement;
     root.style.setProperty('--primary-color', primaryColor);
     root.style.setProperty('--primary-hover', primaryHover);
 }
 
-function resetAccentToBlue() {
+function resetPrimaryToBlue() {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const colors = isDark ? ACCENT_COLORS.dark : ACCENT_COLORS.light;
-    applyAccentColors(hslStr(colors.blue.h, colors.blue.s, colors.blue.l),
+    const colors = isDark ? PRIMARY_COLORS.dark : PRIMARY_COLORS.light;
+    applyPrimaryColors(hslStr(colors.blue.h, colors.blue.s, colors.blue.l),
         hslStr(colors.blueHover.h, colors.blueHover.s, colors.blueHover.l));
 }
 
-function tickAccentAnimation(timestamp) {
-    if (!accentAnimStartTime) accentAnimStartTime = timestamp;
-    const elapsed = timestamp - accentAnimStartTime;
+function tickPrimaryAnimation(timestamp) {
+    if (!primaryAnimStartTime) primaryAnimStartTime = timestamp;
+    const elapsed = timestamp - primaryAnimStartTime;
 
-    const t = getAccentT(elapsed);
+    const t = getPrimaryT(elapsed);
 
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const colors = isDark ? ACCENT_COLORS.dark : ACCENT_COLORS.light;
+    const colors = isDark ? PRIMARY_COLORS.dark : PRIMARY_COLORS.light;
 
     const primary = lerpColor(colors.blue, colors.orange, t);
     const hover = lerpColor(colors.blueHover, colors.orangeHover, t);
 
-    applyAccentColors(hslStr(primary.h, primary.s, primary.l),
+    applyPrimaryColors(hslStr(primary.h, primary.s, primary.l),
         hslStr(hover.h, hover.s, hover.l));
 
-    accentAnimFrameId = requestAnimationFrame(tickAccentAnimation);
+    primaryAnimFrameId = requestAnimationFrame(tickPrimaryAnimation);
 }
 
-function startAccentAnimation() {
-    if (accentAnimFrameId) return;
-    accentAnimStartTime = null;
-    accentAnimFrameId = requestAnimationFrame(tickAccentAnimation);
+function startPrimaryAnimation() {
+    if (primaryAnimFrameId) return;
+    primaryAnimStartTime = null;
+    primaryAnimFrameId = requestAnimationFrame(tickPrimaryAnimation);
 }
 
-function stopAccentAnimation() {
-    if (accentAnimFrameId) {
-        cancelAnimationFrame(accentAnimFrameId);
-        accentAnimFrameId = null;
+function stopPrimaryAnimation() {
+    if (primaryAnimFrameId) {
+        cancelAnimationFrame(primaryAnimFrameId);
+        primaryAnimFrameId = null;
     }
-    resetAccentToBlue();
+    resetPrimaryToBlue();
 }
 
 // ============================
@@ -131,40 +131,40 @@ export function initShell() {
     const themeSettingsBtn = document.getElementById('theme-settings-btn');
     const themeMenu = document.getElementById('theme-menu');
     const themeOptions = document.querySelectorAll('.theme-option');
-    const accentToggleBtn = document.getElementById('accent-animate-toggle');
+    const primaryToggleBtn = document.getElementById('primary-animate-toggle');
 
     let currentThemeSetting = localStorage.getItem('app-theme') || 'system';
 
-    // アクセントカラーアニメーションの初期状態（デフォルト: オン）
-    const savedAccentAnimate = localStorage.getItem('accent-animate');
-    let isAccentAnimating = savedAccentAnimate === null ? true : savedAccentAnimate === 'true';
+    // プライマリーカラーアニメーションの初期状態（デフォルト: オン）
+    const savedPrimaryAnimate = localStorage.getItem('primary-animate');
+    let isPrimaryAnimating = savedPrimaryAnimate === null ? true : savedPrimaryAnimate === 'true';
 
     // トグルUIを同期
-    function syncAccentToggleUI() {
-        if (accentToggleBtn) {
-            accentToggleBtn.setAttribute('aria-checked', isAccentAnimating ? 'true' : 'false');
+    function syncPrimaryToggleUI() {
+        if (primaryToggleBtn) {
+            primaryToggleBtn.setAttribute('aria-checked', isPrimaryAnimating ? 'true' : 'false');
         }
     }
 
     // アニメーション初期化
-    syncAccentToggleUI();
-    if (isAccentAnimating) {
-        startAccentAnimation();
+    syncPrimaryToggleUI();
+    if (isPrimaryAnimating) {
+        startPrimaryAnimation();
     } else {
-        resetAccentToBlue();
+        resetPrimaryToBlue();
     }
 
     // トグルボタンのクリックハンドラ
-    if (accentToggleBtn) {
-        accentToggleBtn.addEventListener('click', (e) => {
+    if (primaryToggleBtn) {
+        primaryToggleBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            isAccentAnimating = !isAccentAnimating;
-            localStorage.setItem('accent-animate', isAccentAnimating);
-            syncAccentToggleUI();
-            if (isAccentAnimating) {
-                startAccentAnimation();
+            isPrimaryAnimating = !isPrimaryAnimating;
+            localStorage.setItem('primary-animate', isPrimaryAnimating);
+            syncPrimaryToggleUI();
+            if (isPrimaryAnimating) {
+                startPrimaryAnimation();
             } else {
-                stopAccentAnimation();
+                stopPrimaryAnimation();
             }
         });
     }

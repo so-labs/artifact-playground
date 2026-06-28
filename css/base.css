@@ -1,4 +1,4 @@
-:root {
+﻿:root {
     --primary-color: #2563eb;
     --primary-hover: #1d4ed8;
     --secondary-color: #64748b;
@@ -13,23 +13,23 @@
     --btn-small-hover: #cbd5e1;
     --sidebar-width: 250px;
     --header-height: 60px;
-    /* アクセントカラーアニメーション用 */
-    --accent-blue: #2563eb;
-    --accent-blue-hover: #1d4ed8;
-    --accent-orange: #ea580c;
-    --accent-orange-hover: #c2410c;
+    /* プライマリーカラーアニメーション用 */
+    --primary-blue: #2563eb;
+    --primary-blue-hover: #1d4ed8;
+    --primary-orange: #ea580c;
+    --primary-orange-hover: #c2410c;
 }
 
-/* アクセントカラーのなめらかな切り替え用トランジション */
+/* プライマリーカラーのなめらかな切り替え用トランジション */
 :root {
     transition: --primary-color 2s ease-in-out;
 }
 
 [data-theme="dark"] {
-    --accent-blue: #3b82f6;
-    --accent-blue-hover: #60a5fa;
-    --accent-orange: #f97316;
-    --accent-orange-hover: #fb923c;
+    --primary-blue: #3b82f6;
+    --primary-blue-hover: #60a5fa;
+    --primary-orange: #f97316;
+    --primary-orange-hover: #fb923c;
     --primary-color: #3b82f6;
     --primary-hover: #60a5fa;
     --secondary-color: #475569;
