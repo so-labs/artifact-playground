@@ -1,4 +1,6 @@
 ﻿// Tool: 20% Off
+import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+
 export default function init() {
     const btnReduce = document.getElementById('btn-reduce');
     const btnClear = document.getElementById('btn-clear');
@@ -10,21 +12,23 @@ export default function init() {
 
     if (!btnReduce || !inputText) return;
 
+    const storage = createToolStorage('20off');
+
     // LocalStorageから状態を復元
-    const savedPercent = localStorage.getItem('20off-percent');
+    const savedPercent = storage.get('percent');
     if (savedPercent) {
         percentSlider.value = savedPercent;
         percentDisplay.textContent = savedPercent;
         btnReduce.textContent = `${savedPercent}%削る`;
     }
-    const savedText = localStorage.getItem('20off-text');
-    if (savedText !== null && savedText !== '') {
+    const savedText = storage.get('text');
+    if (savedText) {
         inputText.value = savedText;
     }
 
     // 入力テキストの変更を保存
     inputText.addEventListener('input', () => {
-        localStorage.setItem('20off-text', inputText.value);
+        storage.set('text', inputText.value);
     });
 
     // スライダーの表示とボタンのテキストを連動
@@ -32,7 +36,7 @@ export default function init() {
         const val = e.target.value;
         percentDisplay.textContent = val;
         btnReduce.textContent = `${val}%削る`;
-        localStorage.setItem('20off-percent', val);
+        storage.set('percent', val);
     });
 
     // 「削る」処理ロジック
@@ -83,26 +87,11 @@ export default function init() {
     btnClear.addEventListener('click', () => {
         inputText.value = '';
         outputText.value = '';
-        localStorage.removeItem('20off-text');
+        storage.remove('text');
     });
 
     // クリップボードへコピー
-    let copyResetTimer = null;
-    btnCopy.addEventListener('click', async () => {
-        const textToCopy = outputText.value;
-        if (!textToCopy) return;
-
-        try {
-            await navigator.clipboard.writeText(textToCopy);
-            if (copyResetTimer) clearTimeout(copyResetTimer);
-            btnCopy.textContent = 'コピー完了！';
-            copyResetTimer = setTimeout(() => {
-                btnCopy.textContent = 'コピー';
-                copyResetTimer = null;
-            }, 1000);
-        } catch (err) {
-            console.error('Failed to copy text: ', err);
-            alert('クリップボードへのコピーに失敗しました。');
-        }
+    btnCopy.addEventListener('click', () => {
+        copyToClipboard(outputText.value, btnCopy);
     });
 }

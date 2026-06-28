@@ -1,4 +1,6 @@
 ﻿// Tool: ウエイトオーバー
+import { createToolStorage } from '../../js/lib/storage.js';
+
 export default function init() {
     const woInput = document.getElementById('wo-input');
     const woLimitInput = document.getElementById('wo-limit');
@@ -11,13 +13,15 @@ export default function init() {
 
     if (!woInput || !woLimitInput) return;
 
+    const storage = createToolStorage('wo');
+
     // LocalStorageから状態を復元
-    const savedLimit = localStorage.getItem('wo-limit');
+    const savedLimit = storage.get('limit');
     if (savedLimit) {
         woLimitInput.value = savedLimit;
     }
-    const savedText = localStorage.getItem('wo-text');
-    if (savedText !== null && savedText !== '') {
+    const savedText = storage.get('text');
+    if (savedText) {
         woInput.value = savedText;
     }
 
@@ -44,8 +48,8 @@ export default function init() {
 
         // 状態を保存
         if (shouldSave) {
-            localStorage.setItem('wo-limit', limit);
-            localStorage.setItem('wo-text', text);
+            storage.set('limit', limit);
+            storage.set('text', text);
         }
     };
 

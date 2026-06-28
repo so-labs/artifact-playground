@@ -1,4 +1,6 @@
 ﻿// Tool: スライスドロップ
+import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+
 export default function init() {
     const sdInput = document.getElementById('sd-input');
     const sdLimitInput = document.getElementById('sd-limit');
@@ -15,16 +17,18 @@ export default function init() {
 
     if (!sdInput || !sdLimitInput) return;
 
+    const storage = createToolStorage('sd');
+
     let chunks = [];
     let currentPageIndex = 0; // 0-based
 
     // LocalStorageから状態を復元
-    const savedLimit = localStorage.getItem('sd-limit');
+    const savedLimit = storage.get('limit');
     if (savedLimit) {
         sdLimitInput.value = savedLimit;
     }
-    const savedText = localStorage.getItem('sd-text');
-    if (savedText !== null && savedText !== '') {
+    const savedText = storage.get('text');
+    if (savedText) {
         sdInput.value = savedText;
     }
 
@@ -35,7 +39,7 @@ export default function init() {
 
         const text = sdInput.value;
         const chars = Array.from(text);
-        
+
         // 外部の文字数カウント（サロゲートペアを2文字とカウントする仕様）に合わせた文字数計算
         let totalCharsCount = 0;
         for (const char of chars) {
@@ -80,8 +84,8 @@ export default function init() {
         updatePageDisplay();
 
         if (shouldSave) {
-            localStorage.setItem('sd-limit', limit);
-            localStorage.setItem('sd-text', text);
+            storage.set('limit', limit);
+            storage.set('text', text);
         }
     };
 
@@ -122,25 +126,8 @@ export default function init() {
     });
 
     // コピー
-    let copyResetTimer = null;
-    sdBtnCopy.addEventListener('click', async () => {
-        const textToCopy = sdOutputText.value;
-        if (!textToCopy) return;
-
-        try {
-            await navigator.clipboard.writeText(textToCopy);
-            if (copyResetTimer) clearTimeout(copyResetTimer);
-            sdBtnCopy.textContent = 'コピー完了！';
-            sdBtnCopy.classList.add('primary');
-            copyResetTimer = setTimeout(() => {
-                sdBtnCopy.textContent = 'コピー';
-                sdBtnCopy.classList.remove('primary');
-                copyResetTimer = null;
-            }, 1000);
-        } catch (err) {
-            console.error('Failed to copy text: ', err);
-            alert('クリップボードへのコピーに失敗しました。');
-        }
+    sdBtnCopy.addEventListener('click', () => {
+        copyToClipboard(sdOutputText.value, sdBtnCopy);
     });
 
     // クリア

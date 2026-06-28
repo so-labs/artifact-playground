@@ -1,4 +1,6 @@
 ﻿// Tool: ノリノリ音符
+import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+
 export default function init() {
     const inputEl = document.getElementById('nn-input');
     const outputEl = document.getElementById('nn-output');
@@ -8,15 +10,17 @@ export default function init() {
 
     if (!inputEl || !btnConvert) return;
 
+    const storage = createToolStorage('nn');
+
     // LocalStorageから状態を復元
-    const savedText = localStorage.getItem('nn-text');
+    const savedText = storage.get('text');
     if (savedText) {
         inputEl.value = savedText;
     }
 
     // 入力テキストの変更を保存
     inputEl.addEventListener('input', () => {
-        localStorage.setItem('nn-text', inputEl.value);
+        storage.set('text', inputEl.value);
     });
 
     const notes = ['♪', '♫', '♬'];
@@ -35,10 +39,10 @@ export default function init() {
 
         // 2. 改行コードの統一 (\r\n や \r を \n に)
         text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-        
+
         // 3. 連続する改行コードを1つにまとめる
         text = text.replace(/\n+/g, '\n');
-        
+
         if (!text) {
             outputEl.value = '';
             return;
@@ -55,26 +59,11 @@ export default function init() {
     btnClear.addEventListener('click', () => {
         inputEl.value = '';
         outputEl.value = '';
-        localStorage.removeItem('nn-text');
+        storage.remove('text');
     });
 
     // クリップボードへコピー
-    let copyResetTimer = null;
-    btnCopy.addEventListener('click', async () => {
-        const textToCopy = outputEl.value;
-        if (!textToCopy) return;
-
-        try {
-            await navigator.clipboard.writeText(textToCopy);
-            if (copyResetTimer) clearTimeout(copyResetTimer);
-            btnCopy.textContent = 'コピー完了！';
-            copyResetTimer = setTimeout(() => {
-                btnCopy.textContent = 'コピー';
-                copyResetTimer = null;
-            }, 1000);
-        } catch (err) {
-            console.error('Failed to copy text: ', err);
-            alert('クリップボードへのコピーに失敗しました。');
-        }
+    btnCopy.addEventListener('click', () => {
+        copyToClipboard(outputEl.value, btnCopy);
     });
 }
