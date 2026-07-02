@@ -14,8 +14,9 @@ export default function init() {
     const sdBtnCopy = document.getElementById('sd-btn-copy');
     const sdBtnClear = document.getElementById('sd-btn-clear');
     const quickButtons = document.querySelectorAll('#tool-slice-drop .quick-limit-btn');
+    const sdAddPrefix = document.getElementById('sd-add-prefix');
 
-    if (!sdInput || !sdLimitInput) return;
+    if (!sdInput || !sdLimitInput || !sdAddPrefix) return;
 
     const storage = createToolStorage('sd');
 
@@ -30,6 +31,10 @@ export default function init() {
     const savedText = storage.get('text');
     if (savedText) {
         sdInput.value = savedText;
+    }
+    const savedAddPrefix = storage.get('add-prefix');
+    if (savedAddPrefix !== null) {
+        sdAddPrefix.checked = savedAddPrefix === 'true';
     }
 
     const updateSlices = (shouldSave = true) => {
@@ -53,21 +58,74 @@ export default function init() {
         // 分割処理（絵文字が途中で切れないようにしつつ、外部仕様の文字数制限に合わせて分割）
         chunks = [];
         if (chars.length > 0) {
-            let currentChunk = [];
-            let currentLength = 0;
-            for (const char of chars) {
-                const charWeight = char.length;
-                if (currentLength + charWeight > limit) {
-                    chunks.push(currentChunk.join(''));
-                    currentChunk = [char];
-                    currentLength = charWeight;
-                } else {
-                    currentChunk.push(char);
-                    currentLength += charWeight;
+            const addPrefix = sdAddPrefix.checked;
+            if (addPrefix) {
+                let assumedTotalPages = 1;
+                let lastTotalPages = 0;
+
+                // ページ数の桁数変化によるズレを収束させるためのループ（最大10回）
+                for (let iter = 0; iter < 10; iter++) {
+                    chunks = [];
+                    let currentChunk = [];
+                    let currentLength = 0;
+                    let pageIndex = 1;
+
+                    // 各ページごとの有効な上限（プレフィックス長を引いたもの）を計算しながら分割
+                    let prefixStr = `${pageIndex}/${assumedTotalPages}\n\n`;
+                    let effectiveLimit = limit - prefixStr.length;
+                    if (effectiveLimit < 1) effectiveLimit = 1;
+
+                    for (const char of chars) {
+                        const charWeight = char.length;
+                        if (currentLength + charWeight > effectiveLimit) {
+                            chunks.push(currentChunk.join(''));
+                            
+                            pageIndex++;
+                            prefixStr = `${pageIndex}/${assumedTotalPages}\n\n`;
+                            effectiveLimit = limit - prefixStr.length;
+                            if (effectiveLimit < 1) effectiveLimit = 1;
+
+                            currentChunk = [char];
+                            currentLength = charWeight;
+                        } else {
+                            currentChunk.push(char);
+                            currentLength += charWeight;
+                        }
+                    }
+                    if (currentChunk.length > 0) {
+                        chunks.push(currentChunk.join(''));
+                    }
+
+                    const actualTotalPages = chunks.length;
+                    // 算出された総ページ数が、想定あるいは前回の結果と一致すれば確定
+                    if (actualTotalPages === assumedTotalPages || actualTotalPages === lastTotalPages) {
+                        break;
+                    }
+                    lastTotalPages = assumedTotalPages;
+                    assumedTotalPages = actualTotalPages;
                 }
-            }
-            if (currentChunk.length > 0) {
-                chunks.push(currentChunk.join(''));
+
+                const totalPages = chunks.length;
+                chunks = chunks.map((chunk, index) => {
+                    return `${index + 1}/${totalPages}\n\n${chunk}`;
+                });
+            } else {
+                let currentChunk = [];
+                let currentLength = 0;
+                for (const char of chars) {
+                    const charWeight = char.length;
+                    if (currentLength + charWeight > limit) {
+                        chunks.push(currentChunk.join(''));
+                        currentChunk = [char];
+                        currentLength = charWeight;
+                    } else {
+                        currentChunk.push(char);
+                        currentLength += charWeight;
+                    }
+                }
+                if (currentChunk.length > 0) {
+                    chunks.push(currentChunk.join(''));
+                }
             }
         }
 
@@ -86,6 +144,7 @@ export default function init() {
         if (shouldSave) {
             storage.set('limit', limit);
             storage.set('text', text);
+            storage.set('add-prefix', sdAddPrefix.checked);
         }
     };
 
@@ -143,6 +202,10 @@ export default function init() {
     });
 
     sdLimitInput.addEventListener('input', () => {
+        updateSlices(true);
+    });
+
+    sdAddPrefix.addEventListener('change', () => {
         updateSlices(true);
     });
 
