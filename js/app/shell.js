@@ -23,9 +23,9 @@ const PRIMARY_COLORS = {
 
 // サイクル設定
 // 1サイクル = ホールド × 2 + 遷移 × 2
-const HOLD_MS = 5000; // 各色で止まっている時間
+const HOLD_MS = 10000; // 各色で止まっている時間
 const TRANS_MS = 2000; // 色の遷移にかかる時間
-const CYCLE_MS = (HOLD_MS + TRANS_MS) * 2; // 合計14秒
+const CYCLE_MS = (HOLD_MS + TRANS_MS) * 2;
 
 let primaryAnimFrameId = null;
 let primaryAnimStartTime = null;
