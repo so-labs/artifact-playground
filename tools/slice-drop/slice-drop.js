@@ -1,5 +1,81 @@
-﻿// Tool: スライスドロップ
+// Tool: スライスドロップ
 import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+
+export function sliceText(text, limit, addPrefix) {
+    const chars = Array.from(text);
+    let results = [];
+    if (chars.length === 0) return results;
+
+    if (addPrefix) {
+        let assumedTotalPages = 1;
+        let lastTotalPages = 0;
+
+        // ページ数の桁数変化によるズレを収束させるためのループ（最大10回）
+        for (let iter = 0; iter < 10; iter++) {
+            results = [];
+            let currentChunk = [];
+            let currentLength = 0;
+            let pageIndex = 1;
+
+            // 各ページごとの有効な上限（プレフィックス長を引いたもの）を計算しながら分割
+            let prefixStr = `${pageIndex}/${assumedTotalPages}\n\n`;
+            let effectiveLimit = limit - prefixStr.length;
+            if (effectiveLimit < 1) effectiveLimit = 1;
+
+            for (const char of chars) {
+                const charWeight = char.length;
+                if (currentLength + charWeight > effectiveLimit) {
+                    results.push(currentChunk.join(''));
+                    
+                    pageIndex++;
+                    prefixStr = `${pageIndex}/${assumedTotalPages}\n\n`;
+                    effectiveLimit = limit - prefixStr.length;
+                    if (effectiveLimit < 1) effectiveLimit = 1;
+
+                    currentChunk = [char];
+                    currentLength = charWeight;
+                } else {
+                    currentChunk.push(char);
+                    currentLength += charWeight;
+                }
+            }
+            if (currentChunk.length > 0) {
+                results.push(currentChunk.join(''));
+            }
+
+            const actualTotalPages = results.length;
+            // 算出された総ページ数が、想定あるいは前回の結果と一致すれば確定
+            if (actualTotalPages === assumedTotalPages || actualTotalPages === lastTotalPages) {
+                break;
+            }
+            lastTotalPages = assumedTotalPages;
+            assumedTotalPages = actualTotalPages;
+        }
+
+        const totalPages = results.length;
+        results = results.map((chunk, index) => {
+            return `${index + 1}/${totalPages}\n\n${chunk}`;
+        });
+    } else {
+        let currentChunk = [];
+        let currentLength = 0;
+        for (const char of chars) {
+            const charWeight = char.length;
+            if (currentLength + charWeight > limit) {
+                results.push(currentChunk.join(''));
+                currentChunk = [char];
+                currentLength = charWeight;
+            } else {
+                currentChunk.push(char);
+                currentLength += charWeight;
+            }
+        }
+        if (currentChunk.length > 0) {
+            results.push(currentChunk.join(''));
+        }
+    }
+    return results;
+}
 
 export default function init() {
     const sdInput = document.getElementById('sd-input');
@@ -55,79 +131,8 @@ export default function init() {
             el.textContent = totalCharsCount.toLocaleString();
         });
 
-        // 分割処理（絵文字が途中で切れないようにしつつ、外部仕様の文字数制限に合わせて分割）
-        chunks = [];
-        if (chars.length > 0) {
-            const addPrefix = sdAddPrefix.checked;
-            if (addPrefix) {
-                let assumedTotalPages = 1;
-                let lastTotalPages = 0;
-
-                // ページ数の桁数変化によるズレを収束させるためのループ（最大10回）
-                for (let iter = 0; iter < 10; iter++) {
-                    chunks = [];
-                    let currentChunk = [];
-                    let currentLength = 0;
-                    let pageIndex = 1;
-
-                    // 各ページごとの有効な上限（プレフィックス長を引いたもの）を計算しながら分割
-                    let prefixStr = `${pageIndex}/${assumedTotalPages}\n\n`;
-                    let effectiveLimit = limit - prefixStr.length;
-                    if (effectiveLimit < 1) effectiveLimit = 1;
-
-                    for (const char of chars) {
-                        const charWeight = char.length;
-                        if (currentLength + charWeight > effectiveLimit) {
-                            chunks.push(currentChunk.join(''));
-                            
-                            pageIndex++;
-                            prefixStr = `${pageIndex}/${assumedTotalPages}\n\n`;
-                            effectiveLimit = limit - prefixStr.length;
-                            if (effectiveLimit < 1) effectiveLimit = 1;
-
-                            currentChunk = [char];
-                            currentLength = charWeight;
-                        } else {
-                            currentChunk.push(char);
-                            currentLength += charWeight;
-                        }
-                    }
-                    if (currentChunk.length > 0) {
-                        chunks.push(currentChunk.join(''));
-                    }
-
-                    const actualTotalPages = chunks.length;
-                    // 算出された総ページ数が、想定あるいは前回の結果と一致すれば確定
-                    if (actualTotalPages === assumedTotalPages || actualTotalPages === lastTotalPages) {
-                        break;
-                    }
-                    lastTotalPages = assumedTotalPages;
-                    assumedTotalPages = actualTotalPages;
-                }
-
-                const totalPages = chunks.length;
-                chunks = chunks.map((chunk, index) => {
-                    return `${index + 1}/${totalPages}\n\n${chunk}`;
-                });
-            } else {
-                let currentChunk = [];
-                let currentLength = 0;
-                for (const char of chars) {
-                    const charWeight = char.length;
-                    if (currentLength + charWeight > limit) {
-                        chunks.push(currentChunk.join(''));
-                        currentChunk = [char];
-                        currentLength = charWeight;
-                    } else {
-                        currentChunk.push(char);
-                        currentLength += charWeight;
-                    }
-                }
-                if (currentChunk.length > 0) {
-                    chunks.push(currentChunk.join(''));
-                }
-            }
-        }
+        // 分割処理
+        chunks = sliceText(text, limit, sdAddPrefix.checked);
 
         const totalPages = chunks.length;
         sdTotalPagesElements.forEach(el => {

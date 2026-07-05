@@ -1,5 +1,16 @@
-﻿// Tool: ウエイトオーバー
+// Tool: ウエイトオーバー
 import { createToolStorage } from '../../js/lib/storage.js';
+
+export function checkWeight(text, limit) {
+    const count = Array.from(text).length;
+    let status = 'normal'; // 'normal', 'warning', 'over'
+    if (count > limit) {
+        status = 'over';
+    } else if (count > limit * 0.95) {
+        status = 'warning';
+    }
+    return { count, status };
+}
 
 export default function init() {
     const woInput = document.getElementById('wo-input');
@@ -32,16 +43,16 @@ export default function init() {
         woLimitDisplay.textContent = limit;
 
         const text = woInput.value;
-        const count = Array.from(text).length;
+        const { count, status } = checkWeight(text, limit);
         woCountEl.textContent = count.toLocaleString();
 
         woSection.classList.remove('wo-warning', 'wo-over');
         woCounter.classList.remove('warning', 'over');
 
-        if (count > limit) {
+        if (status === 'over') {
             woSection.classList.add('wo-over');
             woCounter.classList.add('over');
-        } else if (count > limit * 0.95) {
+        } else if (status === 'warning') {
             woSection.classList.add('wo-warning');
             woCounter.classList.add('warning');
         }
