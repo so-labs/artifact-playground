@@ -1,8 +1,8 @@
-// Tool: ウエイトオーバー
+﻿// Tool: ウエイトオーバー
 import { createToolStorage } from '../../js/lib/storage.js';
 
 export function checkWeight(text, limit) {
-    const count = Array.from(text).length;
+    const count = text.length;
     let status = 'normal'; // 'normal', 'warning', 'over'
     if (count > limit) {
         status = 'over';

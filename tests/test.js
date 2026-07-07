@@ -141,6 +141,13 @@ describe('ウエイトオーバー (checkWeight)', () => {
         assertEquals(result.count, 11);
         assertEquals(result.status, 'over');
     });
+
+    it('サロゲートペア（絵文字など）を2文字としてカウントすること', () => {
+        const text = '🍎🍊🍋🍉🍇'; // 5つの絵文字 = 10文字分
+        const result = checkWeight(text, 10);
+        assertEquals(result.count, 10);
+        assertEquals(result.status, 'warning'); // 10文字は上限10の95%超えなのでwarning
+    });
 });
 
 // === テスト実行と結果描画 ===
