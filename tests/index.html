@@ -89,9 +89,29 @@
             align-items: flex-start;
             flex: 1;
         }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: #1d4ed8;
+        }
     </style>
 </head>
 <body>
+    <a href="../" class="back-link">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        アプリに戻る
+    </a>
     <h1>🧪 Test Runner</h1>
     <div class="summary">
         <div>実施テスト: <span id="total-count">0</span></div>
