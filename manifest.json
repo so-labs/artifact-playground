@@ -1,7 +1,7 @@
-﻿{
+{
   "name": "Artifact Playground",
   "short_name": "ArtifactPG",
-  "description": "ブラウザ上でサクッと動く、ちょっとした実験ツール集",
+  "description": "ブラウザでもアプリでも動く、ちょっとした実験ツール集",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
