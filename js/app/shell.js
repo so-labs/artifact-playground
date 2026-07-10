@@ -347,6 +347,47 @@ export function initShell() {
         menuToggle.addEventListener('click', () => {
             sidebar.classList.toggle('open');
         });
+
+        // スワイプジェスチャーによるサイドバーの開閉
+        let touchStartX = 0;
+        let touchStartY = 0;
+        const SWIPE_THRESHOLD_X = 60; // スワイプ判定の最小横移動距離（ピクセル）
+        const EDGE_THRESHOLD = 40;     // 画面左端からスワイプを検知する開始幅（ピクセル）
+
+        document.addEventListener('touchstart', (e) => {
+            if (window.innerWidth > 768) return;
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            if (window.innerWidth > 768) return;
+            if (e.changedTouches.length === 0) return;
+
+            const touch = e.changedTouches[0];
+            const diffX = touch.clientX - touchStartX;
+            const diffY = touch.clientY - touchStartY;
+
+            // 縦方向の移動量が横方向の移動量よりも大きい場合は縦スクロールと判断して無視
+            if (Math.abs(diffY) > Math.abs(diffX)) {
+                return;
+            }
+
+            const isMenuOpen = sidebar.classList.contains('open');
+
+            if (!isMenuOpen) {
+                // サイドバーが閉じている場合：左端付近から右方向へのスワイプで開く
+                if (touchStartX <= EDGE_THRESHOLD && diffX > SWIPE_THRESHOLD_X) {
+                    sidebar.classList.add('open');
+                }
+            } else {
+                // サイドバーが開いている場合：左方向へのスワイプで閉じる
+                if (diffX < -SWIPE_THRESHOLD_X) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        }, { passive: true });
     }
 
     // サイドバー折りたたみ（デスクトップ用）
