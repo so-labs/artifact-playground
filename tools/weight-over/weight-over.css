@@ -127,6 +127,19 @@
     animation: wo-flash-red 0.7s ease-in-out infinite;
 }
 
+#tool-weight-over.wo-mild.wo-warning,
+#tool-weight-over.wo-mild.wo-over {
+    animation: none;
+}
+
+#tool-weight-over.wo-mild.wo-warning .wo-counter {
+    background-color: rgba(250, 204, 21, 0.15);
+}
+
+#tool-weight-over.wo-mild.wo-over .wo-counter {
+    background-color: rgba(239, 68, 68, 0.15);
+}
+
 /* モバイル対応 */
 @media (max-width: 768px) {
     .wo-layout {

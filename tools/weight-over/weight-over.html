@@ -24,7 +24,15 @@
         </div>
         <div class="wo-side">
             <div class="wo-limit-group">
-                <label for="wo-limit">上限文字数</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <label for="wo-limit" style="margin-bottom: 0;">上限文字数</label>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 0.8rem; opacity: 0.8; font-weight: normal;">点滅を抑える</span>
+                        <button type="button" id="wo-mild-toggle" class="toggle-switch" role="switch" aria-checked="false" aria-label="点滅を抑える">
+                            <span class="toggle-thumb"></span>
+                        </button>
+                    </div>
+                </div>
                 <input type="number" id="wo-limit" min="1" max="50000" value="1000" class="wo-limit-input">
                 <div class="wo-quick-buttons">
                     <button type="button" class="btn small quick-limit-btn" data-limit="140"

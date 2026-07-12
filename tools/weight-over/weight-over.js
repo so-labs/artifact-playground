@@ -21,6 +21,7 @@ export default function init() {
     const woSection = document.getElementById('tool-weight-over');
     const quickButtons = document.querySelectorAll('.quick-limit-btn');
     const woBtnClear = document.getElementById('wo-btn-clear');
+    const woMildToggle = document.getElementById('wo-mild-toggle');
 
     if (!woInput || !woLimitInput) return;
 
@@ -34,6 +35,14 @@ export default function init() {
     const savedText = storage.get('text');
     if (savedText) {
         woInput.value = savedText;
+    }
+
+    const isMild = storage.get('mild-mode') === 'true';
+    if (isMild) {
+        woSection.classList.add('wo-mild');
+        if (woMildToggle) {
+            woMildToggle.setAttribute('aria-checked', 'true');
+        }
     }
 
     const updateWoCount = (shouldSave = true) => {
@@ -82,6 +91,21 @@ export default function init() {
         woBtnClear.addEventListener('click', () => {
             woInput.value = '';
             updateWoCount(true);
+        });
+    }
+
+    if (woMildToggle) {
+        woMildToggle.addEventListener('click', () => {
+            const current = woMildToggle.getAttribute('aria-checked') === 'true';
+            const next = !current;
+            woMildToggle.setAttribute('aria-checked', String(next));
+            
+            if (next) {
+                woSection.classList.add('wo-mild');
+            } else {
+                woSection.classList.remove('wo-mild');
+            }
+            storage.set('mild-mode', String(next));
         });
     }
 
