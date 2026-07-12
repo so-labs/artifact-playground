@@ -120,10 +120,30 @@ function stopPrimaryAnimation() {
 
 // ツールのメタデータを一元管理する定義リスト
 const TOOLS_CONFIG = [
-    { id: '20-off', title: '20% Off' },
-    { id: 'weight-over', title: 'ウエイトオーバー' },
-    { id: 'slice-drop', title: 'スライスドロップ' },
-    { id: 'norinori-note', title: 'ノリノリ音符' }
+    {
+        id: '20-off',
+        title: '20% Off',
+        description: '入力したテキストから、指定した割合（％）の文字をランダムに削り落とすツール。',
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>'
+    },
+    {
+        id: 'weight-over',
+        title: 'ウエイトオーバー',
+        description: '文字数上限を意識しながら書くためのリアルタイム文字数カウンター。上限に近づくと画面が警告してくれます。',
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>'
+    },
+    {
+        id: 'slice-drop',
+        title: 'スライスドロップ',
+        description: '長い文章を指定した上限文字数で自動的に分割し、ページごとに切り替えて個別にコピーできるツール。長文の小分け投稿に便利です。',
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>'
+    },
+    {
+        id: 'norinori-note',
+        title: 'ノリノリ音符',
+        description: '文章の改行を整理して、各フレーズの末尾にランダムな音符をくっつけるツール。文章を強制的に陽気な雰囲気にします。',
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>'
+    }
 ];
 
 export function initShell() {
@@ -241,6 +261,16 @@ export function initShell() {
     // ツールリストの動的生成
     const toolListContainer = document.getElementById('tool-list');
     if (toolListContainer) {
+        // ホームリンク
+        const homeLi = document.createElement('li');
+        const homeA = document.createElement('a');
+        homeA.href = `#home`;
+        homeA.className = 'tool-link';
+        homeA.setAttribute('data-tool', 'home');
+        homeA.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 8px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>ホーム';
+        homeLi.appendChild(homeA);
+        toolListContainer.appendChild(homeLi);
+
         TOOLS_CONFIG.forEach(tool => {
             const li = document.createElement('li');
             const a = document.createElement('a');
@@ -253,13 +283,33 @@ export function initShell() {
         });
     }
 
+    // タイルメニューの動的生成
+    const homeTilesContainer = document.getElementById('home-tiles');
+    if (homeTilesContainer) {
+        TOOLS_CONFIG.forEach(tool => {
+            const tile = document.createElement('a');
+            tile.href = `#${tool.id}`;
+            tile.className = 'home-tile';
+            tile.innerHTML = `
+                <div class="home-tile-title">
+                    ${tool.icon || ''}
+                    ${tool.title}
+                </div>
+                <div class="home-tile-desc">
+                    ${tool.description}
+                </div>
+            `;
+            homeTilesContainer.appendChild(tile);
+        });
+    }
+
     // ツール切り替え
-    const toolLinks = document.querySelectorAll('.tool-link');
     const mainContent = document.getElementById('main-content');
     const loadedTools = new Set();
 
     const switchTool = async (targetTool) => {
         let found = false;
+        const toolLinks = document.querySelectorAll('.tool-link');
         toolLinks.forEach(l => {
             if (l.getAttribute('data-tool') === targetTool) {
                 l.classList.add('active');
@@ -272,48 +322,53 @@ export function initShell() {
         if (!found) return; // 該当するツールがなければ何もしない
 
         // いったん全て非表示
-        document.querySelectorAll('.tool-section').forEach(section => {
+        document.querySelectorAll('.tool-section, .home-section').forEach(section => {
             section.classList.remove('active');
         });
 
-        // まだロードされていなければ、HTMLとJSを取得して初期化
-        if (!loadedTools.has(targetTool)) {
-            try {
-                // 0. CSSを動的にロード
-                const cssId = `css-tool-${targetTool}`;
-                if (!document.getElementById(cssId)) {
-                    const link = document.createElement('link');
-                    link.id = cssId;
-                    link.rel = 'stylesheet';
-                    link.href = `tools/${targetTool}/${targetTool}.css`;
-                    document.head.appendChild(link);
+        if (targetTool === 'home') {
+            const homeSection = document.getElementById('tool-home');
+            if (homeSection) homeSection.classList.add('active');
+        } else {
+            // まだロードされていなければ、HTMLとJSを取得して初期化
+            if (!loadedTools.has(targetTool)) {
+                try {
+                    // 0. CSSを動的にロード
+                    const cssId = `css-tool-${targetTool}`;
+                    if (!document.getElementById(cssId)) {
+                        const link = document.createElement('link');
+                        link.id = cssId;
+                        link.rel = 'stylesheet';
+                        link.href = `tools/${targetTool}/${targetTool}.css`;
+                        document.head.appendChild(link);
+                    }
+
+                    // 1. HTMLを非同期ロード
+                    const response = await fetch(`tools/${targetTool}/${targetTool}.html`);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const html = await response.text();
+
+                    // 2. DOMに追加
+                    mainContent.insertAdjacentHTML('beforeend', html);
+
+                    // 3. JSモジュールを動的インポートして default関数 を実行
+                    const module = await import(`../../tools/${targetTool}/${targetTool}.js`);
+                    if (module.default) {
+                        module.default();
+                    }
+
+                    loadedTools.add(targetTool);
+                } catch (error) {
+                    console.error(`Failed to load tool: ${targetTool}`, error);
+                    return;
                 }
-
-                // 1. HTMLを非同期ロード
-                const response = await fetch(`tools/${targetTool}/${targetTool}.html`);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const html = await response.text();
-
-                // 2. DOMに追加
-                mainContent.insertAdjacentHTML('beforeend', html);
-
-                // 3. JSモジュールを動的インポートして default関数 を実行
-                const module = await import(`../../tools/${targetTool}/${targetTool}.js`);
-                if (module.default) {
-                    module.default();
-                }
-
-                loadedTools.add(targetTool);
-            } catch (error) {
-                console.error(`Failed to load tool: ${targetTool}`, error);
-                return;
             }
-        }
 
-        // 該当セクションを表示
-        const targetSection = document.getElementById(`tool-${targetTool}`);
-        if (targetSection) {
-            targetSection.classList.add('active');
+            // 該当セクションを表示
+            const targetSection = document.getElementById(`tool-${targetTool}`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
         }
 
         // モバイルでメニューを閉じる
@@ -327,11 +382,8 @@ export function initShell() {
     if (initialHash) {
         switchTool(initialHash);
     } else {
-        // ハッシュがない場合は最初のツールを選択
-        const firstTool = toolLinks[0]?.getAttribute('data-tool');
-        if (firstTool) {
-            switchTool(firstTool);
-        }
+        // ハッシュがない場合はホームを選択
+        switchTool('home');
     }
 
     // ハッシュの変更を検知
