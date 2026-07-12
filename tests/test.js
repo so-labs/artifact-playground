@@ -2,6 +2,17 @@
 import { makeNorinori } from '../tools/norinori-note/norinori-note.js';
 import { sliceText } from '../tools/slice-drop/slice-drop.js';
 import { checkWeight } from '../tools/weight-over/weight-over.js';
+import {
+    parseHeadings,
+    adjustHeadingLevels,
+    formatCopyText,
+    extractText,
+    changeHeadingLevelAtLine,
+    changeHeadingLevelSingleAtLine,
+    moveSection,
+    jumpToHeading,
+    checkStructureIssues,
+} from '../js/lib/markdown-headings.js';
 
 const suites = [];
 let currentSuite = null;
@@ -147,6 +158,122 @@ describe('ウエイトオーバー (checkWeight)', () => {
         const result = checkWeight(text, 10);
         assertEquals(result.count, 10);
         assertEquals(result.status, 'warning'); // 10文字は上限10の95%超えなのでwarning
+    });
+});
+
+// === 5. アウトライン・スタジオ テスト ===
+describe('アウトライン・スタジオ (markdown-headings)', () => {
+    const sample = `---
+title: test
+---
+
+# タイトル
+
+本文です。
+
+## セクションA
+
+内容A
+
+### サブA-1
+
+詳細
+
+## セクションB
+
+内容B
+`;
+
+    it('見出しを正しく解析すること', () => {
+        const headings = parseHeadings(sample);
+        assertEquals(headings.length, 4);
+        assertEquals(headings[0].text, 'タイトル');
+        assertEquals(headings[0].level, 1);
+        assertEquals(headings[1].text, 'セクションA');
+    });
+
+    it('コードブロック内の # は見出しとして扱わないこと', () => {
+        const text = '## 見出し\n\n```\n# コード内\n```\n';
+        const headings = parseHeadings(text);
+        assertEquals(headings.length, 1);
+        assertEquals(headings[0].text, '見出し');
+    });
+
+    it('セクション抽出で見出しレベルを正規化すること', () => {
+        const result = extractText(sample, { scope: 'section', cursorLine: 8 });
+        assert(result.text.includes('# セクションA'), '正規化後の見出しが含まれていません');
+        assert(result.text.includes('## サブA-1'), 'サブ見出しが含まれていません');
+        assert(!result.text.includes('セクションB'), '次のセクションが混入しています');
+    });
+
+    it('エリア抽出で見出し行を含まないこと', () => {
+        const result = extractText(sample, { scope: 'area', cursorLine: 8 });
+        assert(!result.text.startsWith('##'), 'エリアに見出し行が含まれています');
+        assert(result.text.includes('内容A'), 'エリアの本文が含まれていません');
+    });
+
+    it('全文コピーでは選択範囲より全文を優先すること', () => {
+        const result = extractText('abc\ndef', { scope: 'full', selection: 'abc' });
+        assertEquals(result.sourceName, 'ノート全文');
+        assertEquals(result.text, 'abc\ndef');
+    });
+
+    it('引用形式で各行に > を付与すること', () => {
+        const result = formatCopyText('あ\n\nい', 'quote');
+        assertEquals(result, '> あ\n>\n> い');
+    });
+
+    it('見出しレベルを相対調整すること', () => {
+        const text = '## A\n### B';
+        const result = adjustHeadingLevels(text);
+        assertEquals(result, '# A\n## B');
+    });
+
+    it('見出しレベルを上下できること', () => {
+        const text = '## 見出し';
+        assertEquals(changeHeadingLevelSingleAtLine(text, 0, -1), '# 見出し');
+        assertEquals(changeHeadingLevelSingleAtLine(text, 0, +1), '### 見出し');
+    });
+
+    it('単体レベル変更では子見出しが変わらないこと', () => {
+        const text = '## A\n\n### B';
+        assertEquals(changeHeadingLevelSingleAtLine(text, 0, -1), '# A\n\n### B');
+    });
+
+    it('レベル変更時に子見出しも追従すること', () => {
+        const text = '## A\n\n### B\n\n#### C\n\n## D';
+        const expected = '# A\n\n## B\n\n### C\n\n## D';
+        const result = changeHeadingLevelAtLine(text, 0, -1);
+        assertEquals(result, expected);
+    });
+
+    it('同レベルのセクションを上に移動できること', () => {
+        const text = '## A\na\n\n## B\nb';
+        const result = moveSection(text, 3, 'up', 'full');
+        assertEquals(result.moved, true, '移動されていません');
+        assertEquals(result.text, '## B\nb\n\n## A\na');
+        assertEquals(result.headingLine, 0);
+    });
+
+    it('単体移動では子見出しを残すこと', () => {
+        const text = '## A\nparaA\n### subA\n\n## B\nparaB';
+        const result = moveSection(text, 5, 'up', 'single');
+        assertEquals(result.moved, true);
+        assertEquals(result.text, '## B\nparaB\n### subA\n\n## A\nparaA');
+    });
+
+    it('前後の見出しへジャンプできること', () => {
+        const text = '# A\n\n## B\n\n# C';
+        const prev = jumpToHeading(text, 2, 'prev');
+        const next = jumpToHeading(text, 2, 'next');
+        assertEquals(prev.text, 'A');
+        assertEquals(next.text, 'C');
+    });
+
+    it('見出しレベルの飛ばしを検出すること', () => {
+        const text = '# A\n\n### C';
+        const issues = checkStructureIssues(text);
+        assert(issues.length > 0, '構造の問題が検出されませんでした');
     });
 });
 

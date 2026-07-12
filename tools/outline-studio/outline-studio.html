@@ -1,0 +1,104 @@
+﻿<section id="tool-outline-studio" class="tool-section">
+    <div class="tool-title-area">
+        <h2>アウトライン・スタジオ</h2>
+        <button class="help-btn" aria-label="説明を表示" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+        </button>
+    </div>
+    <div class="tool-description">
+        Markdown
+        の見出し構造を操作・抽出するワークベンチです。アウトライン表示、見出しレベルの調整・移動、セクション単位のスマートコピー（全文・エリア・セクション、引用・コード形式）ができます。PWAとしてインストールすると、OSによっては共有メニューなどから直接ファイルを開けます。
+    </div>
+    <div class="os-layout">
+        <div class="os-editor-wrap">
+            <div class="input-header">
+                <label for="os-input">Markdown</label>
+                <span id="os-file-name" class="os-file-name" hidden></span>
+                <div class="os-file-actions">
+                    <button id="os-btn-open" class="btn small" type="button">ファイルを開く</button>
+                    <button id="os-btn-save" class="btn small" type="button" disabled>ダウンロード</button>
+                    <button id="os-btn-clear" class="btn small" type="button">クリア</button>
+                </div>
+            </div>
+            <textarea id="os-input" rows="18" placeholder="Markdown を入力するか、ファイルを開いてください..."></textarea>
+            <div class="os-editor-footer">
+                <span id="os-cursor-info" class="os-cursor-info">行 1</span>
+                <span id="os-issues" class="os-issues" hidden></span>
+            </div>
+            <input id="os-file-input" type="file" accept=".md,.markdown,.mdown,.txt,text/markdown,text/plain" hidden>
+        </div>
+
+        <div class="os-panel">
+            <div class="os-panel-section">
+                <h3 class="os-panel-title">アウトライン</h3>
+                <div id="os-outline" class="os-outline">
+                    <p class="os-empty">見出しがありません</p>
+                </div>
+            </div>
+
+            <div class="os-panel-section">
+                <h3 class="os-panel-title">見出し操作</h3>
+                <div class="os-op-group">
+                    <span class="os-op-label">レベル・単体</span>
+                    <div class="os-btn-grid">
+                        <button id="os-btn-level-single-up" class="btn small secondary" type="button"
+                            title="この見出しだけレベル上げ">上げ</button>
+                        <button id="os-btn-level-single-down" class="btn small secondary" type="button"
+                            title="この見出しだけレベル下げ">下げ</button>
+                    </div>
+                </div>
+                <div class="os-op-group">
+                    <span class="os-op-label">レベル・まとめて</span>
+                    <div class="os-btn-grid">
+                        <button id="os-btn-level-group-up" class="btn small secondary" type="button"
+                            title="見出しと子見出しをまとめてレベル上げ">上げ</button>
+                        <button id="os-btn-level-group-down" class="btn small secondary" type="button"
+                            title="見出しと子見出しをまとめてレベル下げ">下げ</button>
+                    </div>
+                </div>
+                <div class="os-op-group">
+                    <span class="os-op-label">移動</span>
+                    <div class="os-btn-grid">
+                        <button id="os-btn-move-group-up" class="btn small secondary" type="button"
+                            title="見出しと子見出しを含むセクション全体を上に移動">上へ</button>
+                        <button id="os-btn-move-group-down" class="btn small secondary" type="button"
+                            title="見出しと子見出しを含むセクション全体を下に移動">下へ</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="os-panel-section">
+                <h3 class="os-panel-title">スマートコピー</h3>
+                <div class="os-copy-options">
+                    <fieldset class="os-fieldset">
+                        <legend>範囲</legend>
+                        <label class="os-radio"><input type="radio" name="os-scope" value="full"> 全文</label>
+                        <label class="os-radio"><input type="radio" name="os-scope" value="area"> エリア</label>
+                        <label class="os-radio"><input type="radio" name="os-scope" value="section" checked>
+                            セクション</label>
+                    </fieldset>
+                    <fieldset class="os-fieldset">
+                        <legend>形式</legend>
+                        <label class="os-radio"><input type="radio" name="os-format" value="normal" checked> 通常</label>
+                        <label class="os-radio"><input type="radio" name="os-format" value="quote"> 引用</label>
+                        <label class="os-radio"><input type="radio" name="os-format" value="code"> コード</label>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div class="os-panel-section os-preview-section">
+                <div class="output-header">
+                    <label for="os-preview">抽出プレビュー</label>
+                    <button id="os-btn-copy" class="btn small" type="button">コピー</button>
+                </div>
+                <textarea id="os-preview" rows="6" readonly placeholder="スマートコピーの結果がここに表示されます"></textarea>
+                <p id="os-source-label" class="os-source-label"></p>
+            </div>
+        </div>
+    </div>
+</section>

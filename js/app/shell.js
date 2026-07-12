@@ -143,6 +143,12 @@ const TOOLS_CONFIG = [
         title: 'ノリノリ音符',
         description: '文章の改行を整理して、各フレーズの末尾にランダムな音符をくっつけるツール。文章を強制的に陽気な雰囲気にします。',
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>'
+    },
+    {
+        id: 'outline-studio',
+        title: 'アウトライン・スタジオ',
+        description: 'Markdownの見出し構造を操作・抽出するワークベンチ。アウトライン表示、見出し調整、スマートコピーができます。',
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>'
     }
 ];
 

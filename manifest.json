@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "Artifact Playground",
   "short_name": "ArtifactPG",
   "description": "ブラウザでもアプリでも動く、ちょっとした実験ツール集",
@@ -7,6 +7,33 @@
   "display": "standalone",
   "background_color": "#2563eb",
   "theme_color": "#2563eb",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "file_handlers": [
+    {
+      "action": "./",
+      "accept": {
+        "text/markdown": [".md", ".markdown", ".mdown"],
+        "text/plain": [".txt", ".text"]
+      }
+    }
+  ],
+  "share_target": {
+    "action": "./?share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "files": [
+        {
+          "name": "shared_file",
+          "accept": [".md", ".markdown", ".mdown", ".txt", ".text", "text/markdown", "text/plain", "text/*", "application/octet-stream", "*/*"]
+        }
+      ]
+    }
+  },
   "icons": [
     {
       "src": "icons/icon-192.png",
