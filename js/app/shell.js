@@ -479,7 +479,6 @@ export function initShell() {
         let touchStartX = 0;
         let touchStartY = 0;
         const SWIPE_THRESHOLD_X = 60; // スワイプ判定の最小横移動距離（ピクセル）
-        const EDGE_THRESHOLD = 40;     // 画面左端からスワイプを検知する開始幅（ピクセル）
 
         document.addEventListener('touchstart', (e) => {
             if (window.innerWidth > 768) return;
@@ -501,11 +500,16 @@ export function initShell() {
                 return;
             }
 
+            // スライダー等での横操作でメニューが開くのを防ぐ（より安全な判定）
+            if (e.target && e.target.nodeName && e.target.nodeName.toLowerCase() === 'input' && e.target.type === 'range') {
+                return;
+            }
+
             const isMenuOpen = sidebar.classList.contains('open');
 
             if (!isMenuOpen) {
-                // サイドバーが閉じている場合：左端付近から右方向へのスワイプで開く
-                if (touchStartX <= EDGE_THRESHOLD && diffX > SWIPE_THRESHOLD_X) {
+                // サイドバーが閉じている場合：右方向へのスワイプで開く（全画面判定）
+                if (diffX > SWIPE_THRESHOLD_X) {
                     sidebar.classList.add('open');
                 }
             } else {
