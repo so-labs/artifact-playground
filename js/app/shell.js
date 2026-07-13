@@ -1,6 +1,71 @@
 ﻿// App Shell: テーマ / サイドバー / ツール切替
 
 // ============================
+// テーマカラー（ステータスバー）アニメーション
+// ============================
+let themeColorAnimFrame = null;
+
+function hexToRgb(hex) {
+    const bigint = parseInt(hex.slice(1), 16);
+    return {
+        r: (bigint >> 16) & 255,
+        g: (bigint >> 8) & 255,
+        b: bigint & 255
+    };
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
+}
+
+function updateThemeColor(targetHex, animate) {
+    const metaThemeColor = document.getElementById('theme-color-meta');
+    if (!metaThemeColor) return;
+
+    if (!animate) {
+        metaThemeColor.setAttribute('content', targetHex);
+        return;
+    }
+
+    let currentHex = metaThemeColor.getAttribute('content');
+    if (!currentHex || !currentHex.startsWith('#') || currentHex.length !== 7) {
+        metaThemeColor.setAttribute('content', targetHex);
+        return;
+    }
+
+    if (currentHex === targetHex) return;
+
+    const startRgb = hexToRgb(currentHex);
+    const targetRgb = hexToRgb(targetHex);
+    const duration = 300; // CSSのtransition(0.3s)に合わせる
+    const startTime = performance.now();
+
+    if (themeColorAnimFrame) cancelAnimationFrame(themeColorAnimFrame);
+
+    function step(currentTime) {
+        let elapsed = currentTime - startTime;
+        let progress = Math.min(elapsed / duration, 1);
+        
+        // ease-out (cubic) のイージング
+        const t = 1 - Math.pow(1 - progress, 3);
+
+        const r = Math.round(startRgb.r + (targetRgb.r - startRgb.r) * t);
+        const g = Math.round(startRgb.g + (targetRgb.g - startRgb.g) * t);
+        const b = Math.round(startRgb.b + (targetRgb.b - startRgb.b) * t);
+
+        metaThemeColor.setAttribute('content', rgbToHex(r, g, b));
+
+        if (progress < 1) {
+            themeColorAnimFrame = requestAnimationFrame(step);
+        } else {
+            themeColorAnimFrame = null;
+        }
+    }
+
+    themeColorAnimFrame = requestAnimationFrame(step);
+}
+
+// ============================
 // プライマリーカラーアニメーション
 // ============================
 
@@ -205,10 +270,14 @@ export function initShell() {
             isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         }
 
+        const isThemeReady = document.body.classList.contains('theme-ready');
+
         if (isDark) {
             document.documentElement.setAttribute('data-theme', 'dark');
+            updateThemeColor('#0f172a', isThemeReady);
         } else {
             document.documentElement.setAttribute('data-theme', 'light');
+            updateThemeColor('#ffffff', isThemeReady);
         }
 
         themeOptions.forEach(opt => {

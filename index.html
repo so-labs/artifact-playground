@@ -17,16 +17,19 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
-    <meta name="theme-color" content="#2563eb">
+    <meta name="theme-color" content="#ffffff" id="theme-color-meta">
     <script>
         (function () {
             try {
                 var theme = localStorage.getItem('app-theme') || 'system';
                 var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                var metaThemeColor = document.getElementById('theme-color-meta');
                 if (isDark) {
                     document.documentElement.setAttribute('data-theme', 'dark');
+                    if (metaThemeColor) metaThemeColor.setAttribute('content', '#0f172a');
                 } else {
                     document.documentElement.setAttribute('data-theme', 'light');
+                    if (metaThemeColor) metaThemeColor.setAttribute('content', '#ffffff');
                 }
 
                 // 描画前にサイドバーの折りたたみ状態を判定して適用（チラつき防止）
