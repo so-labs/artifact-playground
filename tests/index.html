@@ -1,112 +1,37 @@
 ﻿<!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artifact Playground - Test Runner</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: "Outfit", "Zen Maru Gothic", sans-serif;
-            background-color: #f8fafc;
-            color: #334155;
-            padding: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            border-bottom: 2px solid #2563eb;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .summary {
-            background: #fff;
-            padding: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            margin-bottom: 1.5rem;
-            font-weight: bold;
-            display: flex;
-            gap: 1.5rem;
-        }
-        .summary .passed { color: #16a34a; }
-        .summary .failed { color: #dc2626; }
-        .test-suite {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
-        }
-        .suite-title {
-            background: #f1f5f9;
-            padding: 0.75rem 1rem;
-            font-weight: bold;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .test-case {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #f1f5f9;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .test-case:last-child {
-            border-bottom: none;
-        }
-        .test-name {
-            font-size: 0.95rem;
-        }
-        .test-status {
-            font-weight: bold;
-            font-size: 0.85rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-        }
-        .test-status.pass {
-            background-color: #dcfce7;
-            color: #15803d;
-        }
-        .test-status.fail {
-            background-color: #fee2e2;
-            color: #b91c1c;
-        }
-        .error-message {
-            color: #b91c1c;
-            font-family: monospace;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            white-space: pre-wrap;
-            background: #fef2f2;
-            padding: 0.5rem;
-            border-radius: 4px;
-            width: 100%;
-        }
-        .flex-col {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            flex: 1;
-        }
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 500;
-            margin-bottom: 1rem;
-            transition: color 0.2s;
-        }
-        .back-link:hover {
-            color: #1d4ed8;
-        }
-    </style>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="test.css">
+    <meta name="theme-color" content="#f8fafc" id="theme-color-meta">
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('app-theme') || 'system';
+                var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                var metaThemeColor = document.getElementById('theme-color-meta');
+                if (isDark) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    if (metaThemeColor) metaThemeColor.setAttribute('content', '#1e293b');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    if (metaThemeColor) metaThemeColor.setAttribute('content', '#f8fafc');
+                }
+            } catch (e) { }
+        })();
+    </script>
 </head>
+
 <body>
     <a href="../" class="back-link">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
@@ -122,4 +47,5 @@
 
     <script type="module" src="test.js"></script>
 </body>
+
 </html>
