@@ -6,7 +6,7 @@
  * MM   = 月（01〜12）
  * rN   = その月のリリース回数
  */
-const CACHE_NAME = 'artifact-playground-2026.07-r1';
+const CACHE_NAME = 'artifact-playground-2026.07-r2';
 const ASSETS = [
   './',
   './index.html',
@@ -34,7 +34,10 @@ const ASSETS = [
   './js/lib/markdown-headings.js',
   './tools/outline-studio/outline-studio.html',
   './tools/outline-studio/outline-studio.css',
-  './tools/outline-studio/outline-studio.js'
+  './tools/outline-studio/outline-studio.js',
+  './tools/metro-grid/metro-grid.html',
+  './tools/metro-grid/metro-grid.css',
+  './tools/metro-grid/metro-grid.js'
 ];
 
 // インストール時に静的キャッシュを取得
