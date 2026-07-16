@@ -96,6 +96,27 @@ h1 {
     border-bottom: none;
 }
 
+.subsuite-title {
+    background: var(--panel-bg);
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--header-bg);
+    opacity: 0.9;
+}
+
+.subsuite-title::before {
+    content: "・";
+    margin-right: 0.25rem;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.test-subsuite + .test-subsuite .subsuite-title {
+    border-top: 1px solid var(--border-color);
+}
+
 .test-name {
     font-size: 0.95rem;
 }
