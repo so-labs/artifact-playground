@@ -42,49 +42,17 @@
 
 .sd-option-item {
     margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .sd-option-item label {
-    display: flex !important;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: normal !important;
-    font-size: 0.85rem !important;
+    font-weight: normal;
+    font-size: 0.85rem;
     cursor: pointer;
     user-select: none;
-}
-
-.sd-option-item input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-    width: 16px;
-    height: 16px;
-    border: 1px solid var(--border-color);
-    border-radius: 3px;
-    background-color: var(--panel-bg);
-    position: relative;
-    display: inline-block;
-    vertical-align: middle;
-    box-sizing: border-box;
-    transition: background-color 0.2s, border-color 0.2s;
-}
-
-.sd-option-item input[type="checkbox"]:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-
-.sd-option-item input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 5px;
-    top: 2px;
-    width: 4px;
-    height: 8px;
-    border: solid #ffffff;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+    margin: 0;
 }
 
 .sd-quick-buttons {

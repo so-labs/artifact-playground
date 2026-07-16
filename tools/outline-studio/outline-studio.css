@@ -1,4 +1,4 @@
-/* --- アウトライン・スタジオ --- */
+﻿/* --- アウトライン・スタジオ --- */
 .os-layout {
     display: flex;
     gap: 1.5rem;
@@ -175,11 +175,29 @@
     cursor: pointer;
 }
 
+.os-radio input[type="radio"] {
+    accent-color: var(--primary-color);
+    cursor: pointer;
+    width: 1.1em;
+    height: 1.1em;
+    transition: accent-color 0.3s ease;
+}
+
 .os-preview-section {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 0;
+}
+
+.os-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+}
+
+.os-preview-header .os-panel-title {
+    margin: 0;
 }
 
 #os-preview {
@@ -187,6 +205,8 @@
     min-height: 100px;
     font-family: var(--font-mono, 'Fira Code', monospace);
     font-size: 0.82rem;
+    min-width: 0;
+    width: 100%;
 }
 
 .os-source-label {

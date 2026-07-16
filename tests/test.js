@@ -162,7 +162,7 @@ describe('ウエイトオーバー (checkWeight)', () => {
 });
 
 // === 5. アウトライン・スタジオ テスト ===
-describe('アウトライン・スタジオ (markdown-headings)', () => {
+describe('アウトライン・スタジオ (parseHeadings)', () => {
     const sample = `---
 title: test
 ---

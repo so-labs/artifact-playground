@@ -1,4 +1,4 @@
-// Tool: スライスドロップ
+﻿// Tool: スライスドロップ
 import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
 
 export function sliceText(text, limit, addPrefix) {
@@ -108,10 +108,12 @@ export default function init() {
     if (savedText) {
         sdInput.value = savedText;
     }
+    let isAddPrefix = false;
     const savedAddPrefix = storage.get('add-prefix');
     if (savedAddPrefix !== null) {
-        sdAddPrefix.checked = savedAddPrefix === 'true';
+        isAddPrefix = savedAddPrefix === 'true';
     }
+    sdAddPrefix.setAttribute('aria-checked', isAddPrefix ? 'true' : 'false');
 
     const updateSlices = (shouldSave = true) => {
         let limit = parseInt(sdLimitInput.value, 10) || 140;
@@ -132,7 +134,7 @@ export default function init() {
         });
 
         // 分割処理
-        chunks = sliceText(text, limit, sdAddPrefix.checked);
+        chunks = sliceText(text, limit, isAddPrefix);
 
         const totalPages = chunks.length;
         sdTotalPagesElements.forEach(el => {
@@ -149,7 +151,7 @@ export default function init() {
         if (shouldSave) {
             storage.set('limit', limit);
             storage.set('text', text);
-            storage.set('add-prefix', sdAddPrefix.checked);
+            storage.set('add-prefix', isAddPrefix);
         }
     };
 
@@ -210,7 +212,9 @@ export default function init() {
         updateSlices(true);
     });
 
-    sdAddPrefix.addEventListener('change', () => {
+    sdAddPrefix.addEventListener('click', () => {
+        isAddPrefix = !isAddPrefix;
+        sdAddPrefix.setAttribute('aria-checked', isAddPrefix ? 'true' : 'false');
         updateSlices(true);
     });
 
