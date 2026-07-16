@@ -3,6 +3,11 @@ import { makeNorinori } from '../tools/norinori-note/norinori-note.js';
 import { sliceText } from '../tools/slice-drop/slice-drop.js';
 import { checkWeight } from '../tools/weight-over/weight-over.js';
 import {
+    parseData,
+    toMarkdown,
+    sortGridData
+} from '../tools/metro-grid/metro-grid.js';
+import {
     parseHeadings,
     adjustHeadingLevels,
     formatCopyText,
@@ -274,6 +279,58 @@ title: test
         const text = '# A\n\n### C';
         const issues = checkStructureIssues(text);
         assert(issues.length > 0, '構造の問題が検出されませんでした');
+    });
+});
+
+// === 6. メトロ・グリッド テスト ===
+describe('メトロ・グリッド (parseData)', () => {
+    it('Markdownテーブルをパースできること', () => {
+        const text = `
+| A | B |
+|:---|---:|
+| 1 | 2 |
+`;
+        const data = parseData(text);
+        assertEquals(data.type, 'md');
+        assertEquals(data.headers.length, 2);
+        assertEquals(data.alignments[0], 'left');
+        assertEquals(data.alignments[1], 'right');
+        assertEquals(data.rows[0][0], '1');
+    });
+
+    it('TSVデータをパースできること', () => {
+        const text = `A\tB\n1\t2`;
+        const data = parseData(text);
+        assertEquals(data.type, 'tsv');
+        assertEquals(data.headers[0], 'A');
+        assertEquals(data.alignments[0], 'none');
+        assertEquals(data.rows[0][1], '2');
+    });
+
+    it('数値と文字列の混在を正しくソートできること', () => {
+        const data = {
+            rows: [['a', '10'], ['b', '2'], ['c', 'abc']]
+        };
+        // 2番目の列(index: 1)を昇順ソート
+        sortGridData(data, 1, 'asc');
+        // 数値2 -> 数値10 -> 文字列abc
+        assertEquals(data.rows[0][1], '2');
+        assertEquals(data.rows[1][1], '10');
+        assertEquals(data.rows[2][1], 'abc');
+    });
+
+    it('等幅Markdownを出力できること', () => {
+        const data = {
+            headers: ['Name', 'Age'],
+            alignments: ['left', 'right'],
+            rows: [['Alice', '20'], ['Bob', '1000']]
+        };
+        const md = toMarkdown(data, true);
+        const lines = md.split('\n');
+        assertEquals(lines[0], '| Name  |  Age |');
+        assertEquals(lines[1], '| :---- | ---: |');
+        assertEquals(lines[2], '| Alice |   20 |');
+        assertEquals(lines[3], '| Bob   | 1000 |');
     });
 });
 

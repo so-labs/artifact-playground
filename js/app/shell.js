@@ -214,6 +214,12 @@ const TOOLS_CONFIG = [
         title: 'アウトライン・スタジオ',
         description: 'Markdownの見出し構造を操作・抽出するワークベンチ。アウトライン表示、見出し調整、スマートコピーができます。',
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>'
+    },
+    {
+        id: 'metro-grid',
+        title: 'メトロ・グリッド',
+        description: 'MarkdownテーブルやTSVデータを直感的に並び替え、列削除、相互変換できるグリッド・ワークベンチ。',
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>'
     }
 ];
 
@@ -502,6 +508,11 @@ export function initShell() {
 
             // スライダー等での横操作でメニューが開くのを防ぐ（より安全な判定）
             if (e.target && e.target.nodeName && e.target.nodeName.toLowerCase() === 'input' && e.target.type === 'range') {
+                return;
+            }
+
+            // テーブルなどの横スクロールエリアでのスワイプでメニューが開くのを防ぐ
+            if (e.target && e.target.closest('.mg-table-wrapper')) {
                 return;
             }
 

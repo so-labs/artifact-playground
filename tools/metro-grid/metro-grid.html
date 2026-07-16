@@ -1,0 +1,70 @@
+﻿<section id="tool-metro-grid" class="tool-section">
+    <div class="tool-title-area">
+        <h2>メトロ・グリッド</h2>
+        <button class="help-btn" aria-label="説明を表示" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+        </button>
+    </div>
+    <div class="tool-description">
+        整然とした「鉄格子」のようなMarkdownテーブルやTSV（タブ区切り）データを、直感的に並び替え（ソート）、列削除、相互変換できる軽量なグリッド・ワークベンチです。<br><br>
+        テーブルのセルをダブルクリックするとその場で簡易編集が可能です。
+    </div>
+
+    <div class="mg-layout">
+        <!-- インプットエリア -->
+        <div class="mg-panel">
+            <div class="input-header">
+                <label for="mg-input">入力 (Markdown / TSV)</label>
+                <button id="mg-btn-clear" class="btn small">クリア</button>
+            </div>
+            <textarea id="mg-input" rows="6" placeholder="Markdownテーブル または TSVデータを貼り付けてください...">| 識別コード | 被検体クラス | 危険度 | 好物 | 主な出現場所 |
+| :---: | :--- | :---: | :--- | :--- |
+| UO-01 | 未確認ネコ型重力球 | ★★★★☆ | おかかチュール | 飼い主の顔の上（午前4時） |
+| UF-02 | 電脳クラゲ（バグ食い） | ★★☆☆☆ | 404エラーページ | 古いサーバーラックの奥 |
+| US-03 | 異次元自動ルンバ | ★★★★★ | 観葉植物の土 | 主のいないリビングルーム |
+| UA-04 | 窓際光合成おじさん | ★☆☆☆☆ | 縁側の緑茶と羊羹 | 日当たりの良い畳の上 |
+| UX-05 | 締め切り前ファントム | ★★★★★★ | 缶コーヒー、現実逃避 | 進捗率50%の作業スペース |</textarea>
+        </div>
+
+        <!-- グリッドUIエリア -->
+        <div class="mg-panel mg-grid-panel">
+            <div class="input-header">
+                <label>プレビュー＆編集</label>
+                <span class="mg-grid-info" id="mg-grid-info">0 行 × 0 列</span>
+            </div>
+            <div class="mg-table-wrapper" id="mg-table-wrapper">
+                <div class="mg-empty-msg">データがありません</div>
+                <table id="mg-table" class="mg-table" hidden>
+                    <thead id="mg-thead"></thead>
+                    <tbody id="mg-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- アウトプットエリア -->
+        <div class="mg-panel">
+            <div class="output-header mg-output-header">
+                <label for="mg-output">出力</label>
+                <div class="mg-output-actions">
+                    <div class="mg-checkbox-label">
+                        <label for="mg-opt-padding">等幅フォーマット(MD)</label>
+                        <button type="button" id="mg-opt-padding" class="toggle-switch" role="switch"
+                            aria-checked="false" aria-label="等幅フォーマット">
+                            <span class="toggle-thumb"></span>
+                        </button>
+                    </div>
+                    <div class="mg-action-btns">
+                        <button id="mg-btn-copy-md" class="btn small primary">MDでコピー</button>
+                        <button id="mg-btn-copy-tsv" class="btn small secondary">TSVでコピー</button>
+                    </div>
+                </div>
+            </div>
+            <textarea id="mg-output" rows="6" readonly placeholder="変換結果がここに表示されます"></textarea>
+        </div>
+    </div>
+</section>
