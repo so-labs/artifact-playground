@@ -227,8 +227,13 @@ export function initShell() {
     // テーマ切り替え機能
     const themeSettingsBtn = document.getElementById('theme-settings-btn');
     const themeMenu = document.getElementById('theme-menu');
-    const themeOptions = document.querySelectorAll('.theme-option');
+    const themeOptions = document.querySelectorAll('#theme-menu .theme-option');
     const primaryToggleBtn = document.getElementById('primary-animate-toggle');
+
+    // 開発・システムメニュー
+    const systemMenuBtn = document.getElementById('system-menu-btn');
+    const systemMenu = document.getElementById('system-menu');
+    const clearDataBtn = document.getElementById('clear-data-btn');
 
     let currentThemeSetting = localStorage.getItem('app-theme') || 'system';
 
@@ -308,12 +313,7 @@ export function initShell() {
         themeSettingsBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             themeMenu.classList.toggle('show');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!themeMenu.contains(e.target) && !themeSettingsBtn.contains(e.target)) {
-                themeMenu.classList.remove('show');
-            }
+            if (systemMenu) systemMenu.classList.remove('show');
         });
 
         themeOptions.forEach(opt => {
@@ -324,6 +324,34 @@ export function initShell() {
                 applyTheme(val);
                 themeMenu.classList.remove('show');
             });
+        });
+    }
+
+    if (systemMenuBtn && systemMenu) {
+        systemMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            systemMenu.classList.toggle('show');
+            if (themeMenu) themeMenu.classList.remove('show');
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        if (themeMenu && !themeMenu.contains(e.target) && !themeSettingsBtn.contains(e.target)) {
+            themeMenu.classList.remove('show');
+        }
+        if (systemMenu && !systemMenu.contains(e.target) && !systemMenuBtn.contains(e.target)) {
+            systemMenu.classList.remove('show');
+        }
+    });
+
+    if (clearDataBtn) {
+        clearDataBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            systemMenu.classList.remove('show');
+            if (confirm('ローカルに保存されているすべてのツールデータや設定を削除します。\nよろしいですか？（※削除後、ページがリロードされます）')) {
+                localStorage.clear();
+                window.location.reload();
+            }
         });
     }
 

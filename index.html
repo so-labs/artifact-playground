@@ -79,13 +79,12 @@
                         </path>
                     </svg>
                 </button>
-                <a href="tests/index.html" class="settings-btn" aria-label="テストを実行" target="_blank"
-                    style="text-decoration: none;">
+                <button id="system-menu-btn" class="settings-btn" aria-label="開発・システム機能">
                     <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M10 2v7.5M14 2v7.5M8.5 2h7M14 11.5L19 21H5l5-9.5"></path>
                     </svg>
-                </a>
+                </button>
                 <div id="theme-menu" class="theme-menu">
                     <ul>
                         <li><button class="theme-option" data-value="light">ライト</button></li>
@@ -99,6 +98,14 @@
                                 <span class="toggle-thumb"></span>
                             </button>
                         </li>
+                    </ul>
+                </div>
+                <div id="system-menu" class="theme-menu system-menu">
+                    <ul>
+                        <li><a href="tests/index.html" class="theme-option" target="_blank"
+                                style="display: block; text-decoration: none;">テストを実行</a></li>
+                        <li class="theme-menu-separator"></li>
+                        <li><button id="clear-data-btn" class="theme-option text-danger">ローカルデータ全削除</button></li>
                     </ul>
                 </div>
             </div>

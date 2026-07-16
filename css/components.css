@@ -200,6 +200,22 @@ textarea {
     display: none;
 }
 
+.system-menu {
+    left: 4.75rem;
+}
+
+.text-danger {
+    color: #ef4444 !important;
+}
+
+[data-theme="dark"] .text-danger {
+    color: #f87171 !important;
+}
+
+.theme-option.text-danger:hover {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
 /* セパレーター */
 .theme-menu-separator {
     height: 1px;
@@ -278,9 +294,8 @@ textarea {
     font-weight: 500;
     font-family: "Zen Maru Gothic", "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     transition: background-color 0.2s;
+    white-space: nowrap;
 }
-
-.theme-option:hover {
     background-color: var(--bg-color);
 }
 
