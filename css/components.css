@@ -1,4 +1,4 @@
-﻿/* Tool UI Elements */
+/* Tool UI Elements */
 .tool-ui {
     display: flex;
     flex-direction: column;
@@ -296,12 +296,17 @@ textarea {
     transition: background-color 0.2s;
     white-space: nowrap;
 }
+
+.theme-option:hover {
     background-color: var(--bg-color);
 }
 
 .theme-option.active {
     color: var(--primary-color);
     font-weight: bold;
+    background-color: color-mix(in srgb, var(--primary-color) 12%, transparent);
+    border-left: 3px solid var(--primary-color);
+    padding-left: calc(1rem - 3px);
 }
 
 @keyframes fadeIn {
