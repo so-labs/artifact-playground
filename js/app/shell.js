@@ -47,7 +47,7 @@ function updateThemeColor(targetHex, animate) {
     function step(currentTime) {
         let elapsed = currentTime - startTime;
         let progress = Math.min(elapsed / duration, 1);
-        
+
         // ease-out (cubic) のイージング
         const t = 1 - Math.pow(1 - progress, 3);
 
@@ -238,6 +238,10 @@ export function initShell() {
     const systemMenu = document.getElementById('system-menu');
     const clearDataBtn = document.getElementById('clear-data-btn');
 
+    // メニューをbodyに移動（サイドバーの transform/overflow 制約から解放する）
+    if (themeMenu) document.body.appendChild(themeMenu);
+    if (systemMenu) document.body.appendChild(systemMenu);
+
     let currentThemeSetting = localStorage.getItem('app-theme') || 'system';
 
     // プライマリーカラーアニメーションの初期状態（デフォルト: オン）
@@ -344,12 +348,24 @@ export function initShell() {
         document.body.classList.add('theme-ready');
     }, 100);
 
+    // メニューをボタン位置に基づいて配置するヘルパー
+    function positionMenu(menu, btn) {
+        const rect = btn.getBoundingClientRect();
+        // メニューを一旦表示して高さを取得
+        const menuHeight = menu.offsetHeight;
+        menu.style.left = rect.left + 'px';
+        menu.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+    }
+
     // テーマ設定メニューの開閉
     if (themeSettingsBtn && themeMenu) {
         themeSettingsBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             const isMenuShow = themeMenu.classList.toggle('show');
             if (systemMenu) systemMenu.classList.remove('show');
+            if (isMenuShow) {
+                positionMenu(themeMenu, themeSettingsBtn);
+            }
             if (!isMenuShow && themeSubmenuList && themeSubmenuToggle) {
                 themeSubmenuList.classList.remove('show');
                 themeSubmenuToggle.setAttribute('aria-expanded', 'false');
@@ -375,8 +391,11 @@ export function initShell() {
     if (systemMenuBtn && systemMenu) {
         systemMenuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            systemMenu.classList.toggle('show');
+            const isMenuShow = systemMenu.classList.toggle('show');
             if (themeMenu) themeMenu.classList.remove('show');
+            if (isMenuShow) {
+                positionMenu(systemMenu, systemMenuBtn);
+            }
         });
     }
 
@@ -392,6 +411,19 @@ export function initShell() {
             systemMenu.classList.remove('show');
         }
     });
+
+    // リサイズやスクロール時にメニューを閉じて位置ズレを防止
+    const closeAllMenus = () => {
+        if (themeMenu) themeMenu.classList.remove('show');
+        if (systemMenu) systemMenu.classList.remove('show');
+        if (themeSubmenuList && themeSubmenuToggle) {
+            themeSubmenuList.classList.remove('show');
+            themeSubmenuToggle.setAttribute('aria-expanded', 'false');
+        }
+    };
+
+    window.addEventListener('resize', closeAllMenus);
+    window.addEventListener('scroll', closeAllMenus, true);
 
     if (clearDataBtn) {
         clearDataBtn.addEventListener('click', (e) => {

@@ -187,9 +187,7 @@ textarea {
 }
 
 .theme-menu {
-    position: absolute;
-    bottom: 60px;
-    left: 1.5rem;
+    position: fixed;
     background-color: var(--panel-bg);
     border: 1px solid var(--border-color);
     border-radius: 10px;
@@ -199,10 +197,6 @@ textarea {
     max-width: 320px;
     z-index: 1000;
     display: none;
-}
-
-.system-menu {
-    left: 4.75rem;
 }
 
 .text-danger,
