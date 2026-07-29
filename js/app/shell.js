@@ -289,6 +289,11 @@ export function initShell() {
         });
     }
 
+    const THEME_NAMES = { light: 'ライト', dark: 'ダーク', system: 'システム' };
+    const themeSubmenuToggle = document.getElementById('theme-submenu-toggle');
+    const themeSubmenuList = document.getElementById('theme-submenu-list');
+    const currentThemeNameEl = document.getElementById('current-theme-name');
+
     const applyTheme = (setting) => {
         let isDark = false;
         if (setting === 'dark') {
@@ -309,6 +314,10 @@ export function initShell() {
             updateThemeColor('#ffffff', isThemeReady);
         }
 
+        if (currentThemeNameEl) {
+            currentThemeNameEl.textContent = THEME_NAMES[setting] || 'システム';
+        }
+
         themeOptions.forEach(opt => {
             if (opt.getAttribute('data-value') === setting) {
                 opt.classList.add('active');
@@ -321,6 +330,15 @@ export function initShell() {
     // 初期状態の反映
     applyTheme(currentThemeSetting);
 
+    // サブメニューの開閉処理
+    if (themeSubmenuToggle && themeSubmenuList) {
+        themeSubmenuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = themeSubmenuList.classList.toggle('show');
+            themeSubmenuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+    }
+
     // ロード時のアニメーションちらつき防止のため、少し遅延させて transition 用クラスを追加
     setTimeout(() => {
         document.body.classList.add('theme-ready');
@@ -330,17 +348,26 @@ export function initShell() {
     if (themeSettingsBtn && themeMenu) {
         themeSettingsBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            themeMenu.classList.toggle('show');
+            const isMenuShow = themeMenu.classList.toggle('show');
             if (systemMenu) systemMenu.classList.remove('show');
+            if (!isMenuShow && themeSubmenuList && themeSubmenuToggle) {
+                themeSubmenuList.classList.remove('show');
+                themeSubmenuToggle.setAttribute('aria-expanded', 'false');
+            }
         });
 
         themeOptions.forEach(opt => {
-            opt.addEventListener('click', () => {
+            opt.addEventListener('click', (e) => {
+                e.stopPropagation();
                 const val = opt.getAttribute('data-value');
                 currentThemeSetting = val;
                 localStorage.setItem('app-theme', val);
                 applyTheme(val);
                 themeMenu.classList.remove('show');
+                if (themeSubmenuList && themeSubmenuToggle) {
+                    themeSubmenuList.classList.remove('show');
+                    themeSubmenuToggle.setAttribute('aria-expanded', 'false');
+                }
             });
         });
     }
@@ -356,6 +383,10 @@ export function initShell() {
     document.addEventListener('click', (e) => {
         if (themeMenu && !themeMenu.contains(e.target) && !themeSettingsBtn.contains(e.target)) {
             themeMenu.classList.remove('show');
+            if (themeSubmenuList && themeSubmenuToggle) {
+                themeSubmenuList.classList.remove('show');
+                themeSubmenuToggle.setAttribute('aria-expanded', 'false');
+            }
         }
         if (systemMenu && !systemMenu.contains(e.target) && !systemMenuBtn.contains(e.target)) {
             systemMenu.classList.remove('show');

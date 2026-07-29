@@ -223,6 +223,61 @@ textarea {
     margin: 0.4rem 0.75rem;
 }
 
+/* テーマ サブメニュー */
+.theme-submenu-header {
+    width: 100%;
+    padding: 0.64rem 1rem;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.theme-submenu-header:hover {
+    background-color: var(--bg-color);
+}
+
+.theme-current-label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    opacity: 0.85;
+}
+
+.theme-submenu-header .chevron-icon {
+    transition: transform 0.2s ease;
+}
+
+.theme-submenu-header[aria-expanded="true"] .chevron-icon {
+    transform: rotate(180deg);
+}
+
+.theme-submenu-list {
+    display: none;
+    background-color: color-mix(in srgb, var(--bg-color) 60%, transparent);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.2rem 0;
+}
+
+.theme-submenu-list.show {
+    display: block;
+}
+
+.theme-submenu-list .theme-option {
+    padding-left: 2rem;
+    font-size: 0.9rem;
+}
+
 /* トグル行 */
 .theme-menu-toggle-item {
     display: flex;

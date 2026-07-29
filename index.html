@@ -87,9 +87,22 @@
                 </button>
                 <div id="theme-menu" class="theme-menu">
                     <ul>
-                        <li><button class="theme-option" data-value="light">ライト</button></li>
-                        <li><button class="theme-option" data-value="dark">ダーク</button></li>
-                        <li><button class="theme-option" data-value="system">システム</button></li>
+                        <li class="theme-menu-submenu-item">
+                            <button id="theme-submenu-toggle" class="theme-submenu-header" aria-expanded="false">
+                                <span>テーマ</span>
+                                <span class="theme-current-label">
+                                    <span id="current-theme-name">システム</span>
+                                    <svg class="chevron-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </span>
+                            </button>
+                            <ul id="theme-submenu-list" class="theme-submenu-list">
+                                <li><button class="theme-option" data-value="light">ライト</button></li>
+                                <li><button class="theme-option" data-value="dark">ダーク</button></li>
+                                <li><button class="theme-option" data-value="system">システム</button></li>
+                            </ul>
+                        </li>
                         <li class="theme-menu-separator"></li>
                         <li class="theme-menu-toggle-item">
                             <span class="theme-menu-toggle-label">一時モード（データ非保存）</span>
