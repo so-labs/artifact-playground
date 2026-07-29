@@ -1,4 +1,6 @@
-﻿// App Shell: テーマ / サイドバー / ツール切替
+import { isTempMode, setTempMode } from '../lib/storage.js';
+
+// App Shell: テーマ / サイドバー / ツール切替
 
 // ============================
 // テーマカラー（ステータスバー）アニメーション
@@ -229,6 +231,7 @@ export function initShell() {
     const themeMenu = document.getElementById('theme-menu');
     const themeOptions = document.querySelectorAll('#theme-menu .theme-option');
     const primaryToggleBtn = document.getElementById('primary-animate-toggle');
+    const tempModeToggleBtn = document.getElementById('temp-mode-toggle');
 
     // 開発・システムメニュー
     const systemMenuBtn = document.getElementById('system-menu-btn');
@@ -248,8 +251,15 @@ export function initShell() {
         }
     }
 
-    // アニメーション初期化
+    function syncTempModeToggleUI() {
+        if (tempModeToggleBtn) {
+            tempModeToggleBtn.setAttribute('aria-checked', isTempMode() ? 'true' : 'false');
+        }
+    }
+
+    // 初期化
     syncPrimaryToggleUI();
+    syncTempModeToggleUI();
     if (isPrimaryAnimating) {
         startPrimaryAnimation();
     } else {
@@ -257,6 +267,14 @@ export function initShell() {
     }
 
     // トグルボタンのクリックハンドラ
+    if (tempModeToggleBtn) {
+        tempModeToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setTempMode(!isTempMode());
+            syncTempModeToggleUI();
+        });
+    }
+
     if (primaryToggleBtn) {
         primaryToggleBtn.addEventListener('click', (e) => {
             e.stopPropagation();

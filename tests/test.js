@@ -1,4 +1,4 @@
-﻿import { reduceText } from '../tools/20-off/20-off.js';
+import { reduceText } from '../tools/20-off/20-off.js';
 import { makeNorinori } from '../tools/norinori-note/norinori-note.js';
 import { sliceText } from '../tools/slice-drop/slice-drop.js';
 import { checkWeight } from '../tools/weight-over/weight-over.js';
@@ -18,6 +18,11 @@ import {
     jumpToHeading,
     checkStructureIssues,
 } from '../js/lib/markdown-headings.js';
+import {
+    createToolStorage,
+    isTempMode,
+    setTempMode
+} from '../js/lib/storage.js';
 
 const suites = [];
 let currentSuite = null;
@@ -373,6 +378,34 @@ describe('メトロ・グリッド', () => {
             assertEquals(lines[1], '| :---- | ---: |');
             assertEquals(lines[2], '| Alice |   20 |');
             assertEquals(lines[3], '| Bob   | 1000 |');
+        });
+    });
+});
+
+// === 7. ストレージ共通機能 テスト ===
+describe('ストレージ共通機能', () => {
+    describe('createToolStorage [js/lib/storage.js]', () => {
+        it('通常モードでデータを保存・取得・削除できること', () => {
+            setTempMode(false);
+            const storage = createToolStorage('test-tool');
+            storage.set('key1', 'value1');
+            assertEquals(storage.get('key1'), 'value1');
+            storage.set('key2', '100');
+            assertEquals(storage.getNumber('key2'), 100);
+            storage.remove('key1');
+            assertEquals(storage.get('key1'), null);
+            storage.remove('key2');
+        });
+
+        it('一時モード有効時はlocalStorageに保存されずメモリに保持されること', () => {
+            setTempMode(true);
+            const storage = createToolStorage('test-tool');
+            storage.set('tempKey', 'tempValue');
+            assertEquals(storage.get('tempKey'), 'tempValue');
+            assertEquals(localStorage.getItem('test-tool-tempKey'), null);
+            storage.remove('tempKey');
+            assertEquals(storage.get('tempKey'), null);
+            setTempMode(false);
         });
     });
 });

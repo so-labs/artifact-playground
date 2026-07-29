@@ -1,4 +1,17 @@
-const copyTimers = new WeakMap();
+let tempMode = localStorage.getItem('app-temp-mode') === 'true';
+const tempMemoryStorage = new Map();
+
+export function isTempMode() {
+  return tempMode;
+}
+
+export function setTempMode(enabled) {
+  tempMode = !!enabled;
+  localStorage.setItem('app-temp-mode', String(tempMode));
+  if (!tempMode) {
+    tempMemoryStorage.clear();
+  }
+}
 
 export function createToolStorage(toolId) {
   const prefix = `${toolId}-`;
@@ -6,6 +19,10 @@ export function createToolStorage(toolId) {
   return { get, set, remove, getNumber };
 
   function get(key, defaultValue = null) {
+    if (tempMode) {
+      const val = tempMemoryStorage.get(prefix + key);
+      return val !== undefined ? val : defaultValue;
+    }
     const val = localStorage.getItem(prefix + key);
     return val !== null ? val : defaultValue;
   }
@@ -16,11 +33,20 @@ export function createToolStorage(toolId) {
   }
 
   function set(key, value) {
-    localStorage.setItem(prefix + key, String(value));
+    const strVal = String(value);
+    if (tempMode) {
+      tempMemoryStorage.set(prefix + key, strVal);
+    } else {
+      localStorage.setItem(prefix + key, strVal);
+    }
   }
 
   function remove(key) {
-    localStorage.removeItem(prefix + key);
+    if (tempMode) {
+      tempMemoryStorage.delete(prefix + key);
+    } else {
+      localStorage.removeItem(prefix + key);
+    }
   }
 }
 
