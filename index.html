@@ -89,10 +89,15 @@
                     <ul>
                         <li class="theme-menu-submenu-item">
                             <button id="theme-submenu-toggle" class="theme-submenu-header" aria-expanded="false">
-                                <span>テーマ</span>
+                                <div class="menu-item-label-group">
+                                    <span class="menu-item-title">テーマ</span>
+                                    <span class="menu-item-desc">アプリの外観切り替え</span>
+                                </div>
                                 <span class="theme-current-label">
                                     <span id="current-theme-name">システム</span>
-                                    <svg class="chevron-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg class="chevron-icon" viewBox="0 0 24 24" width="16" height="16"
+                                        stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
+                                        stroke-linejoin="round">
                                         <polyline points="6 9 12 15 18 9"></polyline>
                                     </svg>
                                 </span>
@@ -105,14 +110,20 @@
                         </li>
                         <li class="theme-menu-separator"></li>
                         <li class="theme-menu-toggle-item">
-                            <span class="theme-menu-toggle-label">一時モード（データ非保存）</span>
+                            <div class="menu-item-label-group">
+                                <span class="menu-item-title">一時モード</span>
+                                <span class="menu-item-desc">閉じた時に消去（既存データは保持）</span>
+                            </div>
                             <button id="temp-mode-toggle" class="toggle-switch" role="switch" aria-checked="false"
                                 aria-label="一時モードのオンオフ">
                                 <span class="toggle-thumb"></span>
                             </button>
                         </li>
                         <li class="theme-menu-toggle-item">
-                            <span class="theme-menu-toggle-label">プライマリーカラー切替</span>
+                            <div class="menu-item-label-group">
+                                <span class="menu-item-title">プライマリーカラー切替</span>
+                                <span class="menu-item-desc">アクセントカラーを自動アニメーション</span>
+                            </div>
                             <button id="primary-animate-toggle" class="toggle-switch" role="switch" aria-checked="true"
                                 aria-label="プライマリーカラー切替のオンオフ">
                                 <span class="toggle-thumb"></span>
@@ -122,10 +133,24 @@
                 </div>
                 <div id="system-menu" class="theme-menu system-menu">
                     <ul>
-                        <li><a href="tests/index.html" class="theme-option" target="_blank"
-                                style="display: block; text-decoration: none;">テストを実行</a></li>
+                        <li>
+                            <a href="tests/index.html" class="theme-option" target="_blank"
+                                style="display: block; text-decoration: none;">
+                                <div class="menu-item-label-group">
+                                    <span class="menu-item-title">テストを実行</span>
+                                    <span class="menu-item-desc">単体テストランナー画面を開く</span>
+                                </div>
+                            </a>
+                        </li>
                         <li class="theme-menu-separator"></li>
-                        <li><button id="clear-data-btn" class="theme-option text-danger">ローカルデータ全削除</button></li>
+                        <li>
+                            <button id="clear-data-btn" class="theme-option text-danger">
+                                <div class="menu-item-label-group">
+                                    <span class="menu-item-title">ローカルデータ全削除</span>
+                                    <span class="menu-item-desc">全ツールの保存データ・設定を初期化</span>
+                                </div>
+                            </button>
+                        </li>
                     </ul>
                 </div>
             </div>
