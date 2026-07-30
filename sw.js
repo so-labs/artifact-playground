@@ -6,7 +6,7 @@
  * MM   = 月（01〜12）
  * rN   = その月のリリース回数
  */
-const CACHE_NAME = 'artifact-playground-2026.07-r6';
+const CACHE_NAME = 'artifact-playground-2026.07-r7';
 const ASSETS = [
   './',
   './index.html',
@@ -16,6 +16,7 @@ const ASSETS = [
   './js/main.js',
   './js/app/shell.js',
   './js/lib/storage.js',
+  './js/lib/version.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',

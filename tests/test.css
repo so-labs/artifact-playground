@@ -47,6 +47,21 @@ h1 {
     border-bottom: 2px solid var(--primary-color);
     padding-bottom: 0.5rem;
     margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.version-badge {
+    font-size: 0.9rem;
+    font-weight: normal;
+    background-color: var(--header-bg);
+    color: var(--text-color);
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border-color);
+    opacity: 0.8;
+    font-family: "Fira Code", monospace;
 }
 
 .summary {
@@ -113,7 +128,7 @@ h1 {
     font-weight: bold;
 }
 
-.test-subsuite + .test-subsuite .subsuite-title {
+.test-subsuite+.test-subsuite .subsuite-title {
     border-top: 1px solid var(--border-color);
 }
 

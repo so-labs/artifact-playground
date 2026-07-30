@@ -1,4 +1,5 @@
-import { isTempMode, setTempMode } from '../lib/storage.js';
+﻿import { isTempMode, setTempMode } from '../lib/storage.js';
+import { getAppVersion } from '../lib/version.js';
 
 // App Shell: テーマ / サイドバー / ツール切替
 
@@ -247,6 +248,14 @@ export function initShell() {
     // プライマリーカラーアニメーションの初期状態（デフォルト: オン）
     const savedPrimaryAnimate = localStorage.getItem('primary-animate');
     let isPrimaryAnimating = savedPrimaryAnimate === null ? true : savedPrimaryAnimate === 'true';
+
+    // バージョン表示の初期化
+    const appVersionDisplay = document.getElementById('app-version-display');
+    if (appVersionDisplay) {
+        getAppVersion('sw.js').then(version => {
+            appVersionDisplay.textContent = `Ver ${version}`;
+        });
+    }
 
     // トグルUIを同期
     function syncPrimaryToggleUI() {

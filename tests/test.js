@@ -24,6 +24,7 @@ import {
     setTempMode,
     copyToClipboard
 } from '../js/lib/storage.js';
+import { getAppVersion } from '../js/lib/version.js';
 
 const suites = [];
 let currentSuite = null;
@@ -419,6 +420,13 @@ describe('ストレージ共通機能', () => {
 
 // === テスト実行と結果描画 ===
 window.addEventListener('DOMContentLoaded', () => {
+    const versionDisplay = document.getElementById('app-version-display');
+    if (versionDisplay) {
+        getAppVersion('../sw.js').then(version => {
+            versionDisplay.textContent = `v${version}`;
+        });
+    }
+
     const resultsContainer = document.getElementById('test-results');
     const totalCountEl = document.getElementById('total-count');
     const passedCountEl = document.getElementById('passed-count');
