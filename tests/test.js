@@ -1,4 +1,4 @@
-import { reduceText } from '../tools/20-off/20-off.js';
+﻿import { reduceText } from '../tools/20-off/20-off.js';
 import { makeNorinori } from '../tools/norinori-note/norinori-note.js';
 import { sliceText } from '../tools/slice-drop/slice-drop.js';
 import { checkWeight } from '../tools/weight-over/weight-over.js';
@@ -21,7 +21,8 @@ import {
 import {
     createToolStorage,
     isTempMode,
-    setTempMode
+    setTempMode,
+    copyToClipboard
 } from '../js/lib/storage.js';
 
 const suites = [];
@@ -30,13 +31,13 @@ let currentSuite = null;
 function describe(name, fn) {
     const parentSuite = currentSuite;
     const suite = { name, cases: [], suites: [] };
-    
+
     if (parentSuite) {
         parentSuite.suites.push(suite);
     } else {
         suites.push(suite);
     }
-    
+
     currentSuite = suite;
     fn();
     currentSuite = parentSuite;
@@ -103,10 +104,10 @@ describe('ノリノリ音符', () => {
             // 元の行は 'こんにちは' と 'さようなら'
             // 結果は 'こんにちは[音符]さようなら[音符]' になるはず
             assert(result.startsWith('こんにちは'), '始まりが不正です');
-            
+
             const middleChar = result[5]; // 'こんにちは'の次の文字
             assert(notes.includes(middleChar), '1行目の末尾に音符がありません');
-            
+
             const lastChar = result[result.length - 1];
             assert(notes.includes(lastChar), '2行目の末尾に音符がありません');
         });
@@ -406,6 +407,12 @@ describe('ストレージ共通機能', () => {
             storage.remove('tempKey');
             assertEquals(storage.get('tempKey'), null);
             setTempMode(false);
+        });
+    });
+
+    describe('copyToClipboard [js/lib/storage.js]', () => {
+        it('copyToClipboard 関数が正しく定義されていること', () => {
+            assert(typeof copyToClipboard === 'function', 'copyToClipboard が関数ではありません');
         });
     });
 });
