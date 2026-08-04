@@ -1,30 +1,8 @@
-﻿import { reduceText } from '../tools/20-off/20-off.js';
-import { makeNorinori } from '../tools/norinori-note/norinori-note.js';
-import { sliceText } from '../tools/slice-drop/slice-drop.js';
-import { checkWeight } from '../tools/weight-over/weight-over.js';
-import {
-    parseData,
-    toMarkdown,
-    sortGridData
-} from '../tools/metro-grid/metro-grid.js';
-import {
-    parseHeadings,
-    adjustHeadingLevels,
-    formatCopyText,
-    extractText,
-    changeHeadingLevelAtLine,
-    changeHeadingLevelSingleAtLine,
-    moveSection,
-    jumpToHeading,
-    checkStructureIssues,
-} from '../js/lib/markdown-headings.js';
-import {
-    createToolStorage,
-    isTempMode,
-    setTempMode,
-    copyToClipboard
-} from '../js/lib/storage.js';
-import { getAppVersion } from '../js/lib/version.js';
+﻿import { getAppVersion } from '../../js/lib/version.js';
+
+let reduceText, makeNorinori, sliceText, checkWeight, parseData, toMarkdown, sortGridData;
+let parseHeadings, adjustHeadingLevels, formatCopyText, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, jumpToHeading, checkStructureIssues;
+let createToolStorage, isTempMode, setTempMode, copyToClipboard;
 
 const suites = [];
 let currentSuite = null;
@@ -71,18 +49,16 @@ describe('20% Off', () => {
 
         it('先頭1文字は削られないこと', () => {
             const text = '吾輩';
-            // 50%削る場合、2文字なら1文字削るが、先頭の「吾」は削らず「輩」が削られるはず
             const result = reduceText(text, 50);
             assertEquals(result, '吾');
         });
 
         it('割合に応じて文字が削られること', () => {
-            const text = 'あいうえおかきくけこ'; // 10文字
-            // 30%削減 -> 3文字削減されるはず
+            const text = 'あいうえおかきくけこ';
             const result = reduceText(text, 30);
             const chars = Array.from(result);
             assertEquals(chars.length, 7);
-            assertEquals(chars[0], 'あ'); // 先頭は残る
+            assertEquals(chars[0], 'あ');
         });
     });
 });
@@ -99,14 +75,10 @@ describe('ノリノリ音符', () => {
             const notes = ['♪', '♫', '♬'];
             const result = makeNorinori(text, notes);
 
-            // 改行は含まれない
             assert(!result.includes('\n'), '結果に改行が含まれています');
-
-            // 元の行は 'こんにちは' と 'さようなら'
-            // 結果は 'こんにちは[音符]さようなら[音符]' になるはず
             assert(result.startsWith('こんにちは'), '始まりが不正です');
 
-            const middleChar = result[5]; // 'こんにちは'の次の文字
+            const middleChar = result[5];
             assert(notes.includes(middleChar), '1行目の末尾に音符がありません');
 
             const lastChar = result[result.length - 1];
@@ -124,8 +96,7 @@ describe('スライスドロップ', () => {
         });
 
         it('指定文字数で正しく分割されること (プレフィックスなし)', () => {
-            const text = 'あいうえおかきくけこ'; // 10文字
-            // 4文字ずつに分割
+            const text = 'あいうえおかきくけこ';
             const result = sliceText(text, 4, false);
             assertEquals(result.length, 3);
             assertEquals(result[0], 'あいうえ');
@@ -134,9 +105,7 @@ describe('スライスドロップ', () => {
         });
 
         it('サロゲートペア（絵文字など）を正しく分割できること', () => {
-            const text = '🍎🍊🍋🍉🍇'; // 各5文字
-            // 上限4文字（サロゲートペアは1文字あたり長さ2としてカウントされる）
-            // よって、1ページあたり2つの絵文字が入るはず (2+2 = 4)。
+            const text = '🍎🍊🍋🍉🍇';
             const result = sliceText(text, 4, false);
             assertEquals(result.length, 3);
             assertEquals(result[0], '🍎🍊');
@@ -145,11 +114,7 @@ describe('スライスドロップ', () => {
         });
 
         it('プレフィックスありで正しくページ番号が付与されること', () => {
-            const text = 'あいうえおかき'; // 7文字
-            // 上限を10にする。プレフィックス "1/2\n\n" の長さは5文字（1/2が3文字、\n\nが2文字）。
-            // 有効上限は 10 - 5 = 5文字。
-            // 'あいうえおかき' (7文字) を分割すると、
-            // 1ページ目: 5文字 ('あいうえお')、2ページ目: 2文字 ('かき')
+            const text = 'あいうえおかき';
             const result = sliceText(text, 10, true);
             assertEquals(result.length, 2);
             assertEquals(result[0], '1/2\n\nあいうえお');
@@ -162,32 +127,31 @@ describe('スライスドロップ', () => {
 describe('ウエイトオーバー', () => {
     describe('checkWeight [tools/weight-over/weight-over.js]', () => {
         it('上限以下では通常状態であること', () => {
-            const text = 'あいうえお'; // 5文字
+            const text = 'あいうえお';
             const result = checkWeight(text, 10);
             assertEquals(result.count, 5);
             assertEquals(result.status, 'normal');
         });
 
         it('上限の95%超えで警告状態になること', () => {
-            const text = 'あいうえおかきくけこ'; // 10文字
-            // 10文字、上限 10 の 95% = 9.5文字。10文字は95%を超える。
+            const text = 'あいうえおかきくけこ';
             const result = checkWeight(text, 10);
             assertEquals(result.count, 10);
             assertEquals(result.status, 'warning');
         });
 
         it('上限を超えるとオーバー状態になること', () => {
-            const text = 'あいうえおかきくけこさ'; // 11文字
+            const text = 'あいうえおかきくけこさ';
             const result = checkWeight(text, 10);
             assertEquals(result.count, 11);
             assertEquals(result.status, 'over');
         });
 
         it('サロゲートペア（絵文字など）を2文字としてカウントすること', () => {
-            const text = '🍎🍊🍋🍉🍇'; // 5つの絵文字 = 10文字分
+            const text = '🍎🍊🍋🍉🍇';
             const result = checkWeight(text, 10);
             assertEquals(result.count, 10);
-            assertEquals(result.status, 'warning'); // 10文字は上限10の95%超えなのでwarning
+            assertEquals(result.status, 'warning');
         });
     });
 });
@@ -358,9 +322,7 @@ describe('メトロ・グリッド', () => {
             const data = {
                 rows: [['a', '10'], ['b', '2'], ['c', 'abc']]
             };
-            // 2番目の列(index: 1)を昇順ソート
             sortGridData(data, 1, 'asc');
-            // 数値2 -> 数値10 -> 文字列abc
             assertEquals(data.rows[0][1], '2');
             assertEquals(data.rows[1][1], '10');
             assertEquals(data.rows[2][1], 'abc');
@@ -419,10 +381,64 @@ describe('ストレージ共通機能', () => {
 });
 
 // === テスト実行と結果描画 ===
-window.addEventListener('DOMContentLoaded', () => {
-    const versionDisplay = document.getElementById('app-version-display');
+let hasRun = false;
+
+export default async function initTestRunner() {
+    if (hasRun) return;
+    hasRun = true;
+
+    // テスト対象モジュールの安全な動的インポート
+    try {
+        const mod20Off = await import('../20-off/20-off.js');
+        reduceText = mod20Off.reduceText;
+    } catch (e) { console.warn('Failed to import 20-off:', e); }
+
+    try {
+        const modNorinori = await import('../norinori-note/norinori-note.js');
+        makeNorinori = modNorinori.makeNorinori;
+    } catch (e) { console.warn('Failed to import norinori-note:', e); }
+
+    try {
+        const modSlice = await import('../slice-drop/slice-drop.js');
+        sliceText = modSlice.sliceText;
+    } catch (e) { console.warn('Failed to import slice-drop:', e); }
+
+    try {
+        const modWeight = await import('../weight-over/weight-over.js');
+        checkWeight = modWeight.checkWeight;
+    } catch (e) { console.warn('Failed to import weight-over:', e); }
+
+    try {
+        const modMetro = await import('../metro-grid/metro-grid.js');
+        parseData = modMetro.parseData;
+        toMarkdown = modMetro.toMarkdown;
+        sortGridData = modMetro.sortGridData;
+    } catch (e) { console.warn('Failed to import metro-grid:', e); }
+
+    try {
+        const modMd = await import('../../js/lib/markdown-headings.js');
+        parseHeadings = modMd.parseHeadings;
+        adjustHeadingLevels = modMd.adjustHeadingLevels;
+        formatCopyText = modMd.formatCopyText;
+        extractText = modMd.extractText;
+        changeHeadingLevelAtLine = modMd.changeHeadingLevelAtLine;
+        changeHeadingLevelSingleAtLine = modMd.changeHeadingLevelSingleAtLine;
+        moveSection = modMd.moveSection;
+        jumpToHeading = modMd.jumpToHeading;
+        checkStructureIssues = modMd.checkStructureIssues;
+    } catch (e) { console.warn('Failed to import markdown-headings:', e); }
+
+    try {
+        const modStorage = await import('../../js/lib/storage.js');
+        createToolStorage = modStorage.createToolStorage;
+        isTempMode = modStorage.isTempMode;
+        setTempMode = modStorage.setTempMode;
+        copyToClipboard = modStorage.copyToClipboard;
+    } catch (e) { console.warn('Failed to import storage:', e); }
+
+    const versionDisplay = document.getElementById('test-app-version-display');
     if (versionDisplay) {
-        getAppVersion('../sw.js').then(version => {
+        getAppVersion('./sw.js').then(version => {
             versionDisplay.textContent = `v${version}`;
         });
     }
@@ -432,6 +448,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const passedCountEl = document.getElementById('passed-count');
     const failedCountEl = document.getElementById('failed-count');
 
+    if (!resultsContainer) return;
+
+    resultsContainer.innerHTML = '';
     let totalCount = 0;
     let passedCount = 0;
     let failedCount = 0;
@@ -498,4 +517,4 @@ window.addEventListener('DOMContentLoaded', () => {
     totalCountEl.textContent = totalCount;
     passedCountEl.textContent = passedCount;
     failedCountEl.textContent = failedCount;
-});
+}

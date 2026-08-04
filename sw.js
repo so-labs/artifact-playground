@@ -38,7 +38,10 @@ const ASSETS = [
   './tools/outline-studio/outline-studio.js',
   './tools/metro-grid/metro-grid.html',
   './tools/metro-grid/metro-grid.css',
-  './tools/metro-grid/metro-grid.js'
+  './tools/metro-grid/metro-grid.js',
+  './tools/test-runner/test-runner.html',
+  './tools/test-runner/test-runner.css',
+  './tools/test-runner/test-runner.js'
 ];
 
 // インストール時に静的キャッシュを取得

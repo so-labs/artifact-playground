@@ -1,12 +1,5 @@
-﻿:root {
-    --bg-color: #f8fafc;
-    --text-color: #334155;
-    --panel-bg: #ffffff;
-    --border-color: #e2e8f0;
-    --header-bg: #f1f5f9;
-    --primary-color: #2563eb;
-    --primary-hover: #1d4ed8;
-
+﻿/* テストランナー専用スタイル */
+#tool-test-runner {
     --pass-text: #16a34a;
     --pass-bg: #dcfce7;
     --fail-text: #dc2626;
@@ -16,15 +9,7 @@
     --shadow-color: rgba(0, 0, 0, 0.05);
 }
 
-[data-theme="dark"] {
-    --bg-color: #1e293b;
-    --text-color: #cbd5e1;
-    --panel-bg: #0f172a;
-    --border-color: #334155;
-    --header-bg: #1e293b;
-    --primary-color: #3b82f6;
-    --primary-hover: #60a5fa;
-
+[data-theme="dark"] #tool-test-runner {
     --pass-text: #4ade80;
     --pass-bg: rgba(74, 222, 128, 0.15);
     --fail-text: #f87171;
@@ -34,38 +19,21 @@
     --shadow-color: rgba(0, 0, 0, 0.5);
 }
 
-body {
-    font-family: "Outfit", "Zen Maru Gothic", sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    padding: 2rem;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-h1 {
-    border-bottom: 2px solid var(--primary-color);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.version-badge {
+#tool-test-runner .version-badge {
     font-size: 0.9rem;
     font-weight: normal;
-    background-color: var(--header-bg);
+    background-color: var(--code-bg);
     color: var(--text-color);
     padding: 0.2rem 0.6rem;
     border-radius: 9999px;
     border: 1px solid var(--border-color);
     opacity: 0.8;
     font-family: "Fira Code", monospace;
+    margin-left: auto;
 }
 
-.summary {
-    background: var(--panel-bg);
+#tool-test-runner .summary {
+    background: var(--code-bg);
     padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 2px 4px var(--shadow-color);
@@ -75,15 +43,15 @@ h1 {
     gap: 1.5rem;
 }
 
-.summary .passed {
+#tool-test-runner .summary .passed {
     color: var(--pass-text);
 }
 
-.summary .failed {
+#tool-test-runner .summary .failed {
     color: var(--fail-text);
 }
 
-.test-suite {
+#tool-test-runner .test-suite {
     background: var(--panel-bg);
     border-radius: 8px;
     box-shadow: 0 2px 4px var(--shadow-color);
@@ -92,68 +60,69 @@ h1 {
     border: 1px solid var(--border-color);
 }
 
-.suite-title {
-    background: var(--header-bg);
+#tool-test-runner .suite-title {
+    background: var(--code-bg);
     padding: 0.75rem 1rem;
     font-weight: bold;
     border-bottom: 1px solid var(--border-color);
 }
 
-.test-case {
+#tool-test-runner .test-case {
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--header-bg);
+    border-bottom: 1px solid var(--code-bg);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.test-case:last-child {
+#tool-test-runner .test-case:last-child {
     border-bottom: none;
 }
 
-.subsuite-title {
+#tool-test-runner .subsuite-title {
     background: var(--panel-bg);
     padding: 0.5rem 1rem;
     font-weight: 600;
     font-size: 0.9rem;
     color: var(--text-color);
-    border-bottom: 1px solid var(--header-bg);
+    border-bottom: 1px solid var(--code-bg);
     opacity: 0.9;
 }
 
-.subsuite-title::before {
+#tool-test-runner .subsuite-title::before {
     content: "・";
     margin-right: 0.25rem;
     color: var(--primary-color);
     font-weight: bold;
 }
 
-.test-subsuite+.test-subsuite .subsuite-title {
+#tool-test-runner .test-subsuite + .test-subsuite .subsuite-title {
     border-top: 1px solid var(--border-color);
 }
 
-.test-name {
+#tool-test-runner .test-name {
     font-size: 0.95rem;
 }
 
-.test-status {
+#tool-test-runner .test-status {
     font-weight: bold;
     font-size: 0.85rem;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
+    white-space: nowrap;
 }
 
-.test-status.pass {
+#tool-test-runner .test-status.pass {
     background-color: var(--pass-bg);
     color: var(--pass-text);
 }
 
-.test-status.fail {
+#tool-test-runner .test-status.fail {
     background-color: var(--fail-bg);
     color: var(--fail-text);
 }
 
-.error-message {
+#tool-test-runner .error-message {
     color: var(--fail-error-text);
     font-family: monospace;
     font-size: 0.85rem;
@@ -165,24 +134,10 @@ h1 {
     width: 100%;
 }
 
-.flex-col {
+#tool-test-runner .flex-col {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     flex: 1;
-}
-
-.back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 500;
-    margin-bottom: 1rem;
-    transition: color 0.2s;
-}
-
-.back-link:hover {
-    color: var(--primary-hover);
+    margin-right: 1rem;
 }

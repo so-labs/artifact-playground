@@ -408,6 +408,14 @@ export function initShell() {
         });
     }
 
+    // システムメニュー内のリンクをクリックした時にメニューを閉じる
+    const systemMenuLinks = document.querySelectorAll('#system-menu a');
+    systemMenuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (systemMenu) systemMenu.classList.remove('show');
+        });
+    });
+
     document.addEventListener('click', (e) => {
         if (themeMenu && !themeMenu.contains(e.target) && !themeSettingsBtn.contains(e.target)) {
             themeMenu.classList.remove('show');
@@ -518,7 +526,9 @@ export function initShell() {
             }
         });
 
-        if (!found) return; // 該当するツールがなければ何もしない
+        // システムメニュー等の隠しツールへの対応
+        const isHiddenTool = targetTool === 'test-runner';
+        if (!found && !isHiddenTool) return; // 該当するツールがなければ何もしない
 
         // いったん全て非表示
         document.querySelectorAll('.tool-section, .home-section').forEach(section => {
@@ -553,12 +563,27 @@ export function initShell() {
                     // 3. JSモジュールを動的インポートして default関数 を実行
                     const module = await import(`../../tools/${targetTool}/${targetTool}.js`);
                     if (module.default) {
-                        module.default();
+                        await module.default();
                     }
 
                     loadedTools.add(targetTool);
                 } catch (error) {
                     console.error(`Failed to load tool: ${targetTool}`, error);
+                    let errorSection = document.getElementById(`tool-${targetTool}`);
+                    if (!errorSection) {
+                        errorSection = document.createElement('section');
+                        errorSection.id = `tool-${targetTool}`;
+                        errorSection.className = 'tool-section';
+                        mainContent.appendChild(errorSection);
+                    }
+                    errorSection.innerHTML = `
+                        <div class="tool-title-area">
+                            <h2>⚠️ エラー</h2>
+                        </div>
+                        <p style="color: #ef4444; margin-bottom: 1rem; font-weight: bold;">ツールの読み込み中にエラーが発生しました。</p>
+                        <pre style="background: var(--code-bg); padding: 1rem; border-radius: 4px; overflow-x: auto; font-family: monospace; font-size: 0.85rem; color: var(--text-color); border: 1px solid var(--border-color);">${error.stack || error.message || error}</pre>
+                    `;
+                    errorSection.classList.add('active');
                     return;
                 }
             }

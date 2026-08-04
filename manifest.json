@@ -14,8 +14,15 @@
     {
       "action": "./",
       "accept": {
-        "text/markdown": [".md", ".markdown", ".mdown"],
-        "text/plain": [".txt", ".text"]
+        "text/markdown": [
+          ".md",
+          ".markdown",
+          ".mdown"
+        ],
+        "text/plain": [
+          ".txt",
+          ".text"
+        ]
       }
     }
   ],
@@ -29,7 +36,18 @@
       "files": [
         {
           "name": "shared_file",
-          "accept": [".md", ".markdown", ".mdown", ".txt", ".text", "text/markdown", "text/plain", "text/*", "application/octet-stream", "*/*"]
+          "accept": [
+            ".md",
+            ".markdown",
+            ".mdown",
+            ".txt",
+            ".text",
+            "text/markdown",
+            "text/plain",
+            "text/*",
+            "application/octet-stream",
+            "*/*"
+          ]
         }
       ]
     }
