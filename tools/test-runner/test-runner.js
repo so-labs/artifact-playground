@@ -1,4 +1,4 @@
-import { getAppVersion } from '../../js/lib/version.js';
+﻿import { getAppVersion } from '../../js/lib/version.js';
 
 let reduceText, makeNorinori, sliceText, checkWeight, parseData, toMarkdown, sortGridData;
 let parseHeadings, adjustHeadingLevels, formatCopyText, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, jumpToHeading, checkStructureIssues;
@@ -449,7 +449,7 @@ describe('国際化 (i18n)', () => {
 
         it('パラメータ置換（{0}, {1}など）が正しく行われること', () => {
             assertEquals(t('tool.20off.btn', [20], 'ja'), '20%削る');
-            assertEquals(t('tool.20off.btn', [20], 'en'), 'Cut 20%');
+            assertEquals(t('tool.20off.btn', [20], 'en'), 'Shave 20%');
             assertEquals(t('tool.sliceDrop.pageInfo', [1, 5], 'ja'), 'ページ 1 / 5');
             assertEquals(t('tool.sliceDrop.pageInfo', [1, 5], 'en'), 'Page 1 / 5');
         });

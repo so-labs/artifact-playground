@@ -672,13 +672,17 @@ export function initShell() {
                         errorSection.className = 'tool-section';
                         mainContent.appendChild(errorSection);
                     }
+                    const errorDetail = (error && (error.stack || error.message)) ? (error.stack || error.message) : t('common.errorNoDetail');
                     errorSection.innerHTML = `
                         <div class="tool-title-area">
-                            <h2>⚠️ エラー</h2>
+                            <h2 data-i18n="common.errorTitle">エラー</h2>
                         </div>
-                        <p style="color: #ef4444; margin-bottom: 1rem; font-weight: bold;">ツールの読み込み中にエラーが発生しました。</p>
-                        <pre style="background: var(--code-bg); padding: 1rem; border-radius: 4px; overflow-x: auto; font-family: monospace; font-size: 0.85rem; color: var(--text-color); border: 1px solid var(--border-color);">${error.stack || error.message || error}</pre>
+                        <div class="tool-load-error">
+                            <p class="error-message" data-i18n="common.toolLoadFailed">ツールの読み込み中にエラーが発生しました。</p>
+                            <pre class="error-detail">${errorDetail}</pre>
+                        </div>
                     `;
+                    applyTranslations(errorSection);
                     errorSection.classList.add('active');
                     return;
                 }

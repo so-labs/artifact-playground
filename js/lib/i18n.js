@@ -44,6 +44,9 @@ export const translations = {
         'common.helpAria': '説明を表示',
         'common.input': '入力テキスト',
         'common.output': '出力結果',
+        'common.errorTitle': 'エラー',
+        'common.toolLoadFailed': 'ツールの読み込み中にエラーが発生しました。',
+        'common.errorNoDetail': 'エラー詳細を取得できませんでした。',
 
         // Tool: 20% Off
         'tool.20off.title': '20% Off',
@@ -214,6 +217,9 @@ export const translations = {
         'common.helpAria': 'Show description',
         'common.input': 'Input Text',
         'common.output': 'Output',
+        'common.errorTitle': 'Error',
+        'common.toolLoadFailed': 'An error occurred while loading the tool.',
+        'common.errorNoDetail': 'Could not retrieve error details.',
 
         // Tool: 20% Off
         'tool.20off.title': '20% Off',
