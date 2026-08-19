@@ -1,4 +1,4 @@
-﻿/**
+/**
  * キャッシュバージョンの命名規則:
  * artifact-playground-YYYY.MM-rN
  *
@@ -6,7 +6,7 @@
  * MM   = 月（01〜12）
  * rN   = その月のリリース回数
  */
-const CACHE_NAME = 'artifact-playground-2026.08-r1';
+const CACHE_NAME = 'artifact-playground-2026.08-r2';
 const ASSETS = [
   './',
   './index.html',
@@ -15,6 +15,7 @@ const ASSETS = [
   './css/components.css',
   './js/main.js',
   './js/app/shell.js',
+  './js/lib/i18n.js',
   './js/lib/storage.js',
   './js/lib/version.js',
   './manifest.json',

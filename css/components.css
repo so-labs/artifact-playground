@@ -282,7 +282,8 @@ textarea {
     display: block;
 }
 
-.theme-submenu-list .theme-option {
+.theme-submenu-list .theme-option,
+.theme-submenu-list .lang-option {
     padding-left: 2rem;
     font-size: 0.9rem;
 }
@@ -352,14 +353,14 @@ textarea {
 
 .toggle-thumb {
     position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
     background-color: #fff;
+    border-radius: 50%;
     transition: transform 0.3s ease;
-    pointer-events: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .toggle-switch[aria-checked="true"] .toggle-thumb {
@@ -375,7 +376,8 @@ textarea {
     list-style: none;
 }
 
-.theme-option {
+.theme-option,
+.lang-option {
     width: 100%;
     padding: 0.75rem 1rem;
     background: transparent;
@@ -390,16 +392,23 @@ textarea {
     white-space: nowrap;
 }
 
-.theme-option:hover {
+.theme-option:hover,
+.lang-option:hover {
     background-color: var(--bg-color);
 }
 
-.theme-option.active {
+.theme-option.active,
+.lang-option.active {
     color: var(--primary-color);
     font-weight: bold;
     background-color: color-mix(in srgb, var(--primary-color) 12%, transparent);
     border-left: 3px solid var(--primary-color);
     padding-left: calc(1rem - 3px);
+}
+
+.theme-submenu-list .theme-option.active,
+.theme-submenu-list .lang-option.active {
+    padding-left: calc(2rem - 3px);
 }
 
 @keyframes fadeIn {

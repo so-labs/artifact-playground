@@ -1,7 +1,7 @@
-﻿<section id="tool-weight-over" class="tool-section">
+<section id="tool-weight-over" class="tool-section">
     <div class="tool-title-area">
-        <h2>ウエイトオーバー</h2>
-        <button class="help-btn" aria-label="説明を表示" aria-expanded="false">
+        <h2 data-i18n="tool.weightOver.title">ウエイトオーバー</h2>
+        <button class="help-btn" aria-label="説明を表示" data-i18n-aria="common.helpAria" aria-expanded="false">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
@@ -9,26 +9,24 @@
             </svg>
         </button>
     </div>
-    <div class="tool-description">
+    <div class="tool-description" data-i18n="tool.weightOver.desc">
         テキストの文字数をリアルタイムにカウントし、設定した上限文字数を超えていないかチェックします。上限に近づくと黄色、超えると赤色に変化してお知らせします。
     </div>
     <div class="wo-layout">
         <div class="wo-input-wrap">
             <div class="input-header">
-                <label for="wo-input">入力テキスト</label>
-                <button id="wo-btn-clear" class="btn small">クリア</button>
+                <label for="wo-input" data-i18n="common.input">入力テキスト</label>
+                <button id="wo-btn-clear" class="btn small" data-i18n="common.clear">クリア</button>
             </div>
-            <textarea id="wo-input" rows="12" placeholder="ここにテキストを入力...">メロスは激怒した。必ず、かの邪智暴虐の王を除かなければならぬと決意した。
-メロスには政治がわからぬ。メロスは、村の牧人である。笛を吹き、羊と遊んで暮して来た。けれども邪悪に対しては、人一倍に敏感であった。
-きょう未明メロスは村を出発し、野を越え山越え、十里はなれた此のシラクスの市にやって来た。メロスには父も、母も無い。女房も無い。十六の、内気な妹と二人暮しだ。</textarea>
+            <textarea id="wo-input" rows="12" data-i18n-placeholder="tool.weightOver.placeholder" placeholder="ここにテキストを入力..."></textarea>
         </div>
         <div class="wo-side">
             <div class="wo-limit-group">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                    <label for="wo-limit" style="margin-bottom: 0;">上限文字数</label>
+                    <label for="wo-limit" style="margin-bottom: 0;" data-i18n="tool.weightOver.limitLabel">上限文字数</label>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="font-size: 0.8rem; opacity: 0.8; font-weight: normal;">点滅を抑える</span>
-                        <button type="button" id="wo-mild-toggle" class="toggle-switch" role="switch" aria-checked="false" aria-label="点滅を抑える">
+                        <span style="font-size: 0.8rem; opacity: 0.8; font-weight: normal;" data-i18n="tool.weightOver.mildToggle">点滅を抑える</span>
+                        <button type="button" id="wo-mild-toggle" class="toggle-switch" role="switch" aria-checked="false" aria-label="点滅を抑える" data-i18n-aria="tool.weightOver.mildToggle">
                             <span class="toggle-thumb"></span>
                         </button>
                     </div>
@@ -37,7 +35,7 @@
                 <div class="wo-quick-buttons">
                     <button type="button" class="btn small quick-limit-btn" data-limit="140"
                         title="X (Twitter)">140</button>
-                    <button type="button" class="btn small quick-limit-btn" data-limit="400" title="原稿用紙1枚">400</button>
+                    <button type="button" class="btn small quick-limit-btn" data-limit="400" title="原稿用紙1枚" data-i18n-title="tool.weightOver.quickManuscript">400</button>
                     <button type="button" class="btn small quick-limit-btn" data-limit="1000">1,000</button>
                     <button type="button" class="btn small quick-limit-btn" data-limit="2000">2,000</button>
                     <button type="button" class="btn small quick-limit-btn" data-limit="2200"
@@ -49,7 +47,7 @@
             </div>
             <div class="wo-counter" id="wo-counter">
                 <div class="wo-count-number" id="wo-count">0</div>
-                <div class="wo-count-label">文字</div>
+                <div class="wo-count-label" data-i18n="tool.weightOver.countUnit">文字</div>
                 <div class="wo-limit-display">/ <span id="wo-limit-display">1000</span></div>
             </div>
         </div>

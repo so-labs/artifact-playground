@@ -1,5 +1,6 @@
 // Tool: ノリノリ音符
 import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 
 export function makeNorinori(text, notes = ['♪', '♫', '♬']) {
     if (!text) return '';
@@ -27,6 +28,7 @@ export function makeNorinori(text, notes = ['♪', '♫', '♬']) {
 }
 
 export default function init() {
+    const section = document.getElementById('tool-norinori-note');
     const inputEl = document.getElementById('nn-input');
     const outputEl = document.getElementById('nn-output');
     const btnConvert = document.getElementById('nn-btn-convert');
@@ -39,8 +41,10 @@ export default function init() {
 
     // LocalStorageから状態を復元
     const savedText = storage.get('text');
-    if (savedText) {
+    if (savedText !== null) {
         inputEl.value = savedText;
+    } else {
+        inputEl.value = t('tool.norinori.sample');
     }
 
     // 入力テキストの変更を保存
@@ -58,11 +62,19 @@ export default function init() {
     btnClear.addEventListener('click', () => {
         inputEl.value = '';
         outputEl.value = '';
-        storage.remove('text');
+        storage.set('text', '');
     });
 
     // クリップボードへコピー
     btnCopy.addEventListener('click', () => {
         copyToClipboard(outputEl.value, btnCopy);
+    });
+
+    // 言語変更の検知
+    onLanguageChange(() => {
+        if (section) applyTranslations(section);
+        if (storage.get('text') === null) {
+            inputEl.value = t('tool.norinori.sample');
+        }
     });
 }

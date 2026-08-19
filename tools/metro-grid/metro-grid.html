@@ -1,7 +1,7 @@
-﻿<section id="tool-metro-grid" class="tool-section">
+<section id="tool-metro-grid" class="tool-section">
     <div class="tool-title-area">
-        <h2>メトロ・グリッド</h2>
-        <button class="help-btn" aria-label="説明を表示" aria-expanded="false">
+        <h2 data-i18n="tool.metroGrid.title">メトロ・グリッド</h2>
+        <button class="help-btn" aria-label="説明を表示" data-i18n-aria="common.helpAria" aria-expanded="false">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                 stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -10,7 +10,7 @@
             </svg>
         </button>
     </div>
-    <div class="tool-description">
+    <div class="tool-description" data-i18n-html="tool.metroGrid.desc">
         整然とした「鉄格子」のようなMarkdownテーブルやTSV（タブ区切り）データを、直感的に並び替え（ソート）、列削除、相互変換できる軽量なグリッド・ワークベンチです。<br><br>
         テーブルのセルをダブルクリックするとその場で簡易編集が可能です。
     </div>
@@ -19,26 +19,20 @@
         <!-- インプットエリア -->
         <div class="mg-panel">
             <div class="input-header">
-                <label for="mg-input">入力 (Markdown / TSV)</label>
-                <button id="mg-btn-clear" class="btn small">クリア</button>
+                <label for="mg-input" data-i18n="tool.metroGrid.inputLabel">入力 (Markdown / TSV)</label>
+                <button id="mg-btn-clear" class="btn small" data-i18n="common.clear">クリア</button>
             </div>
-            <textarea id="mg-input" rows="6" placeholder="Markdownテーブル または TSVデータを貼り付けてください...">| 識別コード | 被検体クラス | 危険度 | 好物 | 主な出現場所 |
-| :---: | :--- | :---: | :--- | :--- |
-| UO-01 | 未確認ネコ型重力球 | ★★★★☆ | おかかチュール | 飼い主の顔の上（午前4時） |
-| UF-02 | 電脳クラゲ（バグ食い） | ★★☆☆☆ | 404エラーページ | 古いサーバーラックの奥 |
-| US-03 | 異次元自動ルンバ | ★★★★★ | 観葉植物の土 | 主のいないリビングルーム |
-| UA-04 | 窓際光合成おじさん | ★☆☆☆☆ | 縁側の緑茶と羊羹 | 日当たりの良い畳の上 |
-| UX-05 | 締め切り前ファントム | ★★★★★★ | 缶コーヒー、現実逃避 | 進捗率50%の作業スペース |</textarea>
+            <textarea id="mg-input" rows="6" data-i18n-placeholder="tool.metroGrid.placeholder" placeholder="Markdownテーブル または TSVデータを貼り付けてください..."></textarea>
         </div>
 
         <!-- グリッドUIエリア -->
         <div class="mg-panel mg-grid-panel">
             <div class="input-header">
-                <label>プレビュー＆編集</label>
+                <label data-i18n="tool.metroGrid.preview">プレビュー＆編集</label>
                 <span class="mg-grid-info" id="mg-grid-info">0 行 × 0 列</span>
             </div>
             <div class="mg-table-wrapper" id="mg-table-wrapper">
-                <div class="mg-empty-msg">データがありません</div>
+                <div class="mg-empty-msg" data-i18n="tool.metroGrid.noData">データがありません</div>
                 <table id="mg-table" class="mg-table" hidden>
                     <thead id="mg-thead"></thead>
                     <tbody id="mg-tbody"></tbody>
@@ -49,22 +43,22 @@
         <!-- アウトプットエリア -->
         <div class="mg-panel">
             <div class="output-header mg-output-header">
-                <label for="mg-output">出力</label>
+                <label for="mg-output" data-i18n="tool.metroGrid.output">出力</label>
                 <div class="mg-output-actions">
                     <div class="mg-checkbox-label">
-                        <label for="mg-opt-padding">等幅フォーマット(MD)</label>
+                        <label for="mg-opt-padding" data-i18n="tool.metroGrid.optPadding">等幅フォーマット(MD)</label>
                         <button type="button" id="mg-opt-padding" class="toggle-switch" role="switch"
-                            aria-checked="false" aria-label="等幅フォーマット">
+                            aria-checked="false" aria-label="等幅フォーマット" data-i18n-aria="tool.metroGrid.optPadding">
                             <span class="toggle-thumb"></span>
                         </button>
                     </div>
                     <div class="mg-action-btns">
-                        <button id="mg-btn-copy-md" class="btn small primary">MDでコピー</button>
-                        <button id="mg-btn-copy-tsv" class="btn small secondary">TSVでコピー</button>
+                        <button id="mg-btn-copy-md" class="btn small primary" data-i18n="tool.metroGrid.copyMd">MDでコピー</button>
+                        <button id="mg-btn-copy-tsv" class="btn small secondary" data-i18n="tool.metroGrid.copyTsv">TSVでコピー</button>
                     </div>
                 </div>
             </div>
-            <textarea id="mg-output" rows="6" readonly placeholder="変換結果がここに表示されます"></textarea>
+            <textarea id="mg-output" rows="6" readonly data-i18n-placeholder="tool.metroGrid.outputPlaceholder" placeholder="変換結果がここに表示されます"></textarea>
         </div>
     </div>
 </section>

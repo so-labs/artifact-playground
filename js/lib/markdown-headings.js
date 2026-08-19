@@ -1,4 +1,5 @@
 // Markdown 見出し解析・操作の共通ライブラリ
+import { t } from './i18n.js';
 
 export function splitLines(text) {
     return text.split(/\r?\n/);
@@ -211,8 +212,8 @@ function resolveScopeRange(lines, scope, cursorLine) {
 
     const actualEndLine = trimSectionEnd(lines, startLine, endLine);
     const sourceName = scope === 'area'
-        ? `エリア「${currentHeadingText}」`
-        : `セクション「${currentHeadingText}」`;
+        ? t('tool.outlineStudio.sourceArea', [currentHeadingText])
+        : t('tool.outlineStudio.sourceSection', [currentHeadingText]);
 
     return { startLine, endLine: actualEndLine, sourceName, currentHeadingText };
 }
@@ -223,11 +224,11 @@ export function extractText(text, { scope = 'section', cursorLine = 0, selection
     }
 
     if (scope === 'full') {
-        return { text, sourceName: 'ノート全文', startLine: 0, endLine: splitLines(text).length };
+        return { text, sourceName: t('tool.outlineStudio.sourceFull'), startLine: 0, endLine: splitLines(text).length };
     }
 
     if (selection && selection.trim().length > 0) {
-        return { text: selection, sourceName: '選択範囲', startLine: -1, endLine: -1 };
+        return { text: selection, sourceName: t('tool.outlineStudio.sourceSelection'), startLine: -1, endLine: -1 };
     }
 
     const lines = splitLines(text);
@@ -400,10 +401,10 @@ export function checkStructureIssues(text) {
     let prevLevel = 0;
     headings.forEach((h, i) => {
         if (i === 0 && h.level > 1) {
-            issues.push({ line: h.line, message: `文書の最初の見出しが H${h.level} です（H1 推奨）` });
+            issues.push({ line: h.line, message: t('tool.outlineStudio.issueFirstH', [h.level]) });
         }
         if (h.level > prevLevel + 1 && prevLevel > 0) {
-            issues.push({ line: h.line, message: `H${prevLevel} の次に H${h.level} があります（レベルを飛ばしています）` });
+            issues.push({ line: h.line, message: t('tool.outlineStudio.issueSkipH', [prevLevel, h.level]) });
         }
         prevLevel = h.level;
     });

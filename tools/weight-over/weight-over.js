@@ -1,5 +1,6 @@
-﻿// Tool: ウエイトオーバー
+// Tool: ウエイトオーバー
 import { createToolStorage } from '../../js/lib/storage.js';
+import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 
 export function checkWeight(text, limit) {
     const count = text.length;
@@ -33,8 +34,10 @@ export default function init() {
         woLimitInput.value = savedLimit;
     }
     const savedText = storage.get('text');
-    if (savedText) {
+    if (savedText !== null) {
         woInput.value = savedText;
+    } else {
+        woInput.value = t('tool.weightOver.sample');
     }
 
     const isMild = storage.get('mild-mode') === 'true';
@@ -90,6 +93,7 @@ export default function init() {
     if (woBtnClear) {
         woBtnClear.addEventListener('click', () => {
             woInput.value = '';
+            storage.set('text', '');
             updateWoCount(true);
         });
     }
@@ -111,4 +115,13 @@ export default function init() {
 
     // 初期ロード時はLocalStorageへの自動保存を行わない
     updateWoCount(false);
+
+    // 言語変更の検知
+    onLanguageChange(() => {
+        if (woSection) applyTranslations(woSection);
+        if (storage.get('text') === null) {
+            woInput.value = t('tool.weightOver.sample');
+            updateWoCount(false);
+        }
+    });
 }

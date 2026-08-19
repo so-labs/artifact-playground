@@ -1,5 +1,6 @@
-﻿// Tool: アウトライン・スタジオ
+// Tool: アウトライン・スタジオ
 import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 import {
     parseHeadings,
     formatCopyText,
@@ -104,7 +105,7 @@ function updateUI(state) {
     const activeHeadingLine = findHeadingLineAtCursor(text, cursorLine);
     const headings = parseHeadings(text);
 
-    cursorInfoEl.textContent = `行 ${cursorLine + 1}`;
+    cursorInfoEl.textContent = t('tool.outlineStudio.lineInfo', [cursorLine + 1]);
 
     renderOutline(outlineEl, headings, activeHeadingLine, (line) => {
         focusLineAtTop(inputEl, line);
@@ -114,7 +115,7 @@ function updateUI(state) {
     if (issues.length > 0) {
         issuesEl.hidden = false;
         issuesEl.textContent = `⚠ ${issues[0].message}`;
-        issuesEl.title = issues.map(i => `行 ${i.line + 1}: ${i.message}`).join('\n');
+        issuesEl.title = issues.map(i => `${t('tool.outlineStudio.lineInfo', [i.line + 1])}: ${i.message}`).join('\n');
     } else {
         issuesEl.hidden = true;
         issuesEl.textContent = '';
@@ -137,12 +138,12 @@ function updateUI(state) {
     const hasText = text.trim().length > 0;
     if (fileHandle) {
         saveBtn.disabled = false;
-        saveBtn.textContent = '保存';
+        saveBtn.textContent = t('tool.outlineStudio.save');
         fileNameEl.hidden = false;
         fileNameEl.textContent = fileHandle.name;
     } else {
         saveBtn.disabled = !hasText;
-        saveBtn.textContent = 'ダウンロード';
+        saveBtn.textContent = t('tool.outlineStudio.download');
     }
 }
 
@@ -150,7 +151,7 @@ function renderOutline(container, headings, activeLine, onClick) {
     container.innerHTML = '';
 
     if (headings.length === 0) {
-        container.innerHTML = '<p class="os-empty">見出しがありません</p>';
+        container.innerHTML = `<p class="os-empty">${t('tool.outlineStudio.noHeadings')}</p>`;
         return;
     }
 
@@ -195,7 +196,7 @@ async function openFileWithPicker(state) {
         try {
             const [handle] = await window.showOpenFilePicker({
                 types: [{
-                    description: 'Markdown / テキスト',
+                    description: t('tool.outlineStudio.fileDesc'),
                     accept: {
                         'text/markdown': ['.md', '.markdown', '.mdown'],
                         'text/plain': ['.txt'],
@@ -230,11 +231,11 @@ async function saveFile(state) {
             const writable = await fileHandle.createWritable();
             await writable.write(state.inputEl.value);
             await writable.close();
-            state.saveBtn.textContent = '保存完了！';
+            state.saveBtn.textContent = t('tool.outlineStudio.saveSuccess');
             setTimeout(() => { updateUI(state); }, 1200);
         } catch (err) {
             console.error(err);
-            alert('ファイルの保存に失敗しました。');
+            alert(t('tool.outlineStudio.saveFailed'));
         }
     } else {
         // ダウンロード（書き出し）
@@ -250,11 +251,11 @@ async function saveFile(state) {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            state.saveBtn.textContent = 'ダウンロード完了！';
+            state.saveBtn.textContent = t('tool.outlineStudio.saveSuccess');
             setTimeout(() => { updateUI(state); }, 1200);
         } catch (err) {
             console.error(err);
-            alert('ファイルのダウンロードに失敗しました。');
+            alert(t('tool.outlineStudio.saveFailed'));
         }
     }
 }
@@ -277,6 +278,7 @@ function consumePendingFile(state) {
 }
 
 export default function init() {
+    const section = document.getElementById('tool-outline-studio');
     const inputEl = document.getElementById('os-input');
     const previewEl = document.getElementById('os-preview');
     const outlineEl = document.getElementById('os-outline');
@@ -296,7 +298,11 @@ export default function init() {
     };
 
     const savedText = storage.get('text');
-    if (savedText) inputEl.value = savedText;
+    if (savedText !== null) {
+        inputEl.value = savedText;
+    } else {
+        inputEl.value = t('tool.outlineStudio.sample');
+    }
 
     const refresh = () => updateUI(state);
 
@@ -337,7 +343,7 @@ export default function init() {
 
     document.getElementById('os-btn-clear')?.addEventListener('click', () => {
         inputEl.value = '';
-        storage.remove('text');
+        storage.set('text', '');
         fileHandle = null;
         fileNameEl.hidden = true;
         fileNameEl.textContent = '';
@@ -376,4 +382,13 @@ export default function init() {
     consumePendingFile(state);
     window.addEventListener('os-pending-file', () => consumePendingFile(state));
     refresh();
+
+    // 言語変更の検知
+    onLanguageChange(() => {
+        if (section) applyTranslations(section);
+        if (storage.get('text') === null) {
+            inputEl.value = t('tool.outlineStudio.sample');
+        }
+        refresh();
+    });
 }

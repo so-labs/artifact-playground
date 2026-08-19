@@ -1,5 +1,6 @@
-﻿// Tool: スライスドロップ
+// Tool: スライスドロップ
 import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 
 export function sliceText(text, limit, addPrefix) {
     const chars = Array.from(text);
@@ -78,6 +79,7 @@ export function sliceText(text, limit, addPrefix) {
 }
 
 export default function init() {
+    const section = document.getElementById('tool-slice-drop');
     const sdInput = document.getElementById('sd-input');
     const sdLimitInput = document.getElementById('sd-limit');
     const sdOutputText = document.getElementById('sd-output-text');
@@ -105,8 +107,10 @@ export default function init() {
         sdLimitInput.value = savedLimit;
     }
     const savedText = storage.get('text');
-    if (savedText) {
+    if (savedText !== null) {
         sdInput.value = savedText;
+    } else {
+        sdInput.value = t('tool.sliceDrop.sample');
     }
     let isAddPrefix = false;
     const savedAddPrefix = storage.get('add-prefix');
@@ -160,16 +164,16 @@ export default function init() {
 
         if (totalPages === 0) {
             sdOutputText.value = '';
-            sdPaginationInfo.textContent = 'ページ 0 / 0';
-            sdCurrentPageLabel.textContent = '0/0';
+            sdPaginationInfo.textContent = t('tool.sliceDrop.pageInfo', [0, 0]);
+            if (sdCurrentPageLabel) sdCurrentPageLabel.textContent = '0/0';
             sdBtnPrev.disabled = true;
             sdBtnNext.disabled = true;
             return;
         }
 
         sdOutputText.value = chunks[currentPageIndex] || '';
-        sdPaginationInfo.textContent = `ページ ${currentPageIndex + 1} / ${totalPages}`;
-        sdCurrentPageLabel.textContent = `${currentPageIndex + 1}/${totalPages}`;
+        sdPaginationInfo.textContent = t('tool.sliceDrop.pageInfo', [currentPageIndex + 1, totalPages]);
+        if (sdCurrentPageLabel) sdCurrentPageLabel.textContent = `${currentPageIndex + 1}/${totalPages}`;
 
         sdBtnPrev.disabled = currentPageIndex === 0;
         sdBtnNext.disabled = currentPageIndex === totalPages - 1;
@@ -231,4 +235,14 @@ export default function init() {
 
     // 初期処理
     updateSlices(false);
+
+    // 言語変更の検知
+    onLanguageChange(() => {
+        if (section) applyTranslations(section);
+        updatePageDisplay();
+        if (storage.get('text') === null) {
+            sdInput.value = t('tool.sliceDrop.sample');
+            updateSlices(false);
+        }
+    });
 }

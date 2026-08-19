@@ -1,5 +1,6 @@
-﻿import { isTempMode, setTempMode } from '../lib/storage.js';
+import { isTempMode, setTempMode } from '../lib/storage.js';
 import { getAppVersion } from '../lib/version.js';
+import { getLanguage, setLanguage, t, applyTranslations, onLanguageChange } from '../lib/i18n.js';
 
 // App Shell: テーマ / サイドバー / ツール切替
 
@@ -190,38 +191,38 @@ function stopPrimaryAnimation() {
 const TOOLS_CONFIG = [
     {
         id: '20-off',
-        title: '20% Off',
-        description: '入力したテキストから、指定した割合（％）の文字をランダムに削り落とすツール。',
+        titleKey: 'tool.20off.title',
+        descKey: 'tool.20off.summary',
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>'
     },
     {
         id: 'weight-over',
-        title: 'ウエイトオーバー',
-        description: '文字数上限を意識しながら書くためのリアルタイム文字数カウンター。上限に近づくと画面が警告してくれます。',
+        titleKey: 'tool.weightOver.title',
+        descKey: 'tool.weightOver.summary',
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>'
     },
     {
         id: 'slice-drop',
-        title: 'スライスドロップ',
-        description: '長い文章を指定した上限文字数で自動的に分割し、ページごとに切り替えて個別にコピーできるツール。長文の小分け投稿に便利です。',
+        titleKey: 'tool.sliceDrop.title',
+        descKey: 'tool.sliceDrop.summary',
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>'
     },
     {
         id: 'norinori-note',
-        title: 'ノリノリ音符',
-        description: '文章の改行を整理して、各フレーズの末尾にランダムな音符をくっつけるツール。文章を強制的に陽気な雰囲気にします。',
+        titleKey: 'tool.norinori.title',
+        descKey: 'tool.norinori.summary',
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>'
     },
     {
         id: 'outline-studio',
-        title: 'アウトライン・スタジオ',
-        description: 'Markdownの見出し構造を操作・抽出するワークベンチ。アウトライン表示、見出し調整、スマートコピーができます。',
+        titleKey: 'tool.outlineStudio.title',
+        descKey: 'tool.outlineStudio.summary',
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>'
     },
     {
         id: 'metro-grid',
-        title: 'メトロ・グリッド',
-        description: 'MarkdownテーブルやTSVデータを直感的に並び替え、列削除、相互変換できるグリッド・ワークベンチ。',
+        titleKey: 'tool.metroGrid.title',
+        descKey: 'tool.metroGrid.summary',
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>'
     }
 ];
@@ -234,6 +235,12 @@ export function initShell() {
     const primaryToggleBtn = document.getElementById('primary-animate-toggle');
     const tempModeToggleBtn = document.getElementById('temp-mode-toggle');
 
+    // 言語切り替え機能
+    const langSubmenuToggle = document.getElementById('lang-submenu-toggle');
+    const langSubmenuList = document.getElementById('lang-submenu-list');
+    const langOptions = document.querySelectorAll('#theme-menu .lang-option');
+    const currentLangNameEl = document.getElementById('current-lang-name');
+
     // 開発・システムメニュー
     const systemMenuBtn = document.getElementById('system-menu-btn');
     const systemMenu = document.getElementById('system-menu');
@@ -244,6 +251,7 @@ export function initShell() {
     if (systemMenu) document.body.appendChild(systemMenu);
 
     let currentThemeSetting = localStorage.getItem('app-theme') || 'system';
+    let currentLangSetting = getLanguage();
 
     // プライマリーカラーアニメーションの初期状態（デフォルト: オン）
     const savedPrimaryAnimate = localStorage.getItem('primary-animate');
@@ -302,10 +310,15 @@ export function initShell() {
         });
     }
 
-    const THEME_NAMES = { light: 'ライト', dark: 'ダーク', system: 'システム' };
     const themeSubmenuToggle = document.getElementById('theme-submenu-toggle');
     const themeSubmenuList = document.getElementById('theme-submenu-list');
     const currentThemeNameEl = document.getElementById('current-theme-name');
+
+    const updateThemeNameDisplay = (setting) => {
+        if (currentThemeNameEl) {
+            currentThemeNameEl.textContent = t(`theme.${setting}`);
+        }
+    };
 
     const applyTheme = (setting) => {
         let isDark = false;
@@ -327,9 +340,7 @@ export function initShell() {
             updateThemeColor('#ffffff', isThemeReady);
         }
 
-        if (currentThemeNameEl) {
-            currentThemeNameEl.textContent = THEME_NAMES[setting] || 'システム';
-        }
+        updateThemeNameDisplay(setting);
 
         themeOptions.forEach(opt => {
             if (opt.getAttribute('data-value') === setting) {
@@ -340,15 +351,135 @@ export function initShell() {
         });
     };
 
+    // UI 要素の取得
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const appContainer = document.querySelector('.app-container');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const toolListContainer = document.getElementById('tool-list');
+    const homeTilesContainer = document.getElementById('home-tiles');
+    const mainContent = document.getElementById('main-content');
+    const loadedTools = new Set();
+
+    // ツールリストの描画
+    function renderToolList() {
+        if (!toolListContainer) return;
+        const currentActive = window.location.hash.replace('#', '') || 'home';
+        toolListContainer.innerHTML = '';
+
+        // ホームリンク
+        const homeLi = document.createElement('li');
+        const homeA = document.createElement('a');
+        homeA.href = `#home`;
+        homeA.className = `tool-link${currentActive === 'home' ? ' active' : ''}`;
+        homeA.setAttribute('data-tool', 'home');
+        homeA.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 8px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>${t('nav.home')}`;
+        homeLi.appendChild(homeA);
+        toolListContainer.appendChild(homeLi);
+
+        TOOLS_CONFIG.forEach(tool => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = `#${tool.id}`;
+            a.className = `tool-link${currentActive === tool.id ? ' active' : ''}`;
+            a.setAttribute('data-tool', tool.id);
+            a.textContent = t(tool.titleKey);
+            li.appendChild(a);
+            toolListContainer.appendChild(li);
+        });
+    }
+
+    // タイルメニューの描画
+    function renderHomeTiles() {
+        if (!homeTilesContainer) return;
+        homeTilesContainer.innerHTML = '';
+
+        TOOLS_CONFIG.forEach(tool => {
+            const tile = document.createElement('a');
+            tile.href = `#${tool.id}`;
+            tile.className = 'home-tile';
+            tile.innerHTML = `
+                <div class="home-tile-title">
+                    ${tool.icon || ''}
+                    ${t(tool.titleKey)}
+                </div>
+                <div class="home-tile-desc">
+                    ${t(tool.descKey)}
+                </div>
+            `;
+            homeTilesContainer.appendChild(tile);
+        });
+    }
+
+    // 言語設定の適用
+    const LANG_NAMES = { ja: '日本語', en: 'English' };
+
+    const applyLang = (lang) => {
+        currentLangSetting = setLanguage(lang);
+        if (currentLangNameEl) {
+            currentLangNameEl.textContent = LANG_NAMES[currentLangSetting] || '日本語';
+        }
+
+        langOptions.forEach(opt => {
+            if (opt.getAttribute('data-value') === currentLangSetting) {
+                opt.classList.add('active');
+            } else {
+                opt.classList.remove('active');
+            }
+        });
+
+        // DOMの静的要素を一括更新
+        applyTranslations(document);
+        renderToolList();
+        renderHomeTiles();
+        updateThemeNameDisplay(currentThemeSetting);
+
+        if (sidebarToggle) {
+            const isCollapsed = sidebar && sidebar.classList.contains('collapsed');
+            sidebarToggle.setAttribute('aria-label', isCollapsed ? t('header.sidebarToggleOpen') : t('header.sidebarToggle'));
+        }
+    };
+
     // 初期状態の反映
     applyTheme(currentThemeSetting);
+    applyLang(currentLangSetting);
 
-    // サブメニューの開閉処理
+    // 言語サブメニューの開閉処理
+    if (langSubmenuToggle && langSubmenuList) {
+        langSubmenuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = langSubmenuList.classList.toggle('show');
+            langSubmenuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if (isOpen && themeSubmenuList) {
+                themeSubmenuList.classList.remove('show');
+                themeSubmenuToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        langOptions.forEach(opt => {
+            opt.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const val = opt.getAttribute('data-value');
+                applyLang(val);
+                themeMenu.classList.remove('show');
+                if (langSubmenuList && langSubmenuToggle) {
+                    langSubmenuList.classList.remove('show');
+                    langSubmenuToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+    }
+
+    // テーマサブメニューの開閉処理
     if (themeSubmenuToggle && themeSubmenuList) {
         themeSubmenuToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             const isOpen = themeSubmenuList.classList.toggle('show');
             themeSubmenuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if (isOpen && langSubmenuList) {
+                langSubmenuList.classList.remove('show');
+                langSubmenuToggle.setAttribute('aria-expanded', 'false');
+            }
         });
     }
 
@@ -360,8 +491,6 @@ export function initShell() {
     // メニューをボタン位置に基づいて配置するヘルパー
     function positionMenu(menu, btn) {
         const rect = btn.getBoundingClientRect();
-        // メニューを一旦表示して高さを取得
-        const menuHeight = menu.offsetHeight;
         menu.style.left = rect.left + 'px';
         menu.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
     }
@@ -375,9 +504,15 @@ export function initShell() {
             if (isMenuShow) {
                 positionMenu(themeMenu, themeSettingsBtn);
             }
-            if (!isMenuShow && themeSubmenuList && themeSubmenuToggle) {
-                themeSubmenuList.classList.remove('show');
-                themeSubmenuToggle.setAttribute('aria-expanded', 'false');
+            if (!isMenuShow) {
+                if (themeSubmenuList && themeSubmenuToggle) {
+                    themeSubmenuList.classList.remove('show');
+                    themeSubmenuToggle.setAttribute('aria-expanded', 'false');
+                }
+                if (langSubmenuList && langSubmenuToggle) {
+                    langSubmenuList.classList.remove('show');
+                    langSubmenuToggle.setAttribute('aria-expanded', 'false');
+                }
             }
         });
 
@@ -423,6 +558,10 @@ export function initShell() {
                 themeSubmenuList.classList.remove('show');
                 themeSubmenuToggle.setAttribute('aria-expanded', 'false');
             }
+            if (langSubmenuList && langSubmenuToggle) {
+                langSubmenuList.classList.remove('show');
+                langSubmenuToggle.setAttribute('aria-expanded', 'false');
+            }
         }
         if (systemMenu && !systemMenu.contains(e.target) && !systemMenuBtn.contains(e.target)) {
             systemMenu.classList.remove('show');
@@ -437,6 +576,10 @@ export function initShell() {
             themeSubmenuList.classList.remove('show');
             themeSubmenuToggle.setAttribute('aria-expanded', 'false');
         }
+        if (langSubmenuList && langSubmenuToggle) {
+            langSubmenuList.classList.remove('show');
+            langSubmenuToggle.setAttribute('aria-expanded', 'false');
+        }
     };
 
     window.addEventListener('resize', closeAllMenus);
@@ -446,7 +589,7 @@ export function initShell() {
         clearDataBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             systemMenu.classList.remove('show');
-            if (confirm('ローカルに保存されているすべてのツールデータや設定を削除します。\nよろしいですか？（※削除後、ページがリロードされます）')) {
+            if (confirm(t('menu.clearConfirm'))) {
                 localStorage.clear();
                 window.location.reload();
             }
@@ -460,60 +603,7 @@ export function initShell() {
         }
     });
 
-    // UI 要素の取得
-    const menuToggle = document.getElementById('menu-toggle');
-    const sidebar = document.getElementById('sidebar');
-    const appContainer = document.querySelector('.app-container');
-
-    // ツールリストの動的生成
-    const toolListContainer = document.getElementById('tool-list');
-    if (toolListContainer) {
-        // ホームリンク
-        const homeLi = document.createElement('li');
-        const homeA = document.createElement('a');
-        homeA.href = `#home`;
-        homeA.className = 'tool-link';
-        homeA.setAttribute('data-tool', 'home');
-        homeA.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 8px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>ホーム';
-        homeLi.appendChild(homeA);
-        toolListContainer.appendChild(homeLi);
-
-        TOOLS_CONFIG.forEach(tool => {
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.href = `#${tool.id}`;
-            a.className = 'tool-link';
-            a.setAttribute('data-tool', tool.id);
-            a.textContent = tool.title;
-            li.appendChild(a);
-            toolListContainer.appendChild(li);
-        });
-    }
-
-    // タイルメニューの動的生成
-    const homeTilesContainer = document.getElementById('home-tiles');
-    if (homeTilesContainer) {
-        TOOLS_CONFIG.forEach(tool => {
-            const tile = document.createElement('a');
-            tile.href = `#${tool.id}`;
-            tile.className = 'home-tile';
-            tile.innerHTML = `
-                <div class="home-tile-title">
-                    ${tool.icon || ''}
-                    ${tool.title}
-                </div>
-                <div class="home-tile-desc">
-                    ${tool.description}
-                </div>
-            `;
-            homeTilesContainer.appendChild(tile);
-        });
-    }
-
     // ツール切り替え
-    const mainContent = document.getElementById('main-content');
-    const loadedTools = new Set();
-
     const switchTool = async (targetTool) => {
         let found = false;
         const toolLinks = document.querySelectorAll('.tool-link');
@@ -560,7 +650,13 @@ export function initShell() {
                     // 2. DOMに追加
                     mainContent.insertAdjacentHTML('beforeend', html);
 
-                    // 3. JSモジュールを動的インポートして default関数 を実行
+                    // 3. 多言語テキストの反映
+                    const addedSection = document.getElementById(`tool-${targetTool}`);
+                    if (addedSection) {
+                        applyTranslations(addedSection);
+                    }
+
+                    // 4. JSモジュールを動的インポートして default関数 を実行
                     const module = await import(`../../tools/${targetTool}/${targetTool}.js`);
                     if (module.default) {
                         await module.default();
@@ -676,7 +772,6 @@ export function initShell() {
     }
 
     // サイドバー折りたたみ（デスクトップ用）
-    const sidebarToggle = document.getElementById('sidebar-toggle');
     const savedCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
     if (savedCollapsed && window.innerWidth > 768) {
         sidebar.classList.add('collapsed');
@@ -690,7 +785,7 @@ export function initShell() {
             document.body.classList.toggle('sidebar-collapsed', isCollapsed);
             if (appContainer) appContainer.classList.toggle('sidebar-collapsed', isCollapsed);
             localStorage.setItem('sidebar-collapsed', isCollapsed);
-            sidebarToggle.setAttribute('aria-label', isCollapsed ? 'サイドバーを開く' : 'サイドバーを折りたたむ');
+            sidebarToggle.setAttribute('aria-label', isCollapsed ? t('header.sidebarToggleOpen') : t('header.sidebarToggle'));
         });
     }
 
@@ -719,4 +814,4 @@ export function initShell() {
             }
         });
     }
-}
+}

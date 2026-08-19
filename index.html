@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 
 <head>
@@ -21,6 +21,9 @@
     <script>
         (function () {
             try {
+                var lang = localStorage.getItem('app-lang') || (navigator.language && navigator.language.toLowerCase().startsWith('ja') ? 'ja' : 'en');
+                document.documentElement.setAttribute('lang', lang);
+
                 var theme = localStorage.getItem('app-theme') || 'system';
                 var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
                 var metaThemeColor = document.getElementById('theme-color-meta');
@@ -45,12 +48,12 @@
 <body>
     <header class="app-header">
         <div class="header-left">
-            <button id="menu-toggle" class="menu-toggle" aria-label="メニューを開く">
+            <button id="menu-toggle" class="menu-toggle" aria-label="メニューを開く" data-i18n-aria="header.menuToggle">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-            <button id="sidebar-toggle" class="sidebar-toggle" aria-label="サイドバーを折りたたむ">
+            <button id="sidebar-toggle" class="sidebar-toggle" aria-label="サイドバーを折りたたむ" data-i18n-aria="header.sidebarToggle">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="15 18 9 12 15 6"></polyline>
@@ -70,7 +73,7 @@
                 </nav>
             </div>
             <div class="sidebar-footer">
-                <button id="theme-settings-btn" class="settings-btn" aria-label="テーマ設定">
+                <button id="theme-settings-btn" class="settings-btn" aria-label="テーマ設定" data-i18n-aria="menu.themeSettings">
                     <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
                         stroke-linecap="round" stroke-linejoin="round" class="settings-icon">
                         <circle cx="12" cy="12" r="3"></circle>
@@ -79,7 +82,7 @@
                         </path>
                     </svg>
                 </button>
-                <button id="system-menu-btn" class="settings-btn" aria-label="開発・システム機能">
+                <button id="system-menu-btn" class="settings-btn" aria-label="開発・システム機能" data-i18n-aria="menu.systemSettings">
                     <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M10 2v7.5M14 2v7.5M8.5 2h7M14 11.5L19 21H5l5-9.5"></path>
@@ -88,10 +91,31 @@
                 <div id="theme-menu" class="theme-menu">
                     <ul>
                         <li class="theme-menu-submenu-item">
+                            <button id="lang-submenu-toggle" class="theme-submenu-header" aria-expanded="false">
+                                <div class="menu-item-label-group">
+                                    <span class="menu-item-title" data-i18n="menu.lang">言語</span>
+                                    <span class="menu-item-desc" data-i18n="menu.langDesc">表示言語の切り替え</span>
+                                </div>
+                                <span class="theme-current-label">
+                                    <span id="current-lang-name">日本語</span>
+                                    <svg class="chevron-icon" viewBox="0 0 24 24" width="16" height="16"
+                                        stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </span>
+                            </button>
+                            <ul id="lang-submenu-list" class="theme-submenu-list">
+                                <li><button class="lang-option" data-value="en">English</button></li>
+                                <li><button class="lang-option" data-value="ja">日本語</button></li>
+                            </ul>
+                        </li>
+                        <li class="theme-menu-separator"></li>
+                        <li class="theme-menu-submenu-item">
                             <button id="theme-submenu-toggle" class="theme-submenu-header" aria-expanded="false">
                                 <div class="menu-item-label-group">
-                                    <span class="menu-item-title">テーマ</span>
-                                    <span class="menu-item-desc">アプリの外観切り替え</span>
+                                    <span class="menu-item-title" data-i18n="menu.theme">テーマ</span>
+                                    <span class="menu-item-desc" data-i18n="menu.themeDesc">アプリの外観切り替え</span>
                                 </div>
                                 <span class="theme-current-label">
                                     <span id="current-theme-name">システム</span>
@@ -103,29 +127,29 @@
                                 </span>
                             </button>
                             <ul id="theme-submenu-list" class="theme-submenu-list">
-                                <li><button class="theme-option" data-value="light">ライト</button></li>
-                                <li><button class="theme-option" data-value="dark">ダーク</button></li>
-                                <li><button class="theme-option" data-value="system">システム</button></li>
+                                <li><button class="theme-option" data-value="light" data-i18n="theme.light">ライト</button></li>
+                                <li><button class="theme-option" data-value="dark" data-i18n="theme.dark">ダーク</button></li>
+                                <li><button class="theme-option" data-value="system" data-i18n="theme.system">システム</button></li>
                             </ul>
                         </li>
                         <li class="theme-menu-separator"></li>
                         <li class="theme-menu-toggle-item">
                             <div class="menu-item-label-group">
-                                <span class="menu-item-title">一時モード</span>
-                                <span class="menu-item-desc">閉じた時に消去（既存データは保持）</span>
+                                <span class="menu-item-title" data-i18n="menu.tempMode">一時モード</span>
+                                <span class="menu-item-desc" data-i18n="menu.tempModeDesc">閉じた時に消去（既存データは保持）</span>
                             </div>
                             <button id="temp-mode-toggle" class="toggle-switch" role="switch" aria-checked="false"
-                                aria-label="一時モードのオンオフ">
+                                aria-label="一時モードのオンオフ" data-i18n-aria="menu.tempModeAria">
                                 <span class="toggle-thumb"></span>
                             </button>
                         </li>
                         <li class="theme-menu-toggle-item">
                             <div class="menu-item-label-group">
-                                <span class="menu-item-title">プライマリーカラー切替</span>
-                                <span class="menu-item-desc">アクセントの色を自動アニメーション</span>
+                                <span class="menu-item-title" data-i18n="menu.primaryAnimate">プライマリーカラー切替</span>
+                                <span class="menu-item-desc" data-i18n="menu.primaryAnimateDesc">アクセントの色を自動アニメーション</span>
                             </div>
                             <button id="primary-animate-toggle" class="toggle-switch" role="switch" aria-checked="true"
-                                aria-label="プライマリーカラー切替のオンオフ">
+                                aria-label="プライマリーカラー切替のオンオフ" data-i18n-aria="menu.primaryAnimateAria">
                                 <span class="toggle-thumb"></span>
                             </button>
                         </li>
@@ -136,8 +160,8 @@
                         <li>
                             <a href="#test-runner" class="theme-option" style="display: block; text-decoration: none;">
                                 <div class="menu-item-label-group">
-                                    <span class="menu-item-title">テストを実行</span>
-                                    <span class="menu-item-desc">単体テストランナー画面を開く</span>
+                                    <span class="menu-item-title" data-i18n="menu.runTests">テストを実行</span>
+                                    <span class="menu-item-desc" data-i18n="menu.runTestsDesc">単体テストランナー画面を開く</span>
                                 </div>
                             </a>
                         </li>
@@ -145,8 +169,8 @@
                         <li>
                             <button id="clear-data-btn" class="theme-option text-danger">
                                 <div class="menu-item-label-group">
-                                    <span class="menu-item-title">ローカルデータ全削除</span>
-                                    <span class="menu-item-desc">全ツールの保存データ・設定を初期化</span>
+                                    <span class="menu-item-title" data-i18n="menu.clearData">ローカルデータ全削除</span>
+                                    <span class="menu-item-desc" data-i18n="menu.clearDataDesc">全ツールの保存データ・設定を初期化</span>
                                 </div>
                             </button>
                         </li>
@@ -166,8 +190,8 @@
         <main class="main-content" id="main-content">
             <section id="tool-home" class="home-section active">
                 <div class="home-header">
-                    <h2>ようこそ</h2>
-                    <p>サイドバーまたは下のタイルからツールを選んでください。</p>
+                    <h2 data-i18n="home.welcome">ようこそ</h2>
+                    <p data-i18n="home.desc">サイドバーまたは下のタイルからツールを選んでください。</p>
                 </div>
                 <div class="home-tiles" id="home-tiles">
                     <!-- JSで動的に追加されます -->

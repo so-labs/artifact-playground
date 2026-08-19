@@ -1,4 +1,6 @@
-﻿let tempMode = localStorage.getItem('app-temp-mode') === 'true';
+import { t } from './i18n.js';
+
+let tempMode = localStorage.getItem('app-temp-mode') === 'true';
 const tempMemoryStorage = new Map();
 const copyTimers = new Map();
 
@@ -97,13 +99,13 @@ export async function copyToClipboard(text, btn) {
       clearTimeout(copyTimers.get(btn));
     }
 
-    btn.textContent = 'コピー完了！';
+    btn.textContent = t('common.copied');
 
     copyTimers.set(btn, setTimeout(() => {
-      btn.textContent = 'コピー';
+      btn.textContent = t('common.copy');
       copyTimers.delete(btn);
     }, 1000));
   } else {
-    alert('クリップボードへのコピーに失敗しました。');
+    alert(t('common.copyFailed'));
   }
 }

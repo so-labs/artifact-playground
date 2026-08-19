@@ -1,8 +1,9 @@
-﻿import { getAppVersion } from '../../js/lib/version.js';
+import { getAppVersion } from '../../js/lib/version.js';
 
 let reduceText, makeNorinori, sliceText, checkWeight, parseData, toMarkdown, sortGridData;
 let parseHeadings, adjustHeadingLevels, formatCopyText, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, jumpToHeading, checkStructureIssues;
 let createToolStorage, isTempMode, setTempMode, copyToClipboard;
+let getLanguage, setLanguage, detectBrowserLanguage, t, onLanguageChange, applyTranslations;
 
 const suites = [];
 let currentSuite = null;
@@ -212,7 +213,8 @@ title: test
 
         it('全文コピーでは選択範囲より全文を優先すること', () => {
             const result = extractText('abc\ndef', { scope: 'full', selection: 'abc' });
-            assertEquals(result.sourceName, 'ノート全文');
+            const expectedSource = (typeof t === 'function') ? t('tool.outlineStudio.sourceFull') : 'ノート全文';
+            assertEquals(result.sourceName, expectedSource);
             assertEquals(result.text, 'abc\ndef');
         });
     });
@@ -380,6 +382,107 @@ describe('ストレージ共通機能', () => {
     });
 });
 
+// === 7. 国際化 (i18n) テスト ===
+describe('国際化 (i18n)', () => {
+    describe('detectBrowserLanguage [js/lib/i18n.js]', () => {
+        it('日本語ロケール（ja, ja-JP）は ja を判定すること', () => {
+            assertEquals(detectBrowserLanguage(['ja']), 'ja');
+            assertEquals(detectBrowserLanguage(['ja-JP', 'en-US']), 'ja');
+            assertEquals(detectBrowserLanguage(['JA']), 'ja');
+        });
+
+        it('日本語以外のロケール（en, fr, zh等）は en を判定すること', () => {
+            assertEquals(detectBrowserLanguage(['en']), 'en');
+            assertEquals(detectBrowserLanguage(['en-US', 'ja']), 'en');
+            assertEquals(detectBrowserLanguage(['fr-FR']), 'en');
+            assertEquals(detectBrowserLanguage([]), 'en');
+        });
+    });
+
+    describe('getLanguage / setLanguage [js/lib/i18n.js]', () => {
+        it('言語設定を保存および取得できること', () => {
+            const original = localStorage.getItem('app-lang');
+            try {
+                setLanguage('en');
+                assertEquals(getLanguage(), 'en');
+                assertEquals(localStorage.getItem('app-lang'), 'en');
+
+                setLanguage('ja');
+                assertEquals(getLanguage(), 'ja');
+                assertEquals(localStorage.getItem('app-lang'), 'ja');
+            } finally {
+                if (original) {
+                    localStorage.setItem('app-lang', original);
+                } else {
+                    localStorage.removeItem('app-lang');
+                }
+            }
+        });
+
+        it('言語設定は一時モードの影響を受けずにlocalStorageに保存されること', () => {
+            const original = localStorage.getItem('app-lang');
+            try {
+                setTempMode(true);
+                setLanguage('en');
+                // 一時モードが有効でも直接localStorageに保存される
+                assertEquals(localStorage.getItem('app-lang'), 'en');
+                assertEquals(getLanguage(), 'en');
+                setTempMode(false);
+            } finally {
+                setTempMode(false);
+                if (original) {
+                    localStorage.setItem('app-lang', original);
+                } else {
+                    localStorage.removeItem('app-lang');
+                }
+            }
+        });
+    });
+
+    describe('t [js/lib/i18n.js]', () => {
+        it('日本語・英語の辞書から正しい文字列を取得できること', () => {
+            assertEquals(t('common.clear', {}, 'ja'), 'クリア');
+            assertEquals(t('common.clear', {}, 'en'), 'Clear');
+            assertEquals(t('common.copy', {}, 'ja'), 'コピー');
+            assertEquals(t('common.copy', {}, 'en'), 'Copy');
+        });
+
+        it('パラメータ置換（{0}, {1}など）が正しく行われること', () => {
+            assertEquals(t('tool.20off.btn', [20], 'ja'), '20%削る');
+            assertEquals(t('tool.20off.btn', [20], 'en'), 'Cut 20%');
+            assertEquals(t('tool.sliceDrop.pageInfo', [1, 5], 'ja'), 'ページ 1 / 5');
+            assertEquals(t('tool.sliceDrop.pageInfo', [1, 5], 'en'), 'Page 1 / 5');
+        });
+
+        it('未登録のキーはキー文字列をそのまま返すこと', () => {
+            assertEquals(t('unknown.key.test', {}, 'ja'), 'unknown.key.test');
+        });
+    });
+
+    describe('onLanguageChange [js/lib/i18n.js]', () => {
+        it('言語変更時にリスナーが呼び出されること', () => {
+            const original = localStorage.getItem('app-lang');
+            let calledLang = null;
+            const unsubscribe = onLanguageChange((lang) => {
+                calledLang = lang;
+            });
+            try {
+                setLanguage('en');
+                assertEquals(calledLang, 'en');
+                setLanguage('ja');
+                assertEquals(calledLang, 'ja');
+            } finally {
+                unsubscribe();
+                if (original) {
+                    localStorage.setItem('app-lang', original);
+                } else {
+                    localStorage.removeItem('app-lang');
+                }
+            }
+        });
+    });
+});
+
 // === テスト実行と結果描画 ===
 let hasRun = false;
 
@@ -435,6 +538,24 @@ export default async function initTestRunner() {
         setTempMode = modStorage.setTempMode;
         copyToClipboard = modStorage.copyToClipboard;
     } catch (e) { console.warn('Failed to import storage:', e); }
+
+    try {
+        const modI18n = await import('../../js/lib/i18n.js');
+        getLanguage = modI18n.getLanguage;
+        setLanguage = modI18n.setLanguage;
+        detectBrowserLanguage = modI18n.detectBrowserLanguage;
+        t = modI18n.t;
+        onLanguageChange = modI18n.onLanguageChange;
+        applyTranslations = modI18n.applyTranslations;
+    } catch (e) { console.warn('Failed to import i18n:', e); }
+
+    const section = document.getElementById('tool-test-runner');
+    if (section && applyTranslations) {
+        applyTranslations(section);
+        if (onLanguageChange) {
+            onLanguageChange(() => applyTranslations(section));
+        }
+    }
 
     const versionDisplay = document.getElementById('test-app-version-display');
     if (versionDisplay) {

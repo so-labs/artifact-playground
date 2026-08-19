@@ -1,5 +1,6 @@
 // Tool: 20% Off
 import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 
 export function reduceText(text, percentVal) {
     if (!text) return '';
@@ -42,6 +43,7 @@ export function reduceText(text, percentVal) {
 }
 
 export default function init() {
+    const section = document.getElementById('tool-20-off');
     const btnReduce = document.getElementById('btn-reduce');
     const btnClear = document.getElementById('btn-clear');
     const btnCopy = document.getElementById('btn-copy');
@@ -63,18 +65,25 @@ export default function init() {
 
     const storage = createToolStorage('20off');
 
+    const updateUIStrings = () => {
+        const val = percentSlider.value || '20';
+        if (percentDisplay) percentDisplay.textContent = val;
+        btnReduce.textContent = t('tool.20off.btn', [val]);
+    };
+
     // LocalStorageから状態を復元
     const savedPercent = storage.get('percent');
     if (savedPercent) {
         percentSlider.value = savedPercent;
-        percentDisplay.textContent = savedPercent;
-        btnReduce.textContent = `${savedPercent}%削る`;
     }
-    // 初期値をCSS変数に反映
+    updateUIStrings();
     updateSliderFill(percentSlider);
+
     const savedText = storage.get('text');
-    if (savedText) {
+    if (savedText !== null) {
         inputText.value = savedText;
+    } else {
+        inputText.value = t('tool.20off.sample');
     }
 
     // 入力テキストの変更を保存
@@ -85,9 +94,8 @@ export default function init() {
     // スライダーの表示とボタンのテキストを連動
     percentSlider.addEventListener('input', (e) => {
         const val = e.target.value;
-        percentDisplay.textContent = val;
-        btnReduce.textContent = `${val}%削る`;
         storage.set('percent', val);
+        updateUIStrings();
         updateSliderFill(percentSlider);
     });
 
@@ -103,11 +111,20 @@ export default function init() {
     btnClear.addEventListener('click', () => {
         inputText.value = '';
         outputText.value = '';
-        storage.remove('text');
+        storage.set('text', '');
     });
 
     // クリップボードへコピー
     btnCopy.addEventListener('click', () => {
         copyToClipboard(outputText.value, btnCopy);
+    });
+
+    // 言語変更の検知
+    onLanguageChange(() => {
+        if (section) applyTranslations(section);
+        updateUIStrings();
+        if (storage.get('text') === null) {
+            inputText.value = t('tool.20off.sample');
+        }
     });
 }

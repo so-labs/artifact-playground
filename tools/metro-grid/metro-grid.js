@@ -1,5 +1,6 @@
-﻿// Tool: メトロ・グリッド (Metro Grid)
+// Tool: メトロ・グリッド (Metro Grid)
 import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 
 // --- コアロジック（テスト可能） ---
 
@@ -63,7 +64,7 @@ export function parseTSV(text) {
 }
 
 export function parseData(text) {
-    if (!text.trim()) return { type: 'none', headers: [], alignments: [], rows: [] };
+    if (!text || !text.trim()) return { type: 'none', headers: [], alignments: [], rows: [] };
     
     if (text.includes('|') && /[-:]/.test(text)) {
         const md = parseMarkdownTable(text);
@@ -122,7 +123,7 @@ export function toMarkdown(data, pad = false) {
         });
     }
 
-    const buildRow = (cells, isHeader = false) => {
+    const formatRow = (cells) => {
         if (!pad) {
             return '|' + cells.join('|') + '|';
         } else {
@@ -153,43 +154,40 @@ export function toMarkdown(data, pad = false) {
         }
     };
 
-    let result = buildRow(data.headers, true) + '\n';
-    result += buildAlignRow() + '\n';
-    data.rows.forEach(r => {
-        result += buildRow(r, false) + '\n';
-    });
-    
-    return result.trim();
+    const rows = [
+        formatRow(data.headers),
+        buildAlignRow(),
+        ...data.rows.map(r => formatRow(r))
+    ];
+
+    return rows.join('\n');
 }
 
 export function toTSV(data) {
     if (!data.headers || data.headers.length === 0) return '';
-    let result = data.headers.join('\t') + '\n';
-    data.rows.forEach(r => {
-        result += r.join('\t') + '\n';
-    });
-    return result.trim();
+    const rows = [
+        data.headers.join('\t'),
+        ...data.rows.map(r => r.join('\t'))
+    ];
+    return rows.join('\n');
 }
 
 export function sortGridData(data, colIndex, order) {
-    const isNum = (val) => {
-        if (!val) return false;
-        const v = val.replace(/,/g, '').trim();
-        return v !== '' && !isNaN(Number(v));
-    };
-
+    if (!data || !data.rows || colIndex < 0) return;
+    
     data.rows.sort((a, b) => {
         const valA = a[colIndex] || '';
         const valB = b[colIndex] || '';
         
-        const numA = isNum(valA);
-        const numB = isNum(valB);
+        const numA = Number(valA);
+        const numB = Number(valB);
+        const isNum = !isNaN(numA) && !isNaN(numB) && valA.trim() !== '' && valB.trim() !== '';
         
         let cmp = 0;
-        if (numA && numB) {
-            cmp = Number(valA.replace(/,/g, '')) - Number(valB.replace(/,/g, ''));
+        if (isNum) {
+            cmp = numA - numB;
         } else {
-            cmp = valA.localeCompare(valB, undefined, { numeric: true });
+            cmp = valA.localeCompare(valB, undefined, { numeric: true, sensitivity: 'base' });
         }
         
         return order === 'asc' ? cmp : -cmp;
@@ -199,6 +197,7 @@ export function sortGridData(data, colIndex, order) {
 // --- UIコントローラー ---
 
 export default function init() {
+    const section = document.getElementById('tool-metro-grid');
     const inputEl = document.getElementById('mg-input');
     const outputEl = document.getElementById('mg-output');
     const theadEl = document.getElementById('mg-thead');
@@ -276,13 +275,13 @@ export default function init() {
         if (!currentData.headers || currentData.headers.length === 0) {
             tableEl.hidden = true;
             emptyMsgEl.hidden = false;
-            gridInfoEl.textContent = '0 行 × 0 列';
+            gridInfoEl.textContent = t('tool.metroGrid.gridInfo', [0, 0]);
             return;
         }
         
         tableEl.hidden = false;
         emptyMsgEl.hidden = true;
-        gridInfoEl.textContent = `${currentData.rows.length} 行 × ${currentData.headers.length} 列`;
+        gridInfoEl.textContent = t('tool.metroGrid.gridInfo', [currentData.rows.length, currentData.headers.length]);
         
         theadEl.innerHTML = '';
         const trHead = document.createElement('tr');
@@ -296,7 +295,7 @@ export default function init() {
             
             const textWrap = document.createElement('div');
             textWrap.className = 'mg-th-text';
-            textWrap.title = 'クリックでソート';
+            textWrap.title = t('tool.metroGrid.sortTitle');
             
             if (align === 'center') textWrap.style.justifyContent = 'center';
             else if (align === 'right') textWrap.style.justifyContent = 'flex-end';
@@ -333,7 +332,7 @@ export default function init() {
             
             const alignBtn = document.createElement('button');
             alignBtn.className = 'mg-btn-icon';
-            alignBtn.title = '配置を変更';
+            alignBtn.title = t('tool.metroGrid.alignTitle');
             alignBtn.innerHTML = getAlignIcon(currentData.alignments[i]);
             alignBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -347,7 +346,7 @@ export default function init() {
 
             const delBtn = document.createElement('button');
             delBtn.className = 'mg-btn-icon delete';
-            delBtn.title = '列を削除';
+            delBtn.title = t('tool.metroGrid.delColTitle');
             delBtn.innerHTML = '×';
             delBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -414,7 +413,7 @@ export default function init() {
         sortState = { colIndex: -1, order: 'none' };
         renderGrid();
         updateOutput();
-        storage.remove('text');
+        storage.set('text', '');
     });
 
     optPadding.addEventListener('click', () => {
@@ -432,13 +431,15 @@ export default function init() {
         copyToClipboard(toTSV(currentData), btnCopyTsv);
     });
 
-    // 初期化（LocalStorage復元、なければHTML上のデフォルト例文を使用）
+    // 初期化（LocalStorage復元、なければ現在の言語のデフォルト例文を使用）
     const savedText = storage.get('text');
-    if (savedText) {
+    if (savedText !== null) {
         inputEl.value = savedText;
+    } else {
+        inputEl.value = t('tool.metroGrid.sample');
     }
     
-    // 現在の入力（復元データ、またはHTMLの初期例文）を元にデータを解析
+    // 現在の入力（復元データ、または初期例文）を元にデータを解析
     if (inputEl.value.trim()) {
         currentData = parseData(inputEl.value);
         originalRows = JSON.parse(JSON.stringify(currentData.rows));
@@ -452,4 +453,16 @@ export default function init() {
     
     renderGrid();
     updateOutput();
+
+    // 言語変更の検知
+    onLanguageChange(() => {
+        if (section) applyTranslations(section);
+        if (storage.get('text') === null) {
+            inputEl.value = t('tool.metroGrid.sample');
+            currentData = parseData(inputEl.value);
+            originalRows = JSON.parse(JSON.stringify(currentData.rows));
+        }
+        renderGrid();
+        updateOutput();
+    });
 }
