@@ -1,4 +1,4 @@
-import { isTempMode, setTempMode } from '../lib/storage.js';
+﻿import { isTempMode, setTempMode } from '../lib/storage.js';
 import { getAppVersion } from '../lib/version.js';
 import { getLanguage, setLanguage, t, applyTranslations, onLanguageChange } from '../lib/i18n.js';
 
@@ -796,7 +796,9 @@ export function initShell() {
     // メニュー外のクリックで閉じる（スマホ用）
     document.addEventListener('click', (e) => {
         if (window.innerWidth <= 768) {
-            if (sidebar && menuToggle && !sidebar.contains(e.target) && !menuToggle.contains(e.target) && sidebar.classList.contains('open')) {
+            const isInsideThemeMenu = themeMenu && themeMenu.contains(e.target);
+            const isInsideSystemMenu = systemMenu && systemMenu.contains(e.target);
+            if (sidebar && menuToggle && !sidebar.contains(e.target) && !menuToggle.contains(e.target) && !isInsideThemeMenu && !isInsideSystemMenu && sidebar.classList.contains('open')) {
                 sidebar.classList.remove('open');
             }
         }
@@ -818,4 +820,4 @@ export function initShell() {
             }
         });
     }
-}
+}
