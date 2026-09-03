@@ -1,4 +1,4 @@
-﻿import { isTempMode, setTempMode } from '../lib/storage.js';
+import { isTempMode, setTempMode } from '../lib/storage.js';
 import { getAppVersion } from '../lib/version.js';
 import { getLanguage, setLanguage, t, applyTranslations, onLanguageChange } from '../lib/i18n.js';
 
@@ -231,7 +231,7 @@ export function initShell() {
     // テーマ切り替え機能
     const themeSettingsBtn = document.getElementById('theme-settings-btn');
     const themeMenu = document.getElementById('theme-menu');
-    const themeOptions = document.querySelectorAll('#theme-menu .theme-option');
+    const themeToggleBtns = document.querySelectorAll('#theme-menu .theme-toggle-btn');
     const primaryToggleBtn = document.getElementById('primary-animate-toggle');
     const tempModeToggleBtn = document.getElementById('temp-mode-toggle');
 
@@ -310,16 +310,6 @@ export function initShell() {
         });
     }
 
-    const themeSubmenuToggle = document.getElementById('theme-submenu-toggle');
-    const themeSubmenuList = document.getElementById('theme-submenu-list');
-    const currentThemeNameEl = document.getElementById('current-theme-name');
-
-    const updateThemeNameDisplay = (setting) => {
-        if (currentThemeNameEl) {
-            currentThemeNameEl.textContent = t(`theme.${setting}`);
-        }
-    };
-
     const applyTheme = (setting) => {
         let isDark = false;
         if (setting === 'dark') {
@@ -340,13 +330,14 @@ export function initShell() {
             updateThemeColor('#ffffff', isThemeReady);
         }
 
-        updateThemeNameDisplay(setting);
-
-        themeOptions.forEach(opt => {
-            if (opt.getAttribute('data-value') === setting) {
-                opt.classList.add('active');
+        themeToggleBtns.forEach(btn => {
+            const isActive = btn.getAttribute('data-value') === setting;
+            if (isActive) {
+                btn.classList.add('active');
+                btn.setAttribute('aria-checked', 'true');
             } else {
-                opt.classList.remove('active');
+                btn.classList.remove('active');
+                btn.setAttribute('aria-checked', 'false');
             }
         });
     };
@@ -432,7 +423,6 @@ export function initShell() {
         applyTranslations(document);
         renderToolList();
         renderHomeTiles();
-        updateThemeNameDisplay(currentThemeSetting);
 
         if (sidebarToggle) {
             const isCollapsed = sidebar && sidebar.classList.contains('collapsed');
@@ -450,10 +440,6 @@ export function initShell() {
             e.stopPropagation();
             const isOpen = langSubmenuList.classList.toggle('show');
             langSubmenuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-            if (isOpen && themeSubmenuList) {
-                themeSubmenuList.classList.remove('show');
-                themeSubmenuToggle.setAttribute('aria-expanded', 'false');
-            }
         });
 
         langOptions.forEach(opt => {
@@ -470,18 +456,17 @@ export function initShell() {
         });
     }
 
-    // テーマサブメニューの開閉処理
-    if (themeSubmenuToggle && themeSubmenuList) {
-        themeSubmenuToggle.addEventListener('click', (e) => {
+    // テーマ切り替えボタンのクリックハンドラ
+    themeToggleBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const isOpen = themeSubmenuList.classList.toggle('show');
-            themeSubmenuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-            if (isOpen && langSubmenuList) {
-                langSubmenuList.classList.remove('show');
-                langSubmenuToggle.setAttribute('aria-expanded', 'false');
-            }
+            const val = btn.getAttribute('data-value');
+            if (!val || val === currentThemeSetting) return;
+            currentThemeSetting = val;
+            localStorage.setItem('app-theme', val);
+            applyTheme(val);
         });
-    }
+    });
 
     // ロード時のアニメーションちらつき防止のため、少し遅延させて transition 用クラスを追加
     setTimeout(() => {
@@ -505,30 +490,11 @@ export function initShell() {
                 positionMenu(themeMenu, themeSettingsBtn);
             }
             if (!isMenuShow) {
-                if (themeSubmenuList && themeSubmenuToggle) {
-                    themeSubmenuList.classList.remove('show');
-                    themeSubmenuToggle.setAttribute('aria-expanded', 'false');
-                }
                 if (langSubmenuList && langSubmenuToggle) {
                     langSubmenuList.classList.remove('show');
                     langSubmenuToggle.setAttribute('aria-expanded', 'false');
                 }
             }
-        });
-
-        themeOptions.forEach(opt => {
-            opt.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const val = opt.getAttribute('data-value');
-                currentThemeSetting = val;
-                localStorage.setItem('app-theme', val);
-                applyTheme(val);
-                themeMenu.classList.remove('show');
-                if (themeSubmenuList && themeSubmenuToggle) {
-                    themeSubmenuList.classList.remove('show');
-                    themeSubmenuToggle.setAttribute('aria-expanded', 'false');
-                }
-            });
         });
     }
 
@@ -554,10 +520,6 @@ export function initShell() {
     document.addEventListener('click', (e) => {
         if (themeMenu && !themeMenu.contains(e.target) && !themeSettingsBtn.contains(e.target)) {
             themeMenu.classList.remove('show');
-            if (themeSubmenuList && themeSubmenuToggle) {
-                themeSubmenuList.classList.remove('show');
-                themeSubmenuToggle.setAttribute('aria-expanded', 'false');
-            }
             if (langSubmenuList && langSubmenuToggle) {
                 langSubmenuList.classList.remove('show');
                 langSubmenuToggle.setAttribute('aria-expanded', 'false');
@@ -572,10 +534,6 @@ export function initShell() {
     const closeAllMenus = () => {
         if (themeMenu) themeMenu.classList.remove('show');
         if (systemMenu) systemMenu.classList.remove('show');
-        if (themeSubmenuList && themeSubmenuToggle) {
-            themeSubmenuList.classList.remove('show');
-            themeSubmenuToggle.setAttribute('aria-expanded', 'false');
-        }
         if (langSubmenuList && langSubmenuToggle) {
             langSubmenuList.classList.remove('show');
             langSubmenuToggle.setAttribute('aria-expanded', 'false');

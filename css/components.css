@@ -316,6 +316,69 @@ textarea {
     font-size: 0.9rem;
 }
 
+/* テーマ セグメンテッドボタングループ */
+.theme-menu-section-item {
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.theme-toggle-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    background-color: var(--code-bg);
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.theme-toggle-btn {
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    padding: 6px 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family: inherit;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    user-select: none;
+}
+
+.theme-toggle-btn svg {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+    color: var(--primary-hover);
+}
+
+.theme-toggle-btn:hover svg {
+    transform: scale(1.1);
+}
+
+.theme-toggle-btn.active {
+    background-color: var(--panel-bg);
+    color: var(--primary-color);
+    font-weight: 700;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.theme-toggle-btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 1px;
+}
+
 /* トグル行 */
 .theme-menu-toggle-item {
     display: flex;
