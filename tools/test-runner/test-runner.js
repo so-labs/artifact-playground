@@ -2,6 +2,7 @@
 
 let reduceText, makeNorinori, sliceText, checkWeight, parseData, toMarkdown, sortGridData;
 let parseHeadings, adjustHeadingLevels, formatCopyText, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, jumpToHeading, checkStructureIssues;
+let parseHtmlTable, parseTsv;
 let createToolStorage, isTempMode, setTempMode, copyToClipboard;
 let getLanguage, setLanguage, detectBrowserLanguage, t, onLanguageChange, applyTranslations;
 
@@ -348,7 +349,50 @@ describe('メトロ・グリッド', () => {
     });
 });
 
-// === 7. ストレージ共通機能 テスト ===
+// === 7. カラム・ピッカー テスト ===
+describe('カラム・ピッカー', () => {
+    describe('parseHtmlTable [tools/column-picker/column-picker.js]', () => {
+        it('HTMLテーブルを正しく列ごとにパースできること', () => {
+            const html = `<table><tr><td>A</td><td>B</td></tr><tr><td>1</td><td>2</td></tr></table>`;
+            const cols = parseHtmlTable(html);
+            assertEquals(cols.length, 2);
+            assertEquals(cols[0][0], 'A');
+            assertEquals(cols[0][1], '1');
+            assertEquals(cols[1][0], 'B');
+            assertEquals(cols[1][1], '2');
+        });
+
+        it('<br>が改行に変換されること', () => {
+            const html = `<table><tr><td>A<br>B</td></tr></table>`;
+            const cols = parseHtmlTable(html);
+            assertEquals(cols[0][0], 'A\nB');
+        });
+
+        it('テーブルがない場合はnullを返すこと', () => {
+            const html = `<div><p>No table here</p></div>`;
+            const cols = parseHtmlTable(html);
+            assertEquals(cols, null);
+        });
+    });
+
+    describe('parseTsv [tools/column-picker/column-picker.js]', () => {
+        it('TSVデータを正しく列ごとにパースできること', () => {
+            const tsv = `A\tB\n1\t2`;
+            const cols = parseTsv(tsv);
+            assertEquals(cols.length, 2);
+            assertEquals(cols[0][0], 'A');
+            assertEquals(cols[1][1], '2');
+        });
+
+        it('タブが含まれない場合はnullを返すこと', () => {
+            const text = `A B\n1 2`;
+            const cols = parseTsv(text);
+            assertEquals(cols, null);
+        });
+    });
+});
+
+// === 8. ストレージ共通機能 テスト ===
 describe('ストレージ共通機能', () => {
     describe('createToolStorage [js/lib/storage.js]', () => {
         it('通常モードでデータを保存・取得・削除できること', () => {
@@ -382,7 +426,7 @@ describe('ストレージ共通機能', () => {
     });
 });
 
-// === 7. 国際化 (i18n) テスト ===
+// === 9. 国際化 (i18n) テスト ===
 describe('国際化 (i18n)', () => {
     describe('detectBrowserLanguage [js/lib/i18n.js]', () => {
         it('日本語ロケール（ja, ja-JP）は ja を判定すること', () => {
@@ -517,6 +561,12 @@ export default async function initTestRunner() {
         toMarkdown = modMetro.toMarkdown;
         sortGridData = modMetro.sortGridData;
     } catch (e) { console.warn('Failed to import metro-grid:', e); }
+
+    try {
+        const modCp = await import('../column-picker/column-picker.js');
+        parseHtmlTable = modCp.parseHtmlTable;
+        parseTsv = modCp.parseTsv;
+    } catch (e) { console.warn('Failed to import column-picker:', e); }
 
     try {
         const modMd = await import('../../js/lib/markdown-headings.js');

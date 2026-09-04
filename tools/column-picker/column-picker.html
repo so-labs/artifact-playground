@@ -1,0 +1,34 @@
+﻿<section id="tool-column-picker" class="tool-section">
+    <div class="tool-title-area">
+        <h2 data-i18n="tool.columnPicker.title">カラム・ピッカー</h2>
+        <button class="help-btn" aria-label="説明を表示" data-i18n-aria="common.helpAria" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+        </button>
+    </div>
+    <div class="tool-description" data-i18n="tool.columnPicker.desc">
+        ウェブサイトやスプレッドシートからコピーしたテーブル（表）をペーストすると、自動的に列ごとに分解して表示します。スマホなどでコピーすると崩れてしまう表データから、特定の列だけを抽出・コピーしたい時に便利です。
+    </div>
+
+    <div class="cp-layout">
+        <div class="cp-input-area">
+            <label for="cp-input" data-i18n="tool.columnPicker.pasteLabel">ここにテーブルをペースト</label>
+            <textarea id="cp-input" data-i18n-placeholder="tool.columnPicker.placeholder"
+                placeholder="コピーした表をここにペースト（貼り付け）してください..."></textarea>
+        </div>
+
+        <div id="cp-results" class="cp-results-area" hidden>
+            <div class="cp-results-header">
+                <span data-i18n="tool.columnPicker.resultTitle">抽出された列</span>
+                <button id="cp-btn-clear" class="btn small" data-i18n="common.clear">クリア</button>
+            </div>
+            <div id="cp-columns-container" class="cp-columns-container">
+                <!-- 列ごとにテキストエリアが動的に追加されます -->
+            </div>
+        </div>
+    </div>
+</section>

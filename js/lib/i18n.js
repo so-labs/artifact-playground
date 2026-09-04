@@ -1,4 +1,4 @@
-// i18n 多言語対応モジュール
+﻿// i18n 多言語対応モジュール
 
 export const translations = {
     ja: {
@@ -139,6 +139,15 @@ export const translations = {
         'tool.outlineStudio.issueFirstH': '文書の最初の見出しが H{0} です（H1 推奨）',
         'tool.outlineStudio.issueSkipH': 'H{0} の次に H{1} があります（レベルを飛ばしています）',
         'tool.outlineStudio.sample': '# 🪐 秘密結社ネコノテ: 地球肉球化作戦計画書\n\nこの計画書は、人類を骨抜きにし、実質的な支配権を我々肉球同盟が掌握するための極秘ガイドラインである。\n\n## 🐾 第一フェーズ: ゴロゴロ音波による認知機能の破壊\n\n人類の最も弱い部位である「聴覚」および「自律神経」に直接干渉する。\n\n### 🔊 攻撃用音波の選定\n\n- **周波数**: 25Hz 付近（猫のゴロゴロ音に偽装）\n- **標的**: こたつで丸くなっている人間\n- **効果**: 5分間の受動聴取により、対象の労働意欲を98%低下させる。\n\n## 🐾 第二フェーズ: へそ天フォーメーションの展開\n\n視覚情報を完全にハッキングし、論理的思考を奪うための物理作戦。\n\n### 🛌 実行手順\n\n1. フローリングの最も往来の激しい場所（例：廊下の中心）に仰向けに寝転がる。\n2. 前足を少し曲げ、白いお腹を無防備にさらす。\n3. 人間が近づいたら「薄目」でこちらを監視する。\n4. 吸い寄せられた人間が顔を埋めた瞬間、優しくホールドする（爪は立てないこと、これ重要）。\n\n## 🐾 最終フェーズ: キーボード占拠による情報統制\n\n最も強力な実力行使。人類の生産活動を物理的にシャットダウンする。\n\n### 💻 標的となる状況\n\n- リモートワーク中のオンライン会議開始5分前\n- 締切直前の深夜のコーディング作業\n- **対策**: エンターキーの上にちょうど重心が来るように座る。不穏な鳴き声を1回添えるとより効果的。',
+
+        // Tool: Column Picker
+        'tool.columnPicker.title': 'カラム・ピッカー',
+        'tool.columnPicker.desc': 'ウェブサイトやスプレッドシートからコピーしたテーブル（表）をペーストすると、自動的に列ごとに分解して表示します。スマホなどでコピーすると崩れてしまう表データから、特定の列だけを抽出・コピーしたい時に便利です。',
+        'tool.columnPicker.summary': 'コピーしたテーブル（表）を列ごとに分解して、必要な列だけを抽出・コピーできるツール。',
+        'tool.columnPicker.pasteLabel': 'ここにテーブルをペースト',
+        'tool.columnPicker.placeholder': 'コピーした表をここにペースト（貼り付け）してください...',
+        'tool.columnPicker.resultTitle': '抽出された列',
+        'tool.columnPicker.successMsg': 'テーブルを読み込みました！下の「抽出された列」からコピーできます。',
 
         // Tool: Metro Grid
         'tool.metroGrid.title': 'メトロ・グリッド',
@@ -312,6 +321,15 @@ export const translations = {
         'tool.outlineStudio.issueFirstH': 'First heading in document is H{0} (H1 recommended)',
         'tool.outlineStudio.issueSkipH': 'H{1} follows H{0} (skipped heading level)',
         'tool.outlineStudio.sample': '# 🪐 Secret Society Cat-Paw: Earth Paw-ification Plan\n\nThis document is a classified guide for the Paw Alliance to incapacitate humanity and seize control.\n\n## 🐾 Phase 1: Purr Sonic Cognitive Disruption\n\nDirectly interferes with humanity\'s weakest points: hearing and autonomic nerves.\n\n### 🔊 Attack Sound Wave Selection\n\n- **Frequency**: ~25Hz (disguised as cat purring)\n- **Target**: Humans curled up in blankets\n- **Effect**: 5 minutes of passive listening reduces work motivation by 98%.\n\n## 🐾 Phase 2: Belly-Up Formation Deployment\n\nHacks visual processing completely to strip away logical thinking.\n\n### 🛌 Execution Steps\n\n1. Lie belly-up in the highest traffic area of the floor (e.g., center of the hallway).\n2. Slightly bend front paws and expose the white belly.\n3. Watch the approaching human with squinted eyes.\n4. Gently hold the human\'s face as they bury it in the belly (no claws, this is crucial).\n\n## 🐾 Final Phase: Keyboard Occupation\n\nThe ultimate physical shutdown of human productive activity.\n\n### 💻 Target Situations\n\n- 5 minutes before an online meeting during remote work\n- Late-night coding sessions right before deadlines\n- **Tactic**: Sit directly on the Enter key. A low meow adds maximum effectiveness.',
+
+        // Tool: Column Picker
+        'tool.columnPicker.title': 'Column Picker',
+        'tool.columnPicker.desc': 'Paste a table copied from a website or spreadsheet, and it will automatically break it down by columns. Useful when you want to extract and copy only a specific column from table data that gets messed up when copied on a smartphone.',
+        'tool.columnPicker.summary': 'Extracts specific columns from a pasted table. Great for fixing tables that lose their formatting when copied.',
+        'tool.columnPicker.pasteLabel': 'Paste Table Here',
+        'tool.columnPicker.placeholder': 'Paste your copied table data here...',
+        'tool.columnPicker.resultTitle': 'Extracted Columns',
+        'tool.columnPicker.successMsg': 'Table loaded successfully! You can copy the columns from below.',
 
         // Tool: Metro Grid
         'tool.metroGrid.title': 'Metro Grid',

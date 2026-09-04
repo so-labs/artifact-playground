@@ -1,4 +1,4 @@
-/**
+﻿/**
  * キャッシュバージョンの命名規則:
  * artifact-playground-YYYY.MM-rN
  *
@@ -6,7 +6,7 @@
  * MM   = 月（01〜12）
  * rN   = その月のリリース回数
  */
-const CACHE_NAME = 'artifact-playground-2026.09-r1';
+const CACHE_NAME = 'artifact-playground-2026.09-r2';
 const ASSETS = [
   './',
   './index.html',
@@ -40,6 +40,9 @@ const ASSETS = [
   './tools/metro-grid/metro-grid.html',
   './tools/metro-grid/metro-grid.css',
   './tools/metro-grid/metro-grid.js',
+  './tools/column-picker/column-picker.html',
+  './tools/column-picker/column-picker.css',
+  './tools/column-picker/column-picker.js',
   './tools/test-runner/test-runner.html',
   './tools/test-runner/test-runner.css',
   './tools/test-runner/test-runner.js'
