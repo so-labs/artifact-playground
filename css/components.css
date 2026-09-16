@@ -1,4 +1,4 @@
-/* Tool UI Elements */
+/* ツールUI要素 */
 .tool-ui {
     display: flex;
     flex-direction: column;
@@ -167,7 +167,97 @@ textarea {
     background-color: var(--btn-small-hover);
 }
 
-/* Theme Settings Menu */
+/* Limit Stepper Controls (共通コンポーネント) */
+.limit-input-wrap {
+    display: flex;
+    gap: 0.35rem;
+    align-items: stretch;
+    width: 100%;
+}
+
+.limit-input-wrap input[type="number"] {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    padding: 0.5rem 0.4rem;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.limit-input-wrap input[type="number"]::-webkit-outer-spin-button,
+.limit-input-wrap input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.limit-step-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2px;
+    width: 68px;
+    flex-shrink: 0;
+}
+
+.btn-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1px;
+    font-size: 0.68rem;
+    letter-spacing: -0.4px;
+    font-weight: 700;
+    font-family: inherit;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    line-height: 1;
+    color: #ffffff;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+    user-select: none;
+}
+
+.btn-step:active {
+    transform: scale(0.94);
+}
+
+.btn-step.step-plus {
+    background-color: var(--step-plus-bg);
+}
+
+.btn-step.step-plus:hover {
+    background-color: var(--step-plus-hover);
+}
+
+.btn-step.step-minus {
+    background-color: var(--step-minus-bg);
+}
+
+.btn-step.step-minus:hover {
+    background-color: var(--step-minus-hover);
+}
+
+.quick-limit-buttons,
+.sd-quick-buttons,
+.wo-quick-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.quick-limit-buttons .btn,
+.sd-quick-buttons .btn,
+.wo-quick-buttons .btn {
+    flex: 1 1 calc(25% - 0.5rem);
+    padding: 0.35rem 0.1rem;
+    font-size: 0.8rem;
+    min-width: 42px;
+    text-align: center;
+}
+
+
+/* 設定メニュー */
 .settings-btn {
     width: 40px;
     height: 40px;
@@ -514,7 +604,7 @@ textarea {
     }
 }
 
-/* Theme Transition */
+/* テーマ切り替えアニメーション */
 body.theme-ready,
 body.theme-ready .app-header,
 body.theme-ready .tool-section,
@@ -531,7 +621,7 @@ body.theme-ready .sidebar {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, margin-left 0.2s cubic-bezier(0.1, 0.9, 0.2, 1), transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 
-/* Help Button & Description */
+/* ヘルプボタンと説明 */
 .help-btn {
     display: inline-flex;
     align-items: center;

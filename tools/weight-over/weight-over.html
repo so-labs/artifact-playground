@@ -2,7 +2,8 @@
     <div class="tool-title-area">
         <h2 data-i18n="tool.weightOver.title">ウエイトオーバー</h2>
         <button class="help-btn" aria-label="説明を表示" data-i18n-aria="common.helpAria" aria-expanded="false">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -18,24 +19,41 @@
                 <label for="wo-input" data-i18n="common.input">入力テキスト</label>
                 <button id="wo-btn-clear" class="btn small" data-i18n="common.clear">クリア</button>
             </div>
-            <textarea id="wo-input" rows="12" data-i18n-placeholder="tool.weightOver.placeholder" placeholder="ここにテキストを入力..."></textarea>
+            <textarea id="wo-input" rows="12" data-i18n-placeholder="tool.weightOver.placeholder"
+                placeholder="ここにテキストを入力..."></textarea>
         </div>
         <div class="wo-side">
             <div class="wo-limit-group">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                     <label for="wo-limit" style="margin-bottom: 0;" data-i18n="tool.weightOver.limitLabel">上限文字数</label>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="font-size: 0.8rem; opacity: 0.8; font-weight: normal;" data-i18n="tool.weightOver.mildToggle">点滅を抑える</span>
-                        <button type="button" id="wo-mild-toggle" class="toggle-switch" role="switch" aria-checked="false" aria-label="点滅を抑える" data-i18n-aria="tool.weightOver.mildToggle">
+                        <span style="font-size: 0.8rem; opacity: 0.8; font-weight: normal;"
+                            data-i18n="tool.weightOver.mildToggle">点滅を抑える</span>
+                        <button type="button" id="wo-mild-toggle" class="toggle-switch" role="switch"
+                            aria-checked="false" aria-label="点滅を抑える" data-i18n-aria="tool.weightOver.mildToggle">
                             <span class="toggle-thumb"></span>
                         </button>
                     </div>
                 </div>
-                <input type="number" id="wo-limit" min="1" max="50000" value="1000" class="wo-limit-input">
-                <div class="wo-quick-buttons">
+                <div class="limit-input-wrap">
+                    <input type="number" id="wo-limit" min="1" max="50000" value="1000" class="wo-limit-input">
+                    <div class="limit-step-buttons">
+                        <button type="button" class="btn-step step-plus" data-step="10" data-i18n="common.stepPlus10"
+                            data-i18n-aria="common.stepPlus10Aria" aria-label="10増やす">+10</button>
+                        <button type="button" class="btn-step step-plus" data-step="100" data-i18n="common.stepPlus100"
+                            data-i18n-aria="common.stepPlus100Aria" aria-label="100増やす">+100</button>
+                        <button type="button" class="btn-step step-minus" data-step="-10" data-i18n="common.stepMinus10"
+                            data-i18n-aria="common.stepMinus10Aria" aria-label="10減らす">-10</button>
+                        <button type="button" class="btn-step step-minus" data-step="-100"
+                            data-i18n="common.stepMinus100" data-i18n-aria="common.stepMinus100Aria"
+                            aria-label="100減らす">-100</button>
+                    </div>
+                </div>
+                <div class="quick-limit-buttons wo-quick-buttons">
                     <button type="button" class="btn small quick-limit-btn" data-limit="140"
                         title="X (Twitter)">140</button>
-                    <button type="button" class="btn small quick-limit-btn" data-limit="400" title="原稿用紙1枚" data-i18n-title="tool.weightOver.quickManuscript">400</button>
+                    <button type="button" class="btn small quick-limit-btn" data-limit="400" title="原稿用紙1枚"
+                        data-i18n-title="tool.weightOver.quickManuscript">400</button>
                     <button type="button" class="btn small quick-limit-btn" data-limit="1000">1,000</button>
                     <button type="button" class="btn small quick-limit-btn" data-limit="2000">2,000</button>
                     <button type="button" class="btn small quick-limit-btn" data-limit="2200"

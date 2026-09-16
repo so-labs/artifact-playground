@@ -1,6 +1,7 @@
 // Tool: スライスドロップ
 import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
+import { setupLimitControls } from '../../js/lib/limit-controls.js';
 
 export function sliceText(text, limit, addPrefix) {
     const chars = Array.from(text);
@@ -27,7 +28,7 @@ export function sliceText(text, limit, addPrefix) {
                 const charWeight = char.length;
                 if (currentLength + charWeight > effectiveLimit) {
                     results.push(currentChunk.join(''));
-                    
+
                     pageIndex++;
                     prefixStr = `${pageIndex}/${assumedTotalPages}\n\n`;
                     effectiveLimit = limit - prefixStr.length;
@@ -91,7 +92,6 @@ export default function init() {
     const sdTotalPagesElements = document.querySelectorAll('.sd-total-pages');
     const sdBtnCopy = document.getElementById('sd-btn-copy');
     const sdBtnClear = document.getElementById('sd-btn-clear');
-    const quickButtons = document.querySelectorAll('#tool-slice-drop .quick-limit-btn');
     const sdAddPrefix = document.getElementById('sd-add-prefix');
 
     if (!sdInput || !sdLimitInput || !sdAddPrefix) return;
@@ -222,16 +222,17 @@ export default function init() {
         updateSlices(true);
     });
 
-    // クイックボタン
-    quickButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const limit = btn.getAttribute('data-limit');
-            if (limit) {
-                sdLimitInput.value = limit;
-                updateSlices(true);
-            }
+    // 上限コントロール（ステップボタンおよびクイックボタン）
+    const limitGroup = section ? section.querySelector('.sd-limit-group') : null;
+    if (limitGroup) {
+        setupLimitControls({
+            container: limitGroup,
+            inputEl: sdLimitInput,
+            min: 10,
+            max: 50000,
+            onChange: () => updateSlices(true)
         });
-    });
+    }
 
     // 初期処理
     updateSlices(false);

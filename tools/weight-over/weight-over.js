@@ -1,6 +1,7 @@
 // Tool: ウエイトオーバー
 import { createToolStorage } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
+import { setupLimitControls } from '../../js/lib/limit-controls.js';
 
 export function checkWeight(text, limit) {
     const count = text.length;
@@ -20,7 +21,6 @@ export default function init() {
     const woLimitDisplay = document.getElementById('wo-limit-display');
     const woCounter = document.getElementById('wo-counter');
     const woSection = document.getElementById('tool-weight-over');
-    const quickButtons = document.querySelectorAll('.quick-limit-btn');
     const woBtnClear = document.getElementById('wo-btn-clear');
     const woMildToggle = document.getElementById('wo-mild-toggle');
 
@@ -79,16 +79,17 @@ export default function init() {
     woInput.addEventListener('input', () => updateWoCount(true));
     woLimitInput.addEventListener('input', () => updateWoCount(true));
 
-    // クイックボタンのイベント設定
-    quickButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const limit = btn.getAttribute('data-limit');
-            if (limit) {
-                woLimitInput.value = limit;
-                updateWoCount(true);
-            }
+    // 上限コントロール（ステップボタンおよびクイックボタン）
+    const limitGroup = woSection ? woSection.querySelector('.wo-limit-group') : null;
+    if (limitGroup) {
+        setupLimitControls({
+            container: limitGroup,
+            inputEl: woLimitInput,
+            min: 1,
+            max: 50000,
+            onChange: () => updateWoCount(true)
         });
-    });
+    }
 
     if (woBtnClear) {
         woBtnClear.addEventListener('click', () => {

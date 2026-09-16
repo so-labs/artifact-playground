@@ -1,4 +1,4 @@
-﻿// i18n 多言語対応モジュール
+// i18n 多言語対応モジュール
 
 export const translations = {
     ja: {
@@ -47,6 +47,14 @@ export const translations = {
         'common.errorTitle': 'エラー',
         'common.toolLoadFailed': 'ツールの読み込み中にエラーが発生しました。',
         'common.errorNoDetail': 'エラー詳細を取得できませんでした。',
+        'common.stepPlus10': '+10',
+        'common.stepPlus100': '+100',
+        'common.stepMinus10': '-10',
+        'common.stepMinus100': '-100',
+        'common.stepPlus10Aria': '10増やす',
+        'common.stepPlus100Aria': '100増やす',
+        'common.stepMinus10Aria': '10減らす',
+        'common.stepMinus100Aria': '100減らす',
 
         // Tool: 20% Off
         'tool.20off.title': '20% Off',
@@ -229,6 +237,14 @@ export const translations = {
         'common.errorTitle': 'Error',
         'common.toolLoadFailed': 'An error occurred while loading the tool.',
         'common.errorNoDetail': 'Could not retrieve error details.',
+        'common.stepPlus10': '+10',
+        'common.stepPlus100': '+100',
+        'common.stepMinus10': '-10',
+        'common.stepMinus100': '-100',
+        'common.stepPlus10Aria': 'Add 10',
+        'common.stepPlus100Aria': 'Add 100',
+        'common.stepMinus10Aria': 'Subtract 10',
+        'common.stepMinus100Aria': 'Subtract 100',
 
         // Tool: 20% Off
         'tool.20off.title': '20% Off',

@@ -1,10 +1,11 @@
-﻿import { getAppVersion } from '../../js/lib/version.js';
+import { getAppVersion } from '../../js/lib/version.js';
 
 let reduceText, makeNorinori, sliceText, checkWeight, parseData, toMarkdown, sortGridData;
 let parseHeadings, adjustHeadingLevels, formatCopyText, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, jumpToHeading, checkStructureIssues;
 let parseHtmlTable, parseTsv;
 let createToolStorage, isTempMode, setTempMode, copyToClipboard;
 let getLanguage, setLanguage, detectBrowserLanguage, t, onLanguageChange, applyTranslations;
+let calculateStepValue;
 
 const suites = [];
 let currentSuite = null;
@@ -527,6 +528,40 @@ describe('国際化 (i18n)', () => {
     });
 });
 
+// === 上限コントロール テスト ===
+describe('上限コントロール (Limit Controls)', () => {
+    describe('calculateStepValue [js/lib/limit-controls.js]', () => {
+        it('正のステップ値（+10, +100）が正しく加算されること', () => {
+            assertEquals(calculateStepValue(140, 10, 10, 50000), 150);
+            assertEquals(calculateStepValue(140, 100, 10, 50000), 240);
+        });
+
+        it('負のステップ値（-10, -100）が正しく減算されること', () => {
+            assertEquals(calculateStepValue(140, -10, 10, 50000), 130);
+            assertEquals(calculateStepValue(140, -100, 10, 50000), 40);
+        });
+
+        it('文字列型の現在値やステップ値でも正しく計算できること', () => {
+            assertEquals(calculateStepValue('1000', '10', 1, 50000), 1010);
+            assertEquals(calculateStepValue('1000', '-100', 1, 50000), 900);
+        });
+
+        it('最大値（max）を超えないように制限されること', () => {
+            assertEquals(calculateStepValue(49950, 100, 10, 50000), 50000);
+        });
+
+        it('最小値（min）を下回らないように制限されること', () => {
+            assertEquals(calculateStepValue(50, -100, 10, 50000), 10);
+            assertEquals(calculateStepValue(5, -10, 1, 50000), 1);
+        });
+
+        it('入力値が無効（空文字など）の場合は最小値を基準に加減算されること', () => {
+            assertEquals(calculateStepValue('', 10, 10, 50000), 20);
+            assertEquals(calculateStepValue('abc', -10, 10, 50000), 10);
+        });
+    });
+});
+
 // === テスト実行と結果描画 ===
 let hasRun = false;
 
@@ -598,6 +633,11 @@ export default async function initTestRunner() {
         onLanguageChange = modI18n.onLanguageChange;
         applyTranslations = modI18n.applyTranslations;
     } catch (e) { console.warn('Failed to import i18n:', e); }
+
+    try {
+        const modLimit = await import('../../js/lib/limit-controls.js');
+        calculateStepValue = modLimit.calculateStepValue;
+    } catch (e) { console.warn('Failed to import limit-controls:', e); }
 
     const section = document.getElementById('tool-test-runner');
     if (section && applyTranslations) {

@@ -1,4 +1,4 @@
-﻿/* --- ウエイトオーバー --- */
+/* --- ウエイトオーバー --- */
 .wo-layout {
     display: flex;
     gap: 1.5rem;
@@ -41,21 +41,6 @@
     font-size: 1rem;
     color: var(--text-color);
     background-color: var(--panel-bg);
-}
-
-.wo-quick-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-}
-
-.wo-quick-buttons .btn {
-    flex: 1 1 calc(25% - 0.5rem);
-    padding: 0.35rem 0.1rem;
-    font-size: 0.8rem;
-    min-width: 42px;
-    text-align: center;
 }
 
 .wo-counter {
@@ -154,16 +139,22 @@
     .wo-side {
         width: 100%;
         flex-direction: row;
-        align-items: center;
+        align-items: stretch;
         justify-content: space-between;
+        gap: 0.75rem;
     }
 
     .wo-limit-group {
-        flex: 1;
+        flex: 1.35;
+        min-width: 0;
     }
 
     .wo-counter {
-        flex: 1;
-        margin-left: 1rem;
+        flex: 0.9;
+        margin-left: 0;
+        padding: 0.75rem 0.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 }

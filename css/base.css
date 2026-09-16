@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --primary-color: #2563eb;
     --primary-hover: #1d4ed8;
     --secondary-color: #64748b;
@@ -18,6 +18,11 @@
     --primary-blue-hover: #1d4ed8;
     --primary-orange: #ea580c;
     --primary-orange-hover: #c2410c;
+    /* ステップ加減算ボタン用 */
+    --step-plus-bg: #16a34a;
+    --step-plus-hover: #15803d;
+    --step-minus-bg: #dc2626;
+    --step-minus-hover: #b91c1c;
 }
 
 /* プライマリーカラーのなめらかな切り替え用トランジション */
@@ -42,6 +47,11 @@
     --btn-small-bg: #334155;
     --btn-small-text: #cbd5e1;
     --btn-small-hover: #475569;
+    /* ステップ加減算ボタン用 */
+    --step-plus-bg: #15803d;
+    --step-plus-hover: #16a34a;
+    --step-minus-bg: #b91c1c;
+    --step-minus-hover: #ef4444;
 }
 
 * {

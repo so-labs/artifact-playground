@@ -1,4 +1,4 @@
-﻿/**
+/**
  * キャッシュバージョンの命名規則:
  * artifact-playground-YYYY.MM-rN
  *
@@ -18,6 +18,7 @@ const ASSETS = [
   './js/lib/i18n.js',
   './js/lib/storage.js',
   './js/lib/version.js',
+  './js/lib/limit-controls.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',

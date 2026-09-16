@@ -1,4 +1,4 @@
-﻿/* --- スライスドロップ 固有スタイル --- */
+/* --- スライスドロップ 固有スタイル --- */
 .sd-grid-container {
     display: grid;
     grid-template-columns: 1fr 220px;
@@ -53,21 +53,6 @@
     cursor: pointer;
     user-select: none;
     margin: 0;
-}
-
-.sd-quick-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-}
-
-.sd-quick-buttons .btn {
-    flex: 1 1 calc(25% - 0.5rem);
-    padding: 0.35rem 0.1rem;
-    font-size: 0.8rem;
-    min-width: 42px;
-    text-align: center;
 }
 
 .sd-output-area {
