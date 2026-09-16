@@ -16,7 +16,13 @@
 
     <div class="cp-layout">
         <div class="cp-input-area">
-            <label for="cp-input" data-i18n="tool.columnPicker.pasteLabel">ここにテーブルをペースト</label>
+            <div class="input-header">
+                <label for="cp-input" data-i18n="tool.columnPicker.pasteLabel">ここにテーブルをペースト</label>
+                <div class="header-actions">
+                    <button id="cp-btn-paste" class="btn small" data-i18n="common.paste">貼り付け</button>
+                    <button id="cp-btn-clear" class="btn small" data-i18n="common.clear">クリア</button>
+                </div>
+            </div>
             <textarea id="cp-input" data-i18n-placeholder="tool.columnPicker.placeholder"
                 placeholder="コピーした表をここにペースト（貼り付け）してください..."></textarea>
         </div>
@@ -24,7 +30,6 @@
         <div id="cp-results" class="cp-results-area" hidden>
             <div class="cp-results-header">
                 <span data-i18n="tool.columnPicker.resultTitle">抽出された列</span>
-                <button id="cp-btn-clear" class="btn small" data-i18n="common.clear">クリア</button>
             </div>
             <div id="cp-columns-container" class="cp-columns-container">
                 <!-- 列ごとにテキストエリアが動的に追加されます -->

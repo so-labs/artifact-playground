@@ -28,6 +28,11 @@
     flex-wrap: wrap;
 }
 
+.os-file-actions-group {
+    display: flex;
+    gap: 0.4rem;
+}
+
 .os-file-name {
     font-size: 0.85rem;
     opacity: 0.75;
@@ -135,7 +140,7 @@
     gap: 0.4rem;
 }
 
-.os-op-group + .os-op-group {
+.os-op-group+.os-op-group {
     margin-top: 0.65rem;
 }
 

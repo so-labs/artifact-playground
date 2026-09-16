@@ -1,5 +1,5 @@
-// Tool: アウトライン・スタジオ
-import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+﻿// Tool: アウトライン・スタジオ
+import { createToolStorage, copyToClipboard, pasteFromClipboard } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 import {
     parseHeadings,
@@ -250,7 +250,7 @@ async function saveFile(state) {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            
+
             state.saveBtn.textContent = t('tool.outlineStudio.saveSuccess');
             setTimeout(() => { updateUI(state); }, 1200);
         } catch (err) {
@@ -287,6 +287,7 @@ export default function init() {
     const sourceLabelEl = document.getElementById('os-source-label');
     const fileNameEl = document.getElementById('os-file-name');
     const saveBtn = document.getElementById('os-btn-save');
+    const pasteBtn = document.getElementById('os-btn-paste');
     const fileInputEl = document.getElementById('os-file-input');
 
     if (!inputEl) return;
@@ -348,6 +349,16 @@ export default function init() {
         fileNameEl.hidden = true;
         fileNameEl.textContent = '';
         refresh();
+    });
+
+    pasteBtn?.addEventListener('click', () => {
+        pasteFromClipboard(pasteBtn, (text) => {
+            inputEl.value = text;
+            fileHandle = null;
+            fileNameEl.hidden = true;
+            fileNameEl.textContent = '';
+            inputEl.dispatchEvent(new Event('input'));
+        });
     });
 
     document.getElementById('os-btn-copy')?.addEventListener('click', () => {

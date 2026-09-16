@@ -1,9 +1,9 @@
-import { getAppVersion } from '../../js/lib/version.js';
+﻿import { getAppVersion } from '../../js/lib/version.js';
 
 let reduceText, makeNorinori, sliceText, checkWeight, parseData, toMarkdown, sortGridData;
 let parseHeadings, adjustHeadingLevels, formatCopyText, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, jumpToHeading, checkStructureIssues;
 let parseHtmlTable, parseTsv;
-let createToolStorage, isTempMode, setTempMode, copyToClipboard;
+let createToolStorage, isTempMode, setTempMode, copyToClipboard, pasteFromClipboard;
 let getLanguage, setLanguage, detectBrowserLanguage, t, onLanguageChange, applyTranslations;
 let calculateStepValue;
 
@@ -425,6 +425,12 @@ describe('ストレージ共通機能', () => {
             assert(typeof copyToClipboard === 'function', 'copyToClipboard が関数ではありません');
         });
     });
+
+    describe('pasteFromClipboard [js/lib/storage.js]', () => {
+        it('pasteFromClipboard 関数が正しく定義されていること', () => {
+            assert(typeof pasteFromClipboard === 'function', 'pasteFromClipboard が関数ではありません');
+        });
+    });
 });
 
 // === 9. 国際化 (i18n) テスト ===
@@ -490,6 +496,8 @@ describe('国際化 (i18n)', () => {
             assertEquals(t('common.clear', {}, 'en'), 'Clear');
             assertEquals(t('common.copy', {}, 'ja'), 'コピー');
             assertEquals(t('common.copy', {}, 'en'), 'Copy');
+            assertEquals(t('common.paste', {}, 'ja'), '貼り付け');
+            assertEquals(t('common.paste', {}, 'en'), 'Paste');
         });
 
         it('パラメータ置換（{0}, {1}など）が正しく行われること', () => {
@@ -622,6 +630,7 @@ export default async function initTestRunner() {
         isTempMode = modStorage.isTempMode;
         setTempMode = modStorage.setTempMode;
         copyToClipboard = modStorage.copyToClipboard;
+        pasteFromClipboard = modStorage.pasteFromClipboard;
     } catch (e) { console.warn('Failed to import storage:', e); }
 
     try {

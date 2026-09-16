@@ -1,5 +1,5 @@
-// Tool: スライスドロップ
-import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+﻿// Tool: スライスドロップ
+import { createToolStorage, copyToClipboard, pasteFromClipboard } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 import { setupLimitControls } from '../../js/lib/limit-controls.js';
 
@@ -92,6 +92,7 @@ export default function init() {
     const sdTotalPagesElements = document.querySelectorAll('.sd-total-pages');
     const sdBtnCopy = document.getElementById('sd-btn-copy');
     const sdBtnClear = document.getElementById('sd-btn-clear');
+    const sdBtnPaste = document.getElementById('sd-btn-paste');
     const sdAddPrefix = document.getElementById('sd-add-prefix');
 
     if (!sdInput || !sdLimitInput || !sdAddPrefix) return;
@@ -205,6 +206,14 @@ export default function init() {
         sdInput.value = '';
         currentPageIndex = 0;
         updateSlices(true);
+    });
+
+    // クリップボードから貼り付け
+    sdBtnPaste.addEventListener('click', () => {
+        pasteFromClipboard(sdBtnPaste, (text) => {
+            sdInput.value = text;
+            sdInput.dispatchEvent(new Event('input'));
+        });
     });
 
     // イベントリスナー

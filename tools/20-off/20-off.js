@@ -1,5 +1,5 @@
-// Tool: 20% Off
-import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+﻿// Tool: 20% Off
+import { createToolStorage, copyToClipboard, pasteFromClipboard } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 
 export function reduceText(text, percentVal) {
@@ -46,6 +46,7 @@ export default function init() {
     const section = document.getElementById('tool-20-off');
     const btnReduce = document.getElementById('btn-reduce');
     const btnClear = document.getElementById('btn-clear');
+    const btnPaste = document.getElementById('btn-paste');
     const btnCopy = document.getElementById('btn-copy');
     const inputText = document.getElementById('input-text');
     const outputText = document.getElementById('output-text');
@@ -112,6 +113,14 @@ export default function init() {
         inputText.value = '';
         outputText.value = '';
         storage.set('text', '');
+    });
+
+    // クリップボードから貼り付け
+    btnPaste.addEventListener('click', () => {
+        pasteFromClipboard(btnPaste, (text) => {
+            inputText.value = text;
+            inputText.dispatchEvent(new Event('input'));
+        });
     });
 
     // クリップボードへコピー

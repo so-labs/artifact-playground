@@ -1,4 +1,4 @@
-﻿import { copyToClipboard } from '../../js/lib/storage.js';
+﻿import { copyToClipboard, pasteFromClipboard } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 
 export function parseHtmlTable(html) {
@@ -69,6 +69,7 @@ export default function init() {
     const resultsArea = document.getElementById('cp-results');
     const container = document.getElementById('cp-columns-container');
     const btnClear = document.getElementById('cp-btn-clear');
+    const btnPaste = document.getElementById('cp-btn-paste');
 
     if (!inputEl) return;
 
@@ -107,13 +108,13 @@ export default function init() {
         columns.forEach((colData, idx) => {
             // ヘッダー行をタイトルとして利用
             const headerText = colData[0] ? colData[0].replace(/\s+/g, ' ').trim() : `Column ${idx + 1}`;
-            
+
             // 空のセルをスキップして有効なデータだけを抽出
             const validCells = colData.map(cell => cell.trim()).filter(cell => cell !== '');
-            
+
             // セル内に改行を含むデータ（複数行のテキストブロックなど）が1つでもあるか判定
             const hasMultilineCell = validCells.some(cell => cell.includes('\n'));
-            
+
             // 単一行のリストなら改行1つ、複数行ブロックを含むなら空行を挟む（改行2つ）
             const separator = hasMultilineCell ? '\n\n' : '\n';
             const bodyText = validCells.join(separator);
@@ -159,6 +160,21 @@ export default function init() {
         inputEl.value = '';
         resultsArea.hidden = true;
         container.innerHTML = '';
+    });
+
+    // クリップボードから貼り付け（Clipboard APIではHTMLの表構造までは取得できないため、TSV形式として解析を試みる）
+    btnPaste.addEventListener('click', () => {
+        pasteFromClipboard(btnPaste, (text) => {
+            const columns = parseTsv(text);
+            if (columns) {
+                inputEl.value = t('tool.columnPicker.successMsg');
+                renderColumns(columns);
+            } else {
+                inputEl.value = text;
+                resultsArea.hidden = true;
+                container.innerHTML = '';
+            }
+        });
     });
 
     onLanguageChange(() => {

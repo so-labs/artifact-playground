@@ -1,8 +1,9 @@
-import { t } from './i18n.js';
+﻿import { t } from './i18n.js';
 
 let tempMode = localStorage.getItem('app-temp-mode') === 'true';
 const tempMemoryStorage = new Map();
 const copyTimers = new Map();
+const pasteTimers = new Map();
 
 export function isTempMode() {
   return tempMode;
@@ -107,5 +108,64 @@ export async function copyToClipboard(text, btn) {
     }, 1000));
   } else {
     alert(t('common.copyFailed'));
+  }
+}
+
+export async function pasteFromClipboard(btn, onPaste) {
+  let text = null;
+
+  // 1. モダンな API (navigator.clipboard) を試行
+  if (navigator.clipboard && window.isSecureContext && navigator.clipboard.readText) {
+    try {
+      text = await navigator.clipboard.readText();
+    } catch (err) {
+      console.warn('navigator.clipboard.readText failed, falling back to execCommand:', err);
+    }
+  }
+
+  // 2. 非対応環境向けのフォールバック (execCommand)
+  if (text === null) {
+    try {
+      const textarea = document.createElement('textarea');
+      // 画面のチラつきやスクロールを防ぐスタイル設定
+      textarea.style.position = 'fixed';
+      textarea.style.top = '0';
+      textarea.style.left = '0';
+      textarea.style.opacity = '0';
+      textarea.style.pointerEvents = 'none';
+      document.body.appendChild(textarea);
+
+      textarea.focus();
+
+      const ok = document.execCommand('paste');
+      if (ok) {
+        text = textarea.value;
+      }
+      document.body.removeChild(textarea);
+    } catch (err) {
+      console.error('execCommand paste failed:', err);
+    }
+  }
+
+  // 結果の判定とフィードバックUI表示
+  if (text !== null) {
+    if (typeof onPaste === 'function') {
+      onPaste(text);
+    }
+
+    if (btn) {
+      if (pasteTimers.has(btn)) {
+        clearTimeout(pasteTimers.get(btn));
+      }
+
+      btn.textContent = t('common.pasted');
+
+      pasteTimers.set(btn, setTimeout(() => {
+        btn.textContent = t('common.paste');
+        pasteTimers.delete(btn);
+      }, 1000));
+    }
+  } else {
+    alert(t('common.pasteFailed'));
   }
 }

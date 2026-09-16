@@ -1,4 +1,4 @@
-<section id="tool-outline-studio" class="tool-section">
+﻿<section id="tool-outline-studio" class="tool-section">
     <div class="tool-title-area">
         <h2 data-i18n="tool.outlineStudio.title">アウトライン・スタジオ</h2>
         <button class="help-btn" aria-label="説明を表示" data-i18n-aria="common.helpAria" aria-expanded="false">
@@ -20,12 +20,20 @@
                 <label for="os-input">Markdown</label>
                 <span id="os-file-name" class="os-file-name" hidden></span>
                 <div class="os-file-actions">
-                    <button id="os-btn-open" class="btn small" type="button" data-i18n="tool.outlineStudio.openFile">ファイルを開く</button>
-                    <button id="os-btn-save" class="btn small" type="button" disabled data-i18n="tool.outlineStudio.download">ダウンロード</button>
-                    <button id="os-btn-clear" class="btn small" type="button" data-i18n="common.clear">クリア</button>
+                    <div class="os-file-actions-group">
+                        <button id="os-btn-open" class="btn small" type="button"
+                            data-i18n="tool.outlineStudio.openFile">ファイルを開く</button>
+                        <button id="os-btn-save" class="btn small" type="button" disabled
+                            data-i18n="tool.outlineStudio.download">ダウンロード</button>
+                    </div>
+                    <div class="os-file-actions-group">
+                        <button id="os-btn-paste" class="btn small" type="button" data-i18n="common.paste">貼り付け</button>
+                        <button id="os-btn-clear" class="btn small" type="button" data-i18n="common.clear">クリア</button>
+                    </div>
                 </div>
             </div>
-            <textarea id="os-input" rows="18" data-i18n-placeholder="tool.outlineStudio.placeholder" placeholder="Markdown を入力するか、ファイルを開いてください..."></textarea>
+            <textarea id="os-input" rows="18" data-i18n-placeholder="tool.outlineStudio.placeholder"
+                placeholder="Markdown を入力するか、ファイルを開いてください..."></textarea>
             <div class="os-editor-footer">
                 <span id="os-cursor-info" class="os-cursor-info">行 1</span>
                 <span id="os-issues" class="os-issues" hidden></span>
@@ -47,27 +55,33 @@
                     <span class="os-op-label" data-i18n="tool.outlineStudio.levelSingle">レベル・単体</span>
                     <div class="os-btn-grid">
                         <button id="os-btn-level-single-up" class="btn small secondary" type="button"
-                            title="この見出しだけレベル上げ" data-i18n-title="tool.outlineStudio.titleLevelSingleUp" data-i18n="tool.outlineStudio.up">上げ</button>
+                            title="この見出しだけレベル上げ" data-i18n-title="tool.outlineStudio.titleLevelSingleUp"
+                            data-i18n="tool.outlineStudio.up">上げ</button>
                         <button id="os-btn-level-single-down" class="btn small secondary" type="button"
-                            title="この見出しだけレベル下げ" data-i18n-title="tool.outlineStudio.titleLevelSingleDown" data-i18n="tool.outlineStudio.down">下げ</button>
+                            title="この見出しだけレベル下げ" data-i18n-title="tool.outlineStudio.titleLevelSingleDown"
+                            data-i18n="tool.outlineStudio.down">下げ</button>
                     </div>
                 </div>
                 <div class="os-op-group">
                     <span class="os-op-label" data-i18n="tool.outlineStudio.levelGroup">レベル・まとめて</span>
                     <div class="os-btn-grid">
                         <button id="os-btn-level-group-up" class="btn small secondary" type="button"
-                            title="見出しと子見出しをまとめてレベル上げ" data-i18n-title="tool.outlineStudio.titleLevelGroupUp" data-i18n="tool.outlineStudio.up">上げ</button>
+                            title="見出しと子見出しをまとめてレベル上げ" data-i18n-title="tool.outlineStudio.titleLevelGroupUp"
+                            data-i18n="tool.outlineStudio.up">上げ</button>
                         <button id="os-btn-level-group-down" class="btn small secondary" type="button"
-                            title="見出しと子見出しをまとめてレベル下げ" data-i18n-title="tool.outlineStudio.titleLevelGroupDown" data-i18n="tool.outlineStudio.down">下げ</button>
+                            title="見出しと子見出しをまとめてレベル下げ" data-i18n-title="tool.outlineStudio.titleLevelGroupDown"
+                            data-i18n="tool.outlineStudio.down">下げ</button>
                     </div>
                 </div>
                 <div class="os-op-group">
                     <span class="os-op-label" data-i18n="tool.outlineStudio.move">移動</span>
                     <div class="os-btn-grid">
                         <button id="os-btn-move-group-up" class="btn small secondary" type="button"
-                            title="見出しと子見出しを含むセクション全体を上に移動" data-i18n-title="tool.outlineStudio.titleMoveUp" data-i18n="tool.outlineStudio.moveUp">上へ</button>
+                            title="見出しと子見出しを含むセクション全体を上に移動" data-i18n-title="tool.outlineStudio.titleMoveUp"
+                            data-i18n="tool.outlineStudio.moveUp">上へ</button>
                         <button id="os-btn-move-group-down" class="btn small secondary" type="button"
-                            title="見出しと子見出しを含むセクション全体を下に移動" data-i18n-title="tool.outlineStudio.titleMoveDown" data-i18n="tool.outlineStudio.moveDown">下へ</button>
+                            title="見出しと子見出しを含むセクション全体を下に移動" data-i18n-title="tool.outlineStudio.titleMoveDown"
+                            data-i18n="tool.outlineStudio.moveDown">下へ</button>
                     </div>
                 </div>
             </div>
@@ -77,26 +91,34 @@
                 <div class="os-copy-options">
                     <fieldset class="os-fieldset">
                         <legend data-i18n="tool.outlineStudio.scope">範囲</legend>
-                        <label class="os-radio"><input type="radio" name="os-scope" value="full"> <span data-i18n="tool.outlineStudio.scopeFull">全文</span></label>
-                        <label class="os-radio"><input type="radio" name="os-scope" value="area"> <span data-i18n="tool.outlineStudio.scopeArea">エリア</span></label>
+                        <label class="os-radio"><input type="radio" name="os-scope" value="full"> <span
+                                data-i18n="tool.outlineStudio.scopeFull">全文</span></label>
+                        <label class="os-radio"><input type="radio" name="os-scope" value="area"> <span
+                                data-i18n="tool.outlineStudio.scopeArea">エリア</span></label>
                         <label class="os-radio"><input type="radio" name="os-scope" value="section" checked>
                             <span data-i18n="tool.outlineStudio.scopeSection">セクション</span></label>
                     </fieldset>
                     <fieldset class="os-fieldset">
                         <legend data-i18n="tool.outlineStudio.format">形式</legend>
-                        <label class="os-radio"><input type="radio" name="os-format" value="normal" checked> <span data-i18n="tool.outlineStudio.formatNormal">通常</span></label>
-                        <label class="os-radio"><input type="radio" name="os-format" value="quote"> <span data-i18n="tool.outlineStudio.formatQuote">引用</span></label>
-                        <label class="os-radio"><input type="radio" name="os-format" value="code"> <span data-i18n="tool.outlineStudio.formatCode">コード</span></label>
+                        <label class="os-radio"><input type="radio" name="os-format" value="normal" checked> <span
+                                data-i18n="tool.outlineStudio.formatNormal">通常</span></label>
+                        <label class="os-radio"><input type="radio" name="os-format" value="quote"> <span
+                                data-i18n="tool.outlineStudio.formatQuote">引用</span></label>
+                        <label class="os-radio"><input type="radio" name="os-format" value="code"> <span
+                                data-i18n="tool.outlineStudio.formatCode">コード</span></label>
                     </fieldset>
                 </div>
             </div>
 
             <div class="os-panel-section os-preview-section">
                 <div class="os-preview-header">
-                    <label for="os-preview" class="os-panel-title" data-i18n="tool.outlineStudio.preview">抽出プレビュー</label>
+                    <label for="os-preview" class="os-panel-title"
+                        data-i18n="tool.outlineStudio.preview">抽出プレビュー</label>
                     <button id="os-btn-copy" class="btn small" type="button" data-i18n="common.copy">コピー</button>
                 </div>
-                <textarea id="os-preview" rows="6" readonly data-i18n-placeholder="tool.outlineStudio.previewPlaceholder" placeholder="スマートコピーの結果がここに表示されます"></textarea>
+                <textarea id="os-preview" rows="6" readonly
+                    data-i18n-placeholder="tool.outlineStudio.previewPlaceholder"
+                    placeholder="スマートコピーの結果がここに表示されます"></textarea>
                 <p id="os-source-label" class="os-source-label"></p>
             </div>
         </div>

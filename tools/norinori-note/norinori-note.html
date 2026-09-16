@@ -1,8 +1,9 @@
-<section id="tool-norinori-note" class="tool-section">
+﻿<section id="tool-norinori-note" class="tool-section">
     <div class="tool-title-area">
         <h2 data-i18n="tool.norinori.title">ノリノリ音符</h2>
         <button class="help-btn" aria-label="説明を表示" data-i18n-aria="common.helpAria" aria-expanded="false">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -16,9 +17,13 @@
         <div class="input-group">
             <div class="input-header">
                 <label for="nn-input" data-i18n="tool.norinori.inputLabel">入力テキスト（歌詞）</label>
-                <button id="nn-btn-clear" class="btn small" data-i18n="common.clear">クリア</button>
+                <div class="header-actions">
+                    <button id="nn-btn-paste" class="btn small" data-i18n="common.paste">貼り付け</button>
+                    <button id="nn-btn-clear" class="btn small" data-i18n="common.clear">クリア</button>
+                </div>
             </div>
-            <textarea id="nn-input" rows="8" data-i18n-placeholder="tool.norinori.placeholder" placeholder="ここに歌詞などのテキストを入力..."></textarea>
+            <textarea id="nn-input" rows="8" data-i18n-placeholder="tool.norinori.placeholder"
+                placeholder="ここに歌詞などのテキストを入力..."></textarea>
         </div>
         <div class="button-group">
             <button id="nn-btn-convert" class="btn primary" data-i18n="tool.norinori.convertBtn">ノリノリにする</button>

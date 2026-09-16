@@ -1,5 +1,5 @@
-// Tool: ウエイトオーバー
-import { createToolStorage } from '../../js/lib/storage.js';
+﻿// Tool: ウエイトオーバー
+import { createToolStorage, pasteFromClipboard } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 import { setupLimitControls } from '../../js/lib/limit-controls.js';
 
@@ -22,6 +22,7 @@ export default function init() {
     const woCounter = document.getElementById('wo-counter');
     const woSection = document.getElementById('tool-weight-over');
     const woBtnClear = document.getElementById('wo-btn-clear');
+    const woBtnPaste = document.getElementById('wo-btn-paste');
     const woMildToggle = document.getElementById('wo-mild-toggle');
 
     if (!woInput || !woLimitInput) return;
@@ -99,12 +100,21 @@ export default function init() {
         });
     }
 
+    if (woBtnPaste) {
+        woBtnPaste.addEventListener('click', () => {
+            pasteFromClipboard(woBtnPaste, (text) => {
+                woInput.value = text;
+                woInput.dispatchEvent(new Event('input'));
+            });
+        });
+    }
+
     if (woMildToggle) {
         woMildToggle.addEventListener('click', () => {
             const current = woMildToggle.getAttribute('aria-checked') === 'true';
             const next = !current;
             woMildToggle.setAttribute('aria-checked', String(next));
-            
+
             if (next) {
                 woSection.classList.add('wo-mild');
             } else {

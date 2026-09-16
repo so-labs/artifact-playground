@@ -1,8 +1,9 @@
-<section id="tool-20-off" class="tool-section">
+﻿<section id="tool-20-off" class="tool-section">
     <div class="tool-title-area">
         <h2 data-i18n="tool.20off.title">20% Off</h2>
         <button class="help-btn" aria-label="説明を表示" data-i18n-aria="common.helpAria" aria-expanded="false">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -16,12 +17,16 @@
         <div class="input-group">
             <div class="input-header">
                 <label for="input-text" data-i18n="common.input">入力テキスト</label>
-                <button id="btn-clear" class="btn small" data-i18n="common.clear">クリア</button>
+                <div class="header-actions">
+                    <button id="btn-paste" class="btn small" data-i18n="common.paste">貼り付け</button>
+                    <button id="btn-clear" class="btn small" data-i18n="common.clear">クリア</button>
+                </div>
             </div>
             <textarea id="input-text" rows="8"></textarea>
         </div>
         <div class="settings-group">
-            <label for="percent-slider" id="percent-label" data-i18n-html="tool.20off.rate">削る割合: <span id="percent-display">20</span>%</label>
+            <label for="percent-slider" id="percent-label" data-i18n-html="tool.20off.rate">削る割合: <span
+                    id="percent-display">20</span>%</label>
             <input type="range" id="percent-slider" min="1" max="30" value="20" class="slider">
         </div>
         <div class="button-group">

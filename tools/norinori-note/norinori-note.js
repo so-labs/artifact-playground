@@ -1,5 +1,5 @@
-// Tool: ノリノリ音符
-import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+﻿// Tool: ノリノリ音符
+import { createToolStorage, copyToClipboard, pasteFromClipboard } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 
 export function makeNorinori(text, notes = ['♪', '♫', '♬']) {
@@ -33,6 +33,7 @@ export default function init() {
     const outputEl = document.getElementById('nn-output');
     const btnConvert = document.getElementById('nn-btn-convert');
     const btnClear = document.getElementById('nn-btn-clear');
+    const btnPaste = document.getElementById('nn-btn-paste');
     const btnCopy = document.getElementById('nn-btn-copy');
 
     if (!inputEl || !btnConvert) return;
@@ -63,6 +64,14 @@ export default function init() {
         inputEl.value = '';
         outputEl.value = '';
         storage.set('text', '');
+    });
+
+    // クリップボードから貼り付け
+    btnPaste.addEventListener('click', () => {
+        pasteFromClipboard(btnPaste, (text) => {
+            inputEl.value = text;
+            inputEl.dispatchEvent(new Event('input'));
+        });
     });
 
     // クリップボードへコピー

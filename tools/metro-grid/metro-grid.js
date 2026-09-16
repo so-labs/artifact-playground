@@ -1,5 +1,5 @@
-// Tool: メトロ・グリッド (Metro Grid)
-import { createToolStorage, copyToClipboard } from '../../js/lib/storage.js';
+﻿// Tool: メトロ・グリッド (Metro Grid)
+import { createToolStorage, copyToClipboard, pasteFromClipboard } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 
 // --- コアロジック（テスト可能） ---
@@ -7,7 +7,7 @@ import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 export function parseMarkdownTable(text) {
     const lines = text.split(/\r?\n/).filter(l => l.trim() !== '');
     if (lines.length < 2) return null;
-    
+
     const isTable = lines[1].includes('|') && /[-:]/.test(lines[1]);
     if (!isTable) return null;
 
@@ -20,11 +20,11 @@ export function parseMarkdownTable(text) {
 
     const headers = extractCells(lines[0]);
     const alignCells = extractCells(lines[1]);
-    
+
     // 区切り行の構造チェック
     const isAlignRow = alignCells.every(c => /^[:\s-]*$/.test(c) && c.includes('-'));
     if (!isAlignRow) return null;
-    
+
     const alignments = alignCells.map(c => {
         const left = c.startsWith(':');
         const right = c.endsWith(':');
@@ -39,7 +39,7 @@ export function parseMarkdownTable(text) {
     const rows = [];
     for (let i = 2; i < lines.length; i++) {
         const cells = extractCells(lines[i]);
-        while(cells.length < headers.length) cells.push('');
+        while (cells.length < headers.length) cells.push('');
         rows.push(cells.slice(0, headers.length));
     }
 
@@ -50,30 +50,30 @@ export function parseTSV(text) {
     const lines = text.split(/\r?\n/).filter(l => l.trim() !== '');
     if (lines.length === 0) return null;
     if (!lines.some(l => l.includes('\t'))) return null;
-    
+
     const headers = lines[0].split('\t');
     const alignments = headers.map(() => 'none');
     const rows = [];
     for (let i = 1; i < lines.length; i++) {
         const cells = lines[i].split('\t');
-        while(cells.length < headers.length) cells.push('');
+        while (cells.length < headers.length) cells.push('');
         rows.push(cells.slice(0, headers.length));
     }
-    
+
     return { headers, alignments, rows };
 }
 
 export function parseData(text) {
     if (!text || !text.trim()) return { type: 'none', headers: [], alignments: [], rows: [] };
-    
+
     if (text.includes('|') && /[-:]/.test(text)) {
         const md = parseMarkdownTable(text);
         if (md) return { type: 'md', ...md };
     }
-    
+
     const tsv = parseTSV(text);
     if (tsv) return { type: 'tsv', ...tsv };
-    
+
     return { type: 'none', headers: [], alignments: [], rows: [] };
 }
 
@@ -93,7 +93,7 @@ export function getStringWidth(str) {
 export function padString(str, width, align, padChar = ' ') {
     const strWidth = getStringWidth(str);
     const padding = Math.max(0, width - strWidth);
-    
+
     if (align === 'left') {
         return str + padChar.repeat(padding);
     } else if (align === 'right') {
@@ -109,9 +109,9 @@ export function padString(str, width, align, padChar = ' ') {
 
 export function toMarkdown(data, pad = false) {
     if (!data.headers || data.headers.length === 0) return '';
-    
+
     let colWidths = data.headers.map(() => 0);
-    
+
     if (pad) {
         colWidths = data.headers.map((h, i) => {
             let max = getStringWidth(h);
@@ -174,22 +174,22 @@ export function toTSV(data) {
 
 export function sortGridData(data, colIndex, order) {
     if (!data || !data.rows || colIndex < 0) return;
-    
+
     data.rows.sort((a, b) => {
         const valA = a[colIndex] || '';
         const valB = b[colIndex] || '';
-        
+
         const numA = Number(valA);
         const numB = Number(valB);
         const isNum = !isNaN(numA) && !isNaN(numB) && valA.trim() !== '' && valB.trim() !== '';
-        
+
         let cmp = 0;
         if (isNum) {
             cmp = numA - numB;
         } else {
             cmp = valA.localeCompare(valB, undefined, { numeric: true, sensitivity: 'base' });
         }
-        
+
         return order === 'asc' ? cmp : -cmp;
     });
 }
@@ -205,25 +205,26 @@ export default function init() {
     const tableEl = document.getElementById('mg-table');
     const emptyMsgEl = document.querySelector('.mg-empty-msg');
     const gridInfoEl = document.getElementById('mg-grid-info');
-    
+
     const btnClear = document.getElementById('mg-btn-clear');
+    const btnPaste = document.getElementById('mg-btn-paste');
     const btnCopyMd = document.getElementById('mg-btn-copy-md');
     const btnCopyTsv = document.getElementById('mg-btn-copy-tsv');
     const optPadding = document.getElementById('mg-opt-padding');
-    
+
     if (!inputEl) return;
 
     const storage = createToolStorage('metro-grid');
-    
+
     let currentData = { type: 'none', headers: [], alignments: [], rows: [] };
     let originalRows = [];
     let sortState = { colIndex: -1, order: 'none' };
     let isPad = false;
-    
+
     function escapeHtml(str) {
         return (str || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
-    
+
     function getAlignStyle(align, isHeader) {
         if (align === 'none') {
             return isHeader ? 'center' : 'left';
@@ -232,7 +233,7 @@ export default function init() {
     }
 
     function getAlignIcon(align) {
-        switch(align) {
+        switch (align) {
             case 'left':
                 return '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="14" y2="12"></line><line x1="4" y1="18" x2="18" y2="18"></line></svg>';
             case 'center':
@@ -251,7 +252,7 @@ export default function init() {
         input.type = 'text';
         input.value = val;
         input.className = 'mg-cell-input';
-        
+
         const save = () => {
             currentData.rows[rowIdx][colIdx] = input.value;
             originalRows = JSON.parse(JSON.stringify(currentData.rows));
@@ -259,13 +260,13 @@ export default function init() {
             renderGrid();
             updateOutput();
         };
-        
+
         input.addEventListener('blur', save);
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') save();
             if (e.key === 'Escape') renderGrid();
         });
-        
+
         tdEl.innerHTML = '';
         tdEl.appendChild(input);
         input.focus();
@@ -278,35 +279,35 @@ export default function init() {
             gridInfoEl.textContent = t('tool.metroGrid.gridInfo', [0, 0]);
             return;
         }
-        
+
         tableEl.hidden = false;
         emptyMsgEl.hidden = true;
         gridInfoEl.textContent = t('tool.metroGrid.gridInfo', [currentData.rows.length, currentData.headers.length]);
-        
+
         theadEl.innerHTML = '';
         const trHead = document.createElement('tr');
         currentData.headers.forEach((h, i) => {
             const th = document.createElement('th');
             const align = getAlignStyle(currentData.alignments[i], true);
             th.style.textAlign = align;
-            
+
             const content = document.createElement('div');
             content.className = 'mg-th-content';
-            
+
             const textWrap = document.createElement('div');
             textWrap.className = 'mg-th-text';
             textWrap.title = t('tool.metroGrid.sortTitle');
-            
+
             if (align === 'center') textWrap.style.justifyContent = 'center';
             else if (align === 'right') textWrap.style.justifyContent = 'flex-end';
             else textWrap.style.justifyContent = 'flex-start';
-            
+
             let sortIcon = '－';
             if (sortState.colIndex === i) {
                 if (sortState.order === 'asc') sortIcon = '▲';
                 else if (sortState.order === 'desc') sortIcon = '▼';
             }
-            
+
             textWrap.innerHTML = `<span>${escapeHtml(h)}</span><span class="mg-sort-icon">${sortIcon}</span>`;
             textWrap.addEventListener('click', () => {
                 if (sortState.colIndex === i) {
@@ -317,7 +318,7 @@ export default function init() {
                     sortState.colIndex = i;
                     sortState.order = 'asc';
                 }
-                
+
                 if (sortState.order === 'none') {
                     currentData.rows = JSON.parse(JSON.stringify(originalRows));
                 } else {
@@ -326,10 +327,10 @@ export default function init() {
                 renderGrid();
                 updateOutput();
             });
-            
+
             const actions = document.createElement('div');
             actions.className = 'mg-th-actions';
-            
+
             const alignBtn = document.createElement('button');
             alignBtn.className = 'mg-btn-icon';
             alignBtn.title = t('tool.metroGrid.alignTitle');
@@ -362,17 +363,17 @@ export default function init() {
                 renderGrid();
                 updateOutput();
             });
-            
+
             actions.appendChild(alignBtn);
             actions.appendChild(delBtn);
-            
+
             content.appendChild(textWrap);
             content.appendChild(actions);
             th.appendChild(content);
             trHead.appendChild(th);
         });
         theadEl.appendChild(trHead);
-        
+
         tbodyEl.innerHTML = '';
         currentData.rows.forEach((r, rowIdx) => {
             const tr = document.createElement('tr');
@@ -416,6 +417,13 @@ export default function init() {
         storage.set('text', '');
     });
 
+    btnPaste.addEventListener('click', () => {
+        pasteFromClipboard(btnPaste, (text) => {
+            inputEl.value = text;
+            inputEl.dispatchEvent(new Event('input'));
+        });
+    });
+
     optPadding.addEventListener('click', () => {
         isPad = !isPad;
         optPadding.setAttribute('aria-checked', isPad ? 'true' : 'false');
@@ -438,19 +446,19 @@ export default function init() {
     } else {
         inputEl.value = t('tool.metroGrid.sample');
     }
-    
+
     // 現在の入力（復元データ、または初期例文）を元にデータを解析
     if (inputEl.value.trim()) {
         currentData = parseData(inputEl.value);
         originalRows = JSON.parse(JSON.stringify(currentData.rows));
     }
-    
+
     const savedPad = storage.get('pad');
     if (savedPad === 'true') {
         isPad = true;
     }
     optPadding.setAttribute('aria-checked', isPad ? 'true' : 'false');
-    
+
     renderGrid();
     updateOutput();
 

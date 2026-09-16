@@ -1,4 +1,4 @@
-// i18n 多言語対応モジュール
+﻿// i18n 多言語対応モジュール
 
 export const translations = {
     ja: {
@@ -41,6 +41,9 @@ export const translations = {
         'common.copy': 'コピー',
         'common.copied': 'コピー完了！',
         'common.copyFailed': 'クリップボードへのコピーに失敗しました。',
+        'common.paste': '貼り付け',
+        'common.pasted': '貼り付け完了！',
+        'common.pasteFailed': 'クリップボードからの読み取りに失敗しました。',
         'common.helpAria': '説明を表示',
         'common.input': '入力テキスト',
         'common.output': '出力結果',
@@ -231,6 +234,9 @@ export const translations = {
         'common.copy': 'Copy',
         'common.copied': 'Copied!',
         'common.copyFailed': 'Failed to copy to clipboard.',
+        'common.paste': 'Paste',
+        'common.pasted': 'Pasted!',
+        'common.pasteFailed': 'Failed to read from clipboard.',
         'common.helpAria': 'Show description',
         'common.input': 'Input Text',
         'common.output': 'Output',
