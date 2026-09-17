@@ -1,4 +1,4 @@
-﻿// Tool: 20% Off
+// Tool: 20% Off
 import { createToolStorage, copyToClipboard, pasteFromClipboard } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 
@@ -51,7 +51,7 @@ export default function init() {
     const inputText = document.getElementById('input-text');
     const outputText = document.getElementById('output-text');
     const percentSlider = document.getElementById('percent-slider');
-    const percentDisplay = document.getElementById('percent-display');
+    const percentLabel = document.getElementById('percent-label');
 
     if (!btnReduce || !inputText) return;
 
@@ -68,7 +68,9 @@ export default function init() {
 
     const updateUIStrings = () => {
         const val = percentSlider.value || '20';
-        if (percentDisplay) percentDisplay.textContent = val;
+        // ラベルのinnerHTMLをパラメータ付きで直接更新することで、
+        // applyTranslationsが{0}のまま上書きしてしまう問題を防ぐ
+        if (percentLabel) percentLabel.innerHTML = t('tool.20off.rate', [val]);
         btnReduce.textContent = t('tool.20off.btn', [val]);
     };
 

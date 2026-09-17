@@ -1,4 +1,4 @@
-﻿// i18n 多言語対応モジュール
+// i18n 多言語対応モジュール
 
 export const translations = {
     ja: {
@@ -508,11 +508,24 @@ export function applyTranslations(root = document) {
     });
 
     // HTML内容の更新: data-i18n-html="key"
+    // data-i18n-params="id1|id2" を指定すると、対象IDの要素の現在値をパラメータとして使用
     const htmlEls = root.querySelectorAll('[data-i18n-html]');
     htmlEls.forEach((el) => {
         const key = el.getAttribute('data-i18n-html');
         if (key) {
-            el.innerHTML = t(key, [], currentLang);
+            const paramAttr = el.getAttribute('data-i18n-params');
+            let params = [];
+            if (paramAttr) {
+                // ルートまたはdocument全体からIDで要素を探して現在値を取得
+                const searchRoot = root === document ? document : (document || root);
+                params = paramAttr.split('|').map((id) => {
+                    const paramEl = searchRoot.getElementById
+                        ? searchRoot.getElementById(id)
+                        : root.querySelector(`#${id}`);
+                    return paramEl ? paramEl.textContent : '';
+                });
+            }
+            el.innerHTML = t(key, params, currentLang);
         }
     });
 
