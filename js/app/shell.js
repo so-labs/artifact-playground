@@ -476,6 +476,7 @@ export function initShell() {
 
     // ロード時のアニメーションちらつき防止のため、少し遅延させて transition 用クラスを追加
     setTimeout(() => {
+        document.documentElement.classList.add('theme-ready');
         document.body.classList.add('theme-ready');
     }, 100);
 

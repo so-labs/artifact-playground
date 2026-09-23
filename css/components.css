@@ -611,6 +611,7 @@ textarea {
 }
 
 /* テーマ切り替えアニメーション */
+html.theme-ready,
 body.theme-ready,
 body.theme-ready .app-header,
 body.theme-ready .tool-section,
