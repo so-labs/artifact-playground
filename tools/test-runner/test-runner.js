@@ -1,6 +1,6 @@
-﻿import { getAppVersion } from '../../js/lib/version.js';
+import { getAppVersion } from '../../js/lib/version.js';
 
-let reduceText, makeNorinori, sliceText, checkWeight, parseData, toMarkdown, sortGridData;
+let reduceText, makeNorinori, sliceText, canCopyAll, getReversedChunks, checkWeight, parseData, toMarkdown, sortGridData;
 let parseHeadings, adjustHeadingLevels, formatCopyText, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, jumpToHeading, checkStructureIssues;
 let parseHtmlTable, parseTsv;
 let createToolStorage, isTempMode, setTempMode, copyToClipboard, pasteFromClipboard;
@@ -122,6 +122,39 @@ describe('スライスドロップ', () => {
             assertEquals(result.length, 2);
             assertEquals(result[0], '1/2\n\nあいうえお');
             assertEquals(result[1], '2/2\n\nかき');
+        });
+    });
+
+    describe('getReversedChunks [tools/slice-drop/slice-drop.js]', () => {
+        it('空の配列は空の配列を返すこと', () => {
+            const result = getReversedChunks([]);
+            assertEquals(result.length, 0);
+        });
+
+        it('配列を破壊せずに逆順の配列を返すこと', () => {
+            const original = ['①', '②', '③'];
+            const reversed = getReversedChunks(original);
+            assertEquals(reversed.length, 3);
+            assertEquals(reversed[0], '③');
+            assertEquals(reversed[1], '②');
+            assertEquals(reversed[2], '①');
+            assertEquals(original[0], '①');
+        });
+    });
+
+    describe('canCopyAll [tools/slice-drop/slice-drop.js]', () => {
+        it('空配列の場合はfalseを返すこと', () => {
+            assertEquals(canCopyAll([]), false);
+        });
+
+        it('20件以下の場合はtrueを返すこと', () => {
+            const items = new Array(20).fill('テスト');
+            assertEquals(canCopyAll(items), true);
+        });
+
+        it('20件を超える場合はfalseを返すこと', () => {
+            const items = new Array(21).fill('テスト');
+            assertEquals(canCopyAll(items), false);
         });
     });
 });
@@ -591,6 +624,8 @@ export default async function initTestRunner() {
     try {
         const modSlice = await import('../slice-drop/slice-drop.js');
         sliceText = modSlice.sliceText;
+        canCopyAll = modSlice.canCopyAll;
+        getReversedChunks = modSlice.getReversedChunks;
     } catch (e) { console.warn('Failed to import slice-drop:', e); }
 
     try {

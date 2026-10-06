@@ -1,4 +1,4 @@
-﻿// Tool: スライスドロップ
+// Tool: スライスドロップ
 import { createToolStorage, copyToClipboard, pasteFromClipboard } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 import { setupLimitControls } from '../../js/lib/limit-controls.js';
@@ -79,7 +79,58 @@ export function sliceText(text, limit, addPrefix) {
     return results;
 }
 
+export const COPY_ALL_MAX = 20;
+export const COPY_ALL_INTERVAL_MS = 350;
+
+export function canCopyAll(chunks, max = COPY_ALL_MAX) {
+    return Array.isArray(chunks) && chunks.length > 0 && chunks.length <= max;
+}
+
+export function getReversedChunks(chunks) {
+    if (!Array.isArray(chunks)) return [];
+    return [...chunks].reverse();
+}
+
+async function writeTextSafely(text, maxRetries = 3) {
+    if (!text) return false;
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        if (navigator.clipboard && window.isSecureContext) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (err) {
+                // OS側でクリップボードが使用中/ロックされている可能性があるため短時間待機してリトライ
+                if (attempt < maxRetries - 1) {
+                    await new Promise(r => setTimeout(r, 60));
+                    continue;
+                }
+            }
+        }
+        break;
+    }
+    try {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.top = '0';
+        textarea.style.left = '0';
+        textarea.style.opacity = '0';
+        textarea.style.pointerEvents = 'none';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        textarea.setSelectionRange(0, textarea.value.length);
+        const ok = document.execCommand('copy');
+        document.body.removeChild(textarea);
+        return ok;
+    } catch (e) {
+        return false;
+    }
+}
+
+
 export default function init() {
+
     const section = document.getElementById('tool-slice-drop');
     const sdInput = document.getElementById('sd-input');
     const sdLimitInput = document.getElementById('sd-limit');
@@ -94,6 +145,8 @@ export default function init() {
     const sdBtnClear = document.getElementById('sd-btn-clear');
     const sdBtnPaste = document.getElementById('sd-btn-paste');
     const sdAddPrefix = document.getElementById('sd-add-prefix');
+    const sdBtnCopyAll = document.getElementById('sd-btn-copy-all');
+    const sdCopyAllStatus = document.getElementById('sd-copy-all-status');
 
     if (!sdInput || !sdLimitInput || !sdAddPrefix) return;
 
@@ -101,8 +154,16 @@ export default function init() {
 
     let chunks = [];
     let currentPageIndex = 0; // 0-based
+    let copyAllRunning = false;
+
+    const showCopyAllStatus = (msg) => {
+        if (!sdCopyAllStatus) return;
+        sdCopyAllStatus.textContent = msg;
+        sdCopyAllStatus.hidden = !msg;
+    };
 
     // LocalStorageから状態を復元
+
     const savedLimit = storage.get('limit');
     if (savedLimit) {
         sdLimitInput.value = savedLimit;
@@ -153,6 +214,13 @@ export default function init() {
 
         updatePageDisplay();
 
+        if (sdBtnCopyAll && !copyAllRunning) {
+            sdBtnCopyAll.disabled = chunks.length === 0;
+        }
+        if (sdCopyAllStatus && !copyAllRunning) {
+            showCopyAllStatus('');
+        }
+
         if (shouldSave) {
             storage.set('limit', limit);
             storage.set('text', text);
@@ -200,6 +268,38 @@ export default function init() {
     sdBtnCopy.addEventListener('click', () => {
         copyToClipboard(sdOutputText.value, sdBtnCopy);
     });
+
+    // まとめてコピー
+    if (sdBtnCopyAll) {
+        sdBtnCopyAll.addEventListener('click', async () => {
+            if (copyAllRunning) return;
+
+            const total = chunks.length;
+            if (total === 0) return;
+
+            if (!canCopyAll(chunks, COPY_ALL_MAX)) {
+                showCopyAllStatus(t('tool.sliceDrop.copyAllTooMany'));
+                return;
+            }
+
+            copyAllRunning = true;
+            sdBtnCopyAll.disabled = true;
+
+            // 逆順（最後 → 最初）でコピー → クリップボード履歴では上から正順になる
+            const reversed = getReversedChunks(chunks);
+            for (let i = 0; i < reversed.length; i++) {
+                showCopyAllStatus(t('tool.sliceDrop.copyAllRunning', [i + 1, total]));
+                await writeTextSafely(reversed[i]);
+                if (i < reversed.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, COPY_ALL_INTERVAL_MS));
+                }
+            }
+
+            showCopyAllStatus(t('tool.sliceDrop.copyAllDone'));
+            copyAllRunning = false;
+            sdBtnCopyAll.disabled = false;
+        });
+    }
 
     // クリア
     sdBtnClear.addEventListener('click', () => {

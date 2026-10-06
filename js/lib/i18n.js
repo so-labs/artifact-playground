@@ -92,6 +92,11 @@ export const translations = {
         'tool.sliceDrop.placeholder': 'ここに長いテキストを入力してください...',
         'tool.sliceDrop.quickManuscript': '原稿用紙1枚',
         'tool.sliceDrop.sample': '吾輩は猫である。名前はまだ無い。\nどこで生れたかとんと見当がつかぬ。何でも薄暗いジメジメした所でニャーニャー泣いていた事だけは記憶している。吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは書生という人間中で一番獰悪な種族であったそうだ。この書生というのは時々我々を捕えて煮て食うという話である。しかしその当時は何という考もなかったから別段恐ろしいとも思わなかった。ただ彼の掌に載せられてスーと持ち上げられた時何だかフワフワした感じがあったばかりである。',
+        'tool.sliceDrop.copyAll': 'まとめてコピー (Beta)',
+        'tool.sliceDrop.copyAllNote': 'クリップボード履歴対応環境（Windows・Android/Gboard など）向け。逆順に連続コピーすることで、履歴から順番通りに貼り付けられます。iOS・macOS など履歴非対応環境では個別の「コピー」ボタンをご利用ください。',
+        'tool.sliceDrop.copyAllTooMany': '分割数が20件を超えているため、まとめてコピーできません。個別の「コピー」ボタンをご利用ください。',
+        'tool.sliceDrop.copyAllDone': 'まとめてコピー完了！クリップボード履歴から①→②→③の順に貼り付けられます。',
+        'tool.sliceDrop.copyAllRunning': 'コピー中... ({0}/{1})',
 
         // Tool: Weight Over
         'tool.weightOver.title': 'ウエイトオーバー',
@@ -285,6 +290,11 @@ export const translations = {
         'tool.sliceDrop.placeholder': 'Enter long text here...',
         'tool.sliceDrop.quickManuscript': '1 Page (400)',
         'tool.sliceDrop.sample': 'I am a cat. As yet I have no name. I have no idea where I was born. All I remember is that I was meowing in a damp, gloomy place. It was here that I saw a human being for the first time. Later I heard that he was a student—the most ferocious of all humans. It is said that students occasionally capture us, boil us, and eat us. But at the time, having no such thoughts, I did not find him particularly frightful. I only remember the soft, floating feeling when he picked me up in his palm.',
+        'tool.sliceDrop.copyAll': 'Copy All (Beta)',
+        'tool.sliceDrop.copyAllNote': 'For environments with clipboard history (Windows, Android/Gboard, etc.). Copies in reverse order so you can paste in sequence from your history. On iOS/macOS without clipboard history, use the individual "Copy" button instead.',
+        'tool.sliceDrop.copyAllTooMany': 'Cannot copy all: too many slices (max 20). Please use the individual "Copy" button.',
+        'tool.sliceDrop.copyAllDone': 'All copied! You can now paste ① → ② → ③ in order from your clipboard history.',
+        'tool.sliceDrop.copyAllRunning': 'Copying... ({0}/{1})',
 
         // Tool: Weight Over
         'tool.weightOver.title': 'Weight Over',

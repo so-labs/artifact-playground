@@ -1,4 +1,4 @@
-﻿<section id="tool-slice-drop" class="tool-section">
+<section id="tool-slice-drop" class="tool-section">
     <div class="tool-title-area">
         <h2 data-i18n="tool.sliceDrop.title">スライスドロップ</h2>
         <button class="help-btn" aria-label="説明を表示" data-i18n-aria="common.helpAria" aria-expanded="false">
@@ -93,5 +93,13 @@
             <span id="sd-pagination-info" class="sd-pagination-info">ページ 0 / 0</span>
             <button id="sd-btn-next" class="btn secondary small" data-i18n="tool.sliceDrop.nextPage">次のページ &gt;</button>
         </div>
+    </div>
+
+    <!-- 6. まとめてコピー -->
+    <div class="sd-copy-all-area">
+        <button id="sd-btn-copy-all" class="btn small" data-i18n="tool.sliceDrop.copyAll">まとめてコピー (Beta)</button>
+        <p id="sd-copy-all-status" class="sd-copy-all-status" aria-live="polite" hidden></p>
+        <p class="sd-copy-all-note" data-i18n="tool.sliceDrop.copyAllNote">クリップボード履歴対応環境（Windows・Android/Gboard
+            など）向け。逆順に連続コピーすることで、履歴から順番通りに貼り付けられます。iOS・macOS など履歴非対応環境では個別の「コピー」ボタンをご利用ください。</p>
     </div>
 </section>

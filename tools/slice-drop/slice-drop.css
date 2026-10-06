@@ -112,7 +112,8 @@
 }
 
 .sd-pagination-info {
-    order: 1; /* テキストを最上部に配置 */
+    order: 1;
+    /* テキストを最上部に配置 */
     font-weight: bold;
     font-size: 0.85rem;
     text-align: center;
@@ -120,11 +121,13 @@
 }
 
 #sd-btn-prev {
-    order: 2; /* 前のページボタンを2番目に配置 */
+    order: 2;
+    /* 前のページボタンを2番目に配置 */
 }
 
 #sd-btn-next {
-    order: 3; /* 次のページボタンを3番目に配置 */
+    order: 3;
+    /* 次のページボタンを3番目に配置 */
 }
 
 .sd-pagination-area .btn {
@@ -176,7 +179,8 @@
     /* モバイル時：ページ切り替えはシンプルな枠なし配置に */
     .sd-pagination-area {
         display: flex;
-        flex-direction: row; /* 横並びに戻す */
+        flex-direction: row;
+        /* 横並びに戻す */
         background-color: transparent;
         border: none;
         padding: 0;
@@ -187,7 +191,8 @@
     }
 
     .sd-pagination-info {
-        order: initial; /* 並び順を元に戻す */
+        order: initial;
+        /* 並び順を元に戻す */
         margin-bottom: 0;
         flex: none;
         font-size: 0.95rem;
@@ -195,10 +200,41 @@
 
     #sd-btn-prev,
     #sd-btn-next {
-        order: initial; /* 順番を初期値に戻す */
+        order: initial;
+        /* 順番を初期値に戻す */
     }
 
     .sd-pagination-area .btn {
         width: auto;
     }
+}
+
+/* まとめてコピーエリア */
+.sd-copy-all-area {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.sd-copy-all-area #sd-btn-copy-all {
+    align-self: flex-start;
+}
+
+.sd-copy-all-status {
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.sd-copy-all-note {
+    font-size: 0.8rem;
+    opacity: 0.65;
+    margin: 0;
+    line-height: 1.5;
 }
