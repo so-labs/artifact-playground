@@ -6,7 +6,7 @@
  * MM   = 月（01〜12）
  * rN   = その月のリリース回数
  */
-const CACHE_NAME = 'artifact-playground-2026.10-r1';
+const CACHE_NAME = 'artifact-playground-2026.10-r2';
 
 const ASSETS = [
   './',
@@ -45,6 +45,9 @@ const ASSETS = [
   './tools/column-picker/column-picker.html',
   './tools/column-picker/column-picker.css',
   './tools/column-picker/column-picker.js',
+  './tools/clip-inspector/clip-inspector.html',
+  './tools/clip-inspector/clip-inspector.css',
+  './tools/clip-inspector/clip-inspector.js',
   './tools/test-runner/test-runner.html',
   './tools/test-runner/test-runner.css',
   './tools/test-runner/test-runner.js'

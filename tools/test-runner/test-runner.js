@@ -3,6 +3,7 @@ import { getAppVersion } from '../../js/lib/version.js';
 let reduceText, makeNorinori, sliceText, canCopyAll, getReversedChunks, checkWeight, parseData, toMarkdown, sortGridData;
 let parseHeadings, adjustHeadingLevels, formatCopyText, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, jumpToHeading, checkStructureIssues;
 let parseHtmlTable, parseTsv;
+let formatBytes, countUtf8Bytes, toHexDump, categorizeFormat, isTextLikeType, looksLikeText;
 let createToolStorage, isTempMode, setTempMode, copyToClipboard, pasteFromClipboard;
 let getLanguage, setLanguage, detectBrowserLanguage, t, onLanguageChange, applyTranslations;
 let calculateStepValue;
@@ -603,6 +604,156 @@ describe('上限コントロール (Limit Controls)', () => {
     });
 });
 
+// === 10. クリップ・インスペクター テスト ===
+describe('クリップ・インスペクター', () => {
+    describe('formatBytes [tools/clip-inspector/clip-inspector.js]', () => {
+        it('0バイトは「0 B」を返すこと', () => {
+            assertEquals(formatBytes(0), '0 B');
+        });
+
+        it('1KB未満はバイト単位で表示すること', () => {
+            assertEquals(formatBytes(512), '512 B');
+        });
+
+        it('1024バイトは「1 KB」に変換すること', () => {
+            assertEquals(formatBytes(1024), '1 KB');
+        });
+
+        it('小数第1位で四捨五入すること', () => {
+            assertEquals(formatBytes(1536), '1.5 KB');
+        });
+
+        it('1MB以上は「MB」に変換すること', () => {
+            assertEquals(formatBytes(1048576), '1 MB');
+        });
+
+        it('無効な値は「—」を返すこと', () => {
+            assertEquals(formatBytes(-1), '—');
+            assertEquals(formatBytes('abc'), '—');
+        });
+    });
+
+    describe('countUtf8Bytes [tools/clip-inspector/clip-inspector.js]', () => {
+        it('ASCII文字列は1文字1バイトで数えること', () => {
+            assertEquals(countUtf8Bytes('abc'), 3);
+        });
+
+        it('日本語は1文字3バイトで数えること', () => {
+            assertEquals(countUtf8Bytes('桃'), 3);
+        });
+
+        it('絵文字（サロゲートペア）は4バイトで数えること', () => {
+            assertEquals(countUtf8Bytes('🍎'), 4);
+        });
+
+        it('空文字列は0バイトを返すこと', () => {
+            assertEquals(countUtf8Bytes(''), 0);
+        });
+
+        it('文字列以外は0バイトを返すこと', () => {
+            assertEquals(countUtf8Bytes(null), 0);
+            assertEquals(countUtf8Bytes(undefined), 0);
+        });
+    });
+
+    describe('toHexDump [tools/clip-inspector/clip-inspector.js]', () => {
+        it('空データは空文字を返すこと', () => {
+            assertEquals(toHexDump(new Uint8Array(0)), '');
+            assertEquals(toHexDump(null), '');
+        });
+
+        it('16バイト未満のデータを1行のHEXダンプに変換すること', () => {
+            const dump = toHexDump(new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f]));
+            assert(dump.startsWith('00000000'), 'オフセットが先頭にありません');
+            assert(dump.includes('48 65 6c 6c 6f'), 'HEX部分が不正です');
+            assert(dump.includes('|Hello'), 'ASCII部分が不正です');
+        });
+
+        it('limitを超えるバイトは表示しないこと', () => {
+            const bytes = new Uint8Array(32);
+            bytes[16] = 0xff;
+            const dump = toHexDump(bytes, 16);
+            assertEquals(dump.split('\n').length, 1);
+            assert(!dump.includes('ff'), 'limit以降のバイトが表示されています');
+        });
+
+        it('非印字文字は「.」で表示すること', () => {
+            const dump = toHexDump(new Uint8Array([0x00]));
+            assert(dump.includes('|.'), '制御文字が「.」に置き換えられていません');
+        });
+    });
+
+    describe('categorizeFormat [tools/clip-inspector/clip-inspector.js]', () => {
+        it('text/plain は「text」に分類すること', () => {
+            assertEquals(categorizeFormat('text/plain'), 'text');
+        });
+
+        it('text/html は「html」に分類すること', () => {
+            assertEquals(categorizeFormat('text/html'), 'html');
+        });
+
+        it('image/png は「image」に分類すること', () => {
+            assertEquals(categorizeFormat('image/png'), 'image');
+        });
+
+        it('「web 」プレフィックス付きは「custom」に分類すること', () => {
+            assertEquals(categorizeFormat('web application/x-test'), 'custom');
+        });
+
+        it('未知のタイプは「other」に分類すること', () => {
+            assertEquals(categorizeFormat('application/octet-stream'), 'other');
+        });
+
+        it('空のタイプは「other」に分類すること', () => {
+            assertEquals(categorizeFormat(''), 'other');
+        });
+    });
+
+    describe('isTextLikeType [tools/clip-inspector/clip-inspector.js]', () => {
+        it('text系・JSON・XMLはテキスト扱いすること', () => {
+            assert(isTextLikeType('text/plain'));
+            assert(isTextLikeType('text/html'));
+            assert(isTextLikeType('application/json'));
+            assert(isTextLikeType('application/xml'));
+        });
+
+        it('「web 」プレフィックス付きテキストもテキスト扱いすること', () => {
+            assert(isTextLikeType('web text/html'));
+        });
+
+        it('画像やバイナリはテキスト扱いしないこと', () => {
+            assert(!isTextLikeType('image/png'));
+            assert(!isTextLikeType('application/octet-stream'));
+        });
+
+        it('空のタイプはテキスト扱いすること', () => {
+            assert(isTextLikeType(''));
+        });
+    });
+
+    describe('looksLikeText [tools/clip-inspector/clip-inspector.js]', () => {
+        it('通常のテキストはtrueを返すこと', () => {
+            assert(looksLikeText('こんにちは、世界'));
+        });
+
+        it('改行やタブを含むテキストはtrueを返すこと', () => {
+            assert(looksLikeText('1行目\n2行目\t3行目'));
+        });
+
+        it('制御文字が多い文字列はfalseを返すこと', () => {
+            assert(!looksLikeText('\x00\x01\x02\x03\x04\x05'));
+        });
+
+        it('空文字列はtrueを返すこと', () => {
+            assert(looksLikeText(''));
+        });
+
+        it('文字列以外はfalseを返すこと', () => {
+            assert(!looksLikeText(null));
+        });
+    });
+});
+
 // === テスト実行と結果描画 ===
 let hasRun = false;
 
@@ -645,6 +796,16 @@ export default async function initTestRunner() {
         parseHtmlTable = modCp.parseHtmlTable;
         parseTsv = modCp.parseTsv;
     } catch (e) { console.warn('Failed to import column-picker:', e); }
+
+    try {
+        const modCbi = await import('../clip-inspector/clip-inspector.js');
+        formatBytes = modCbi.formatBytes;
+        countUtf8Bytes = modCbi.countUtf8Bytes;
+        toHexDump = modCbi.toHexDump;
+        categorizeFormat = modCbi.categorizeFormat;
+        isTextLikeType = modCbi.isTextLikeType;
+        looksLikeText = modCbi.looksLikeText;
+    } catch (e) { console.warn('Failed to import clip-inspector:', e); }
 
     try {
         const modMd = await import('../../js/lib/markdown-headings.js');

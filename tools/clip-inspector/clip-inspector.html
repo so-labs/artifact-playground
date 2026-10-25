@@ -1,0 +1,45 @@
+<section id="tool-clip-inspector" class="tool-section">
+    <div class="tool-title-area">
+        <h2 data-i18n="tool.clipInspector.title">クリップ・インスペクター</h2>
+        <button class="help-btn" aria-label="説明を表示" data-i18n-aria="common.helpAria" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+        </button>
+    </div>
+    <div class="tool-description" data-i18n="tool.clipInspector.desc">
+        クリップボードに今入っている「すべてのフォーマット」を解析して一覧表示します。プレーンテキスト・HTML・画像・「web
+        」付きカスタム形式など、コピー元がどんなデータを載せたのかを調べられます（例:
+        表のHTML版とテキスト版の違い）。「クリップボードを調査」ボタンで実行します。
+    </div>
+
+    <div class="ci-actions">
+        <button id="ci-btn-investigate" class="btn primary"
+            data-i18n="tool.clipInspector.investigateBtn">クリップボードを調査</button>
+    </div>
+
+    <div class="ci-samples">
+        <span class="ci-samples-label" data-i18n="tool.clipInspector.samplesLabel">サンプルをコピーして試そう</span>
+        <div class="ci-sample-buttons">
+            <button class="btn small" data-ci-sample="text" data-i18n="tool.clipInspector.sampleTextBtn">テキスト（桃太郎）</button>
+            <button class="btn small" data-ci-sample="rich" data-i18n="tool.clipInspector.sampleRichBtn">リッチテキスト（浦島太郎）</button>
+            <button class="btn small" data-ci-sample="custom" data-i18n="tool.clipInspector.sampleCustomBtn">カスタムデータ（きびだんご）</button>
+            <button class="btn small" data-ci-sample="image" data-i18n="tool.clipInspector.sampleImageBtn">画像（桃）</button>
+        </div>
+        <div id="ci-sample-note" class="ci-sample-note" hidden></div>
+    </div>
+
+    <div id="ci-results" class="ci-results" hidden>
+        <div class="ci-results-header">
+            <span id="ci-summary"></span>
+            <div class="header-actions">
+                <button id="ci-btn-clear" class="btn small" data-i18n="common.clear">クリア</button>
+            </div>
+        </div>
+        <div id="ci-source" class="ci-source"></div>
+        <div id="ci-cards" class="ci-cards"></div>
+    </div>
+</section>
