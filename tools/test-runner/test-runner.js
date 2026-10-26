@@ -3,8 +3,8 @@ import { getAppVersion } from '../../js/lib/version.js';
 let reduceText, makeNorinori, sliceText, canCopyAll, getReversedChunks, checkWeight, parseData, toMarkdown, sortGridData;
 let parseHeadings, adjustHeadingLevels, formatCopyText, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, jumpToHeading, checkStructureIssues;
 let parseHtmlTable, parseTsv;
-let formatBytes, countUtf8Bytes, toHexDump, categorizeFormat, isTextLikeType, looksLikeText;
-let createToolStorage, isTempMode, setTempMode, copyToClipboard, pasteFromClipboard;
+let formatBytes, countUtf8Bytes, toHexDump, categorizeFormat, isTextLikeType, looksLikeText, getImageExtension;
+let createToolStorage, isTempMode, setTempMode, copyToClipboard, pasteFromClipboard, downloadFile;
 let getLanguage, setLanguage, detectBrowserLanguage, t, onLanguageChange, applyTranslations;
 let calculateStepValue;
 
@@ -465,6 +465,22 @@ describe('ストレージ共通機能', () => {
             assert(typeof pasteFromClipboard === 'function', 'pasteFromClipboard が関数ではありません');
         });
     });
+
+    describe('downloadFile [js/lib/storage.js]', () => {
+        it('downloadFile 関数が正しく定義されていること', () => {
+            assert(typeof downloadFile === 'function', 'downloadFile が関数ではありません');
+        });
+
+        it('ボタン要素を指定した場合、成功時に一時テキストが表示されること', async () => {
+            const btn = document.createElement('button');
+            btn.textContent = 'ダウンロード';
+            const result = await downloadFile('テスト内容', 'test.txt', btn, {
+                resetDelay: 50
+            });
+            assert(result === true, 'downloadFileの戻り値がtrueではありません');
+            assertEquals(btn.textContent, 'ダウンロード完了！');
+        });
+    });
 });
 
 // === 9. 国際化 (i18n) テスト ===
@@ -532,6 +548,8 @@ describe('国際化 (i18n)', () => {
             assertEquals(t('common.copy', {}, 'en'), 'Copy');
             assertEquals(t('common.paste', {}, 'ja'), '貼り付け');
             assertEquals(t('common.paste', {}, 'en'), 'Paste');
+            assertEquals(t('common.download', {}, 'ja'), 'ダウンロード');
+            assertEquals(t('common.download', {}, 'en'), 'Download');
         });
 
         it('パラメータ置換（{0}, {1}など）が正しく行われること', () => {
@@ -752,6 +770,34 @@ describe('クリップ・インスペクター', () => {
             assert(!looksLikeText(null));
         });
     });
+
+    describe('getImageExtension [tools/clip-inspector/clip-inspector.js]', () => {
+        it('image/png は「png」を返すこと', () => {
+            assertEquals(getImageExtension('image/png'), 'png');
+        });
+
+        it('image/jpeg および image/jpg は「jpg」を返すこと', () => {
+            assertEquals(getImageExtension('image/jpeg'), 'jpg');
+            assertEquals(getImageExtension('image/jpg'), 'jpg');
+        });
+
+        it('image/webp は「webp」を返すこと', () => {
+            assertEquals(getImageExtension('image/webp'), 'webp');
+        });
+
+        it('image/gif は「gif」を返すこと', () => {
+            assertEquals(getImageExtension('image/gif'), 'gif');
+        });
+
+        it('image/svg+xml は「svg」を返すこと', () => {
+            assertEquals(getImageExtension('image/svg+xml'), 'svg');
+        });
+
+        it('未知の画像タイプや未指定の場合は「png」を返すこと', () => {
+            assertEquals(getImageExtension(''), 'png');
+            assertEquals(getImageExtension(null), 'png');
+        });
+    });
 });
 
 // === テスト実行と結果描画 ===
@@ -805,6 +851,7 @@ export default async function initTestRunner() {
         categorizeFormat = modCbi.categorizeFormat;
         isTextLikeType = modCbi.isTextLikeType;
         looksLikeText = modCbi.looksLikeText;
+        getImageExtension = modCbi.getImageExtension;
     } catch (e) { console.warn('Failed to import clip-inspector:', e); }
 
     try {
@@ -827,6 +874,7 @@ export default async function initTestRunner() {
         setTempMode = modStorage.setTempMode;
         copyToClipboard = modStorage.copyToClipboard;
         pasteFromClipboard = modStorage.pasteFromClipboard;
+        downloadFile = modStorage.downloadFile;
     } catch (e) { console.warn('Failed to import storage:', e); }
 
     try {

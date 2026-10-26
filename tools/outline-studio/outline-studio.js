@@ -1,5 +1,5 @@
-﻿// Tool: アウトライン・スタジオ
-import { createToolStorage, copyToClipboard, pasteFromClipboard } from '../../js/lib/storage.js';
+// Tool: アウトライン・スタジオ
+import { createToolStorage, copyToClipboard, pasteFromClipboard, downloadFile } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 import {
     parseHeadings,
@@ -239,24 +239,13 @@ async function saveFile(state) {
         }
     } else {
         // ダウンロード（書き出し）
-        try {
-            const blob = new Blob([state.inputEl.value], { type: 'text/markdown' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            const currentName = state.fileNameEl.textContent;
-            a.download = currentName && currentName.trim() !== '' ? currentName : 'note.md';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            state.saveBtn.textContent = t('tool.outlineStudio.saveSuccess');
-            setTimeout(() => { updateUI(state); }, 1200);
-        } catch (err) {
-            console.error(err);
-            alert(t('tool.outlineStudio.saveFailed'));
-        }
+        const currentName = state.fileNameEl.textContent;
+        const filename = currentName && currentName.trim() !== '' ? currentName : 'note.md';
+        await downloadFile(state.inputEl.value, filename, state.saveBtn, {
+            mimeType: 'text/markdown',
+            successText: t('tool.outlineStudio.saveSuccess'),
+            onReset: () => updateUI(state),
+        });
     }
 }
 

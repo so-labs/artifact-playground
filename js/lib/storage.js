@@ -1,9 +1,10 @@
-﻿import { t } from './i18n.js';
+import { t } from './i18n.js';
 
 let tempMode = localStorage.getItem('app-temp-mode') === 'true';
 const tempMemoryStorage = new Map();
 const copyTimers = new Map();
 const pasteTimers = new Map();
+const downloadTimers = new Map();
 
 export function isTempMode() {
   return tempMode;
@@ -169,3 +170,63 @@ export async function pasteFromClipboard(btn, onPaste) {
     alert(t('common.pasteFailed'));
   }
 }
+
+/**
+ * Blobまたはテキストデータをファイルとしてダウンロード保存する
+ * @param {Blob|string} content 保存するデータ
+ * @param {string} filename ファイル名（例: 'clipboard.html', 'note.md'）
+ * @param {HTMLElement} [btn] クリックされたボタン要素（フィードバック表示用、省略可能）
+ * @param {Object} [options]
+ * @param {string} [options.mimeType='text/plain'] contentが文字列の場合のMIMEタイプ
+ * @param {string} [options.successText] 成功時にボタンに表示するテキスト
+ * @param {string} [options.resetText] 復帰時にボタンに表示するテキスト
+ * @param {number} [options.resetDelay=1200] ボタン表示を戻すまでの遅延ミリ秒
+ * @param {Function} [options.onReset] 復帰時に実行するコールバック
+ * @returns {Promise<boolean>} 保存処理の成否
+ */
+export async function downloadFile(content, filename, btn = null, options = {}) {
+  try {
+    let blob;
+    if (content instanceof Blob) {
+      blob = content;
+    } else {
+      const mime = options.mimeType || 'text/plain';
+      blob = new Blob([String(content ?? '')], { type: mime });
+    }
+
+    const safeFilename = filename && String(filename).trim() !== '' ? filename : 'download';
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = safeFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    if (btn) {
+      if (downloadTimers.has(btn)) {
+        clearTimeout(downloadTimers.get(btn));
+      }
+      const successText = options.successText || t('common.downloaded');
+      const resetText = options.resetText || btn.textContent;
+      btn.textContent = successText;
+
+      downloadTimers.set(btn, setTimeout(() => {
+        if (typeof options.onReset === 'function') {
+          options.onReset();
+        } else {
+          btn.textContent = resetText;
+        }
+        downloadTimers.delete(btn);
+      }, options.resetDelay ?? 1200));
+    }
+
+    return true;
+  } catch (err) {
+    console.error('downloadFile failed:', err);
+    alert(t('common.downloadFailed'));
+    return false;
+  }
+}
+

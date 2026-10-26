@@ -1,5 +1,5 @@
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
-import { copyToClipboard } from '../../js/lib/storage.js';
+import { copyToClipboard, downloadFile } from '../../js/lib/storage.js';
 
 const HEX_DUMP_LIMIT = 512;
 const BTN_RESET_MS = 1200;
@@ -129,6 +129,26 @@ export function looksLikeText(str) {
         if (code < 32 || code === 0xFFFD) suspicious++;
     }
     return suspicious / checkLength < 0.1;
+}
+
+/**
+ * 画像MIMEタイプから適切な拡張子を決定する
+ * @param {string} type MIMEタイプ（例: 'image/png'）
+ * @returns {string} 拡張子（'png', 'jpg', 'webp', 'gif', 'svg' など）
+ */
+export function getImageExtension(type) {
+    const raw = String(type || '').trim().toLowerCase().replace(/^web\s+/, '');
+    if (raw === 'image/jpeg' || raw === 'image/jpg') return 'jpg';
+    if (raw === 'image/png') return 'png';
+    if (raw === 'image/webp') return 'webp';
+    if (raw === 'image/gif') return 'gif';
+    if (raw === 'image/svg+xml') return 'svg';
+    if (raw === 'image/bmp') return 'bmp';
+    if (raw.startsWith('image/')) {
+        const sub = raw.slice(6).split('+')[0].replace(/[^a-z0-9]/g, '');
+        if (sub) return sub;
+    }
+    return 'png';
 }
 
 // ============================
@@ -375,6 +395,18 @@ async function createFormatCard(entry, urlSink) {
         btnCopy.addEventListener('click', () => copyToClipboard(textarea.value, btnCopy));
         actions.appendChild(btnCopy);
 
+        if (category === 'html') {
+            const btnDownload = document.createElement('button');
+            btnDownload.className = 'btn small';
+            btnDownload.textContent = t('common.download');
+            btnDownload.addEventListener('click', () => {
+                downloadFile(textarea.value, 'clipboard.html', btnDownload, {
+                    mimeType: 'text/html'
+                });
+            });
+            actions.appendChild(btnDownload);
+        }
+
         body.appendChild(textarea);
         body.appendChild(actions);
 
@@ -387,6 +419,22 @@ async function createFormatCard(entry, urlSink) {
         img.src = content.objectUrl;
         img.alt = t('tool.clipInspector.imageAlt');
         body.appendChild(img);
+
+        const actions = document.createElement('div');
+        actions.className = 'ci-card-actions';
+        const btnDownload = document.createElement('button');
+        btnDownload.className = 'btn small primary';
+        btnDownload.textContent = t('common.download');
+        btnDownload.addEventListener('click', () => {
+            const ext = getImageExtension(entry.type);
+            const filename = `clipboard.${ext}`;
+            const blob = entry.blob || entry.file;
+            if (blob) {
+                downloadFile(blob, filename, btnDownload);
+            }
+        });
+        actions.appendChild(btnDownload);
+        body.appendChild(actions);
     } else if (content.mode === 'hex') {
         const pre = document.createElement('pre');
         pre.className = 'ci-hex';
