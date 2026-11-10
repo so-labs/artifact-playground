@@ -173,6 +173,11 @@ body.sidebar-collapsed #sidebar-toggle svg {
     display: inline-block;
 }
 
+/* Sidebar Overlay */
+.sidebar-overlay {
+    display: none;
+}
+
 /* Responsive (Mobile View) */
 @media (max-width: 768px) {
     .menu-toggle {
@@ -198,6 +203,32 @@ body.sidebar-collapsed #sidebar-toggle svg {
 
     .sidebar.open {
         transform: translateX(0);
+    }
+
+    /* サイドバー背後のオーバーレイ（背後クリック防止とぼかし・減光） */
+    .sidebar-overlay {
+        display: block;
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        z-index: 98;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        cursor: pointer;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+
+    .sidebar.open ~ .sidebar-overlay,
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
     }
 
     /* サイドバーが開いている間、背後のメインコンテンツのスクロールを完全に禁止する */

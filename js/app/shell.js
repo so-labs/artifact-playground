@@ -357,6 +357,7 @@ export function initShell() {
     // UI 要素の取得
     const menuToggle = document.getElementById('menu-toggle');
     const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
     const appContainer = document.querySelector('.app-container');
     const sidebarToggle = document.getElementById('sidebar-toggle');
     const toolListContainer = document.getElementById('tool-list');
@@ -669,6 +670,7 @@ export function initShell() {
         // モバイルでメニューを閉じる
         if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
             sidebar.classList.remove('open');
+            if (sidebarOverlay) sidebarOverlay.classList.remove('active');
         }
     };
 
@@ -692,7 +694,10 @@ export function initShell() {
     // ハンバーガーメニューの開閉（スマホ用）
     if (menuToggle && sidebar) {
         menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('open');
+            const isOpen = sidebar.classList.toggle('open');
+            if (sidebarOverlay) {
+                sidebarOverlay.classList.toggle('active', isOpen);
+            }
         });
 
         // スワイプジェスチャーによるサイドバーの開閉
@@ -736,14 +741,25 @@ export function initShell() {
                 // サイドバーが閉じている場合：右方向へのスワイプで開く（全画面判定）
                 if (diffX > SWIPE_THRESHOLD_X) {
                     sidebar.classList.add('open');
+                    if (sidebarOverlay) sidebarOverlay.classList.add('active');
                 }
             } else {
                 // サイドバーが開いている場合：左方向へのスワイプで閉じる
                 if (diffX < -SWIPE_THRESHOLD_X) {
                     sidebar.classList.remove('open');
+                    if (sidebarOverlay) sidebarOverlay.classList.remove('active');
                 }
             }
         }, { passive: true });
+    }
+
+    // オーバーレイクリックでサイドメニューを閉じる（スマホ用）
+    if (sidebarOverlay && sidebar) {
+        sidebarOverlay.addEventListener('click', (e) => {
+            e.preventDefault();
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('active');
+        });
     }
 
     // サイドバー折りたたみ（デスクトップ用）
@@ -771,6 +787,7 @@ export function initShell() {
             const isInsideSystemMenu = systemMenu && systemMenu.contains(e.target);
             if (sidebar && menuToggle && !sidebar.contains(e.target) && !menuToggle.contains(e.target) && !isInsideThemeMenu && !isInsideSystemMenu && sidebar.classList.contains('open')) {
                 sidebar.classList.remove('open');
+                if (sidebarOverlay) sidebarOverlay.classList.remove('active');
             }
         }
     });
