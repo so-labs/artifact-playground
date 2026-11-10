@@ -34,10 +34,12 @@ export const translations = {
         'menu.runTestsDesc': '単体テストランナー画面を開く',
         'menu.clearData': 'ローカルデータ全削除',
         'menu.clearDataDesc': '全ツールの保存データ・設定を初期化',
-        'menu.clearConfirm': 'ローカルに保存されているすべてのツールデータや設定を削除します。\nよろしいですか？（※削除後、ページがリロードされます）',
+        'menu.clearConfirmMessage': 'ローカルに保存されているすべてのツールデータや設定を削除します。\n（※削除後、ページがリロードされます）',
+        'menu.clearExecute': '削除する',
 
         // Common Buttons & Labels
         'common.clear': 'クリア',
+        'common.cancel': 'キャンセル',
         'common.copy': 'コピー',
         'common.copied': 'コピー完了！',
         'common.copyFailed': 'クリップボードへのコピーに失敗しました。',
@@ -277,10 +279,12 @@ export const translations = {
         'menu.runTestsDesc': 'Open unit test runner',
         'menu.clearData': 'Clear All Local Data',
         'menu.clearDataDesc': 'Reset all saved tool data & settings',
-        'menu.clearConfirm': 'This will delete all saved tool data and settings in local storage.\nAre you sure? (The page will reload after clearing)',
+        'menu.clearConfirmMessage': 'This will delete all tool data and settings saved locally.\n(The page will reload after deletion.)',
+        'menu.clearExecute': 'Delete',
 
         // Common Buttons & Labels
         'common.clear': 'Clear',
+        'common.cancel': 'Cancel',
         'common.copy': 'Copy',
         'common.copied': 'Copied!',
         'common.copyFailed': 'Failed to copy to clipboard.',

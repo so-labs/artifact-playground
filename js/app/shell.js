@@ -1,4 +1,5 @@
 ﻿import { isTempMode, setTempMode } from '../lib/storage.js';
+import { showConfirmDialog } from '../lib/confirm-dialog.js';
 import { getAppVersion } from '../lib/version.js';
 import { getLanguage, setLanguage, t, applyTranslations, onLanguageChange } from '../lib/i18n.js';
 
@@ -558,10 +559,18 @@ export function initShell() {
     window.addEventListener('scroll', closeAllMenus, true);
 
     if (clearDataBtn) {
-        clearDataBtn.addEventListener('click', (e) => {
+        clearDataBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             systemMenu.classList.remove('show');
-            if (confirm(t('menu.clearConfirm'))) {
+            // ブラウザ標準の confirm() ではなく、サイト共通デザインの確認モーダルを使う
+            const ok = await showConfirmDialog({
+                title: t('menu.clearData'),
+                message: t('menu.clearConfirmMessage'),
+                confirmText: t('menu.clearExecute'),
+                cancelText: t('common.cancel'),
+                danger: true,
+            });
+            if (ok) {
                 localStorage.clear();
                 window.location.reload();
             }

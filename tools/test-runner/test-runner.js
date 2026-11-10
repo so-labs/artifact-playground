@@ -5,6 +5,7 @@ let parseHeadings, adjustHeadingLevels, formatCopyText, formatOutline, extractTe
 let parseHtmlTable, parseTsv;
 let formatBytes, countUtf8Bytes, toHexDump, categorizeFormat, isTextLikeType, looksLikeText, getImageExtension;
 let createToolStorage, isTempMode, setTempMode, copyToClipboard, pasteFromClipboard, downloadFile;
+let showConfirmDialog;
 let getLanguage, setLanguage, detectBrowserLanguage, t, onLanguageChange, applyTranslations;
 let calculateStepValue;
 
@@ -840,6 +841,44 @@ describe('クリップ・インスペクター', () => {
     });
 });
 
+// === 11. 確認モーダル テスト ===
+describe('確認モーダル', () => {
+    describe('showConfirmDialog [js/lib/confirm-dialog.js]', () => {
+        it('showConfirmDialog 関数が正しく定義されていること', () => {
+            assert(typeof showConfirmDialog === 'function', 'showConfirmDialog が関数ではありません');
+        });
+
+        it('モーダルを表示し、キャンセルで false を返して閉じること', async () => {
+            const promise = showConfirmDialog({
+                title: 'テストタイトル',
+                message: 'テストメッセージ',
+                confirmText: '削除する',
+                cancelText: 'キャンセル',
+                danger: true,
+            });
+            const modal = document.querySelector('.confirm-modal');
+            assert(modal !== null, 'モーダルが表示されていません');
+            assert(modal.textContent.includes('テストタイトル'), 'タイトルが表示されていません');
+            modal.querySelector('.confirm-modal-cancel').click();
+            assertEquals(await promise, false);
+            assert(document.querySelector('.confirm-modal') === null, 'モーダルが閉じていません');
+        });
+
+        it('実行ボタンで true を返すこと', async () => {
+            const promise = showConfirmDialog({
+                title: 'テストタイトル',
+                message: 'テストメッセージ',
+                confirmText: '削除する',
+                cancelText: 'キャンセル',
+                danger: true,
+            });
+            document.querySelector('.confirm-modal-danger').click();
+            assertEquals(await promise, true);
+            assert(document.querySelector('.confirm-modal') === null, 'モーダルが閉じていません');
+        });
+    });
+});
+
 // === テスト実行と結果描画 ===
 let hasRun = false;
 
@@ -907,6 +946,11 @@ export default async function initTestRunner() {
         jumpToHeading = modMd.jumpToHeading;
         checkStructureIssues = modMd.checkStructureIssues;
     } catch (e) { console.warn('Failed to import markdown-headings:', e); }
+
+    try {
+        const modConfirm = await import('../../js/lib/confirm-dialog.js');
+        showConfirmDialog = modConfirm.showConfirmDialog;
+    } catch (e) { console.warn('Failed to import confirm-dialog:', e); }
 
     try {
         const modStorage = await import('../../js/lib/storage.js');

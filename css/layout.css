@@ -61,7 +61,8 @@
     position: sticky;
     top: var(--header-height);
     height: calc(100vh - var(--header-height));
-    height: calc(100dvh - var(--header-height)); /* 動的メニューバーの高さを考慮 */
+    height: calc(100dvh - var(--header-height));
+    /* 動的メニューバーの高さを考慮 */
     flex-shrink: 0;
 }
 
@@ -73,7 +74,8 @@
 
 .sidebar-footer {
     padding: 1rem 1.5rem;
-    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); /* セーフエリア分の余白を自動追加 */
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    /* セーフエリア分の余白を自動追加 */
     border-top: 1px solid var(--border-color);
     position: relative;
     margin-top: auto;
@@ -93,6 +95,13 @@
     text-decoration: none;
     transition: background-color 0.2s;
     font-weight: 500;
+    /* 最も長い「クリップ・インスペクター」（12文字）がサイドバー幅250px
+       （左右パディングを引くと202px）に1行で収まるよう、少し小さめの文字にする。
+       あわせて nowrap で、末尾1文字だけが次の行に落ちる変な改行を防ぐ */
+    font-size: 0.92rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .tool-list li a:hover {
@@ -195,7 +204,8 @@ body.sidebar-collapsed #sidebar-toggle svg {
         margin-left: 0;
         top: var(--header-height);
         height: calc(100vh - var(--header-height));
-        height: calc(100dvh - var(--header-height)); /* モバイル表示時も動的メニューバーを考慮 */
+        height: calc(100dvh - var(--header-height));
+        /* モバイル表示時も動的メニューバーを考慮 */
         width: 250px;
         box-shadow: 4px 0 6px rgba(0, 0, 0, 0.05);
         z-index: 99;
@@ -224,7 +234,7 @@ body.sidebar-collapsed #sidebar-toggle svg {
         transition: opacity 0.2s ease, visibility 0.2s ease;
     }
 
-    .sidebar.open ~ .sidebar-overlay,
+    .sidebar.open~.sidebar-overlay,
     .sidebar-overlay.active {
         opacity: 1;
         visibility: visible;
@@ -245,7 +255,7 @@ body.sidebar-collapsed #sidebar-toggle svg {
         padding: 1rem;
         padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
     }
-    
+
     .tool-section {
         padding: 1.5rem 1rem;
     }
