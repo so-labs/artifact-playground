@@ -113,6 +113,57 @@ export function adjustHeadingLevels(text) {
     }).join('\n');
 }
 
+export function formatOutline(headings, format = 'markdown') {
+    if (!headings || headings.length === 0) return '';
+
+    // レベルが飛んでいる場合や H1 以外から始まる場合でも崩れないよう、
+    // 絶対レベルではなく「親より深いか」から論理的な深さを求める
+    const depths = [];
+    const levelStack = [];
+    headings.forEach((h) => {
+        while (levelStack.length > 0 && levelStack[levelStack.length - 1] >= h.level) {
+            levelStack.pop();
+        }
+        depths.push(levelStack.length);
+        levelStack.push(h.level);
+    });
+
+    if (format === 'plain') {
+        // 表示中のアウトラインそのまま（H1 / H2 などの絶対レベルも保持する）
+        return headings.map(h => `H${h.level} ${h.text}`).join('\n');
+    }
+
+    if (format === 'asciidoc') {
+        // 抽出したアウトライン単体で成立するよう、先頭見出しを * とする相対表記にする
+        return headings.map((h, i) => `${'*'.repeat(depths[i] + 1)} ${h.text}`).join('\n');
+    }
+
+    if (format === 'tree') {
+        // 同じ深さの後続見出しがなければ、その見出しは兄弟の末尾
+        const isLastList = headings.map((h, i) => {
+            for (let j = i + 1; j < headings.length; j++) {
+                if (depths[j] < depths[i]) return true;
+                if (depths[j] === depths[i]) return false;
+            }
+            return true;
+        });
+
+        const ancestorStack = [];
+        return headings.map((h, i) => {
+            while (ancestorStack.length > 0 && ancestorStack[ancestorStack.length - 1].depth >= depths[i]) {
+                ancestorStack.pop();
+            }
+            const prefix = ancestorStack.map(a => (a.isLast ? '  ' : '│ ')).join('');
+            const branch = isLastList[i] ? '└─ ' : '├─ ';
+            ancestorStack.push({ depth: depths[i], isLast: isLastList[i] });
+            return `${prefix}${branch}${h.text}`;
+        }).join('\n');
+    }
+
+    // markdown（デフォルト）: 箇条書きの入れ子
+    return headings.map((h, i) => `${'  '.repeat(depths[i])}- ${h.text}`).join('\n');
+}
+
 export function formatCopyText(text, type = 'normal') {
     if (!text) return '';
 

@@ -3,6 +3,7 @@ import { createToolStorage, copyToClipboard, pasteFromClipboard, downloadFile } 
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 import {
     parseHeadings,
+    formatOutline,
     formatCopyText,
     extractText,
     changeHeadingLevelSingleAtLine,
@@ -97,7 +98,7 @@ function focusLineAtTop(textarea, lineIndex, { refresh = true } = {}) {
 function updateUI(state) {
     const {
         inputEl, previewEl, outlineEl, cursorInfoEl, issuesEl,
-        sourceLabelEl, saveBtn, fileNameEl,
+        sourceLabelEl, saveBtn, fileNameEl, outlineCopyBtn, outlineMenuEl,
     } = state;
 
     const text = inputEl.value;
@@ -110,6 +111,15 @@ function updateUI(state) {
     renderOutline(outlineEl, headings, activeHeadingLine, (line) => {
         focusLineAtTop(inputEl, line);
     });
+
+    // 見出しがなければアウトライン自体はコピーできない（開いているメニューも閉じる）
+    if (outlineCopyBtn) {
+        outlineCopyBtn.disabled = headings.length === 0;
+        if (headings.length === 0 && outlineMenuEl) {
+            outlineMenuEl.hidden = true;
+            outlineCopyBtn.setAttribute('aria-expanded', 'false');
+        }
+    }
 
     const issues = checkStructureIssues(text);
     if (issues.length > 0) {
@@ -278,6 +288,8 @@ export default function init() {
     const saveBtn = document.getElementById('os-btn-save');
     const pasteBtn = document.getElementById('os-btn-paste');
     const fileInputEl = document.getElementById('os-file-input');
+    const outlineCopyBtn = document.getElementById('os-btn-copy-outline');
+    const outlineMenuEl = document.getElementById('os-outline-menu');
 
     if (!inputEl) return;
 
@@ -285,6 +297,7 @@ export default function init() {
     const state = {
         inputEl, previewEl, outlineEl, cursorInfoEl, issuesEl,
         sourceLabelEl, saveBtn, fileNameEl, fileInputEl, storage,
+        outlineCopyBtn, outlineMenuEl,
     };
 
     const savedText = storage.get('text');
@@ -353,6 +366,54 @@ export default function init() {
     document.getElementById('os-btn-copy')?.addEventListener('click', () => {
         copyToClipboard(previewEl.value, document.getElementById('os-btn-copy'));
     });
+
+    // アウトラインのコピー: ボタンを押すと形式メニューが開き、選んだ形式でコピーする
+    if (outlineCopyBtn && outlineMenuEl) {
+        const setOutlineMenuOpen = (open) => {
+            outlineMenuEl.hidden = !open;
+            outlineCopyBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (open) {
+                // 前回使った形式にチェックを付ける
+                const lastFormat = storage.get('outlineFormat') || 'markdown';
+                outlineMenuEl.querySelectorAll('.os-outline-menu-item').forEach((item) => {
+                    item.classList.toggle('active', item.dataset.outlineFormat === lastFormat);
+                });
+            }
+        };
+
+        outlineCopyBtn.addEventListener('click', () => {
+            setOutlineMenuOpen(outlineMenuEl.hidden);
+        });
+
+        outlineMenuEl.querySelectorAll('.os-outline-menu-item').forEach((item) => {
+            item.addEventListener('click', () => {
+                const format = item.dataset.outlineFormat || 'markdown';
+                storage.set('outlineFormat', format);
+                setOutlineMenuOpen(false);
+                // 汎用コピー処理は渡したボタンの文言を「コピー」に書き換えるため、
+                // メニュー項目ではなく本体ボタンに渡す（項目に渡すと形式名が消えてしまう）。
+                // 本体ボタンは固定幅なので、フィードバック表示でも行はズレない
+                const outlineText = formatOutline(parseHeadings(inputEl.value), format);
+                copyToClipboard(outlineText, outlineCopyBtn);
+            });
+        });
+
+        // メニューの外側をクリックしたら閉じる
+        document.addEventListener('click', (e) => {
+            if (outlineMenuEl.hidden) return;
+            if (!e.target.closest('.os-outline-menu-wrap')) {
+                setOutlineMenuOpen(false);
+            }
+        });
+
+        // Escキーで閉じてボタンにフォーカスを戻す
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !outlineMenuEl.hidden) {
+                setOutlineMenuOpen(false);
+                outlineCopyBtn.focus();
+            }
+        });
+    }
 
     const bindLevelChange = (id, fn) => {
         document.getElementById(id)?.addEventListener('click', () => {

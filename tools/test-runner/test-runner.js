@@ -1,7 +1,7 @@
 import { getAppVersion } from '../../js/lib/version.js';
 
 let reduceText, makeNorinori, sliceText, canCopyAll, getReversedChunks, checkWeight, parseData, toMarkdown, sortGridData;
-let parseHeadings, adjustHeadingLevels, formatCopyText, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, jumpToHeading, checkStructureIssues;
+let parseHeadings, adjustHeadingLevels, formatCopyText, formatOutline, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, jumpToHeading, checkStructureIssues;
 let parseHtmlTable, parseTsv;
 let formatBytes, countUtf8Bytes, toHexDump, categorizeFormat, isTextLikeType, looksLikeText, getImageExtension;
 let createToolStorage, isTempMode, setTempMode, copyToClipboard, pasteFromClipboard, downloadFile;
@@ -259,6 +259,46 @@ title: test
         it('引用形式で各行に > を付与すること', () => {
             const result = formatCopyText('あ\n\nい', 'quote');
             assertEquals(result, '> あ\n>\n> い');
+        });
+    });
+
+    describe('formatOutline [js/lib/markdown-headings.js]', () => {
+        const headings = [
+            { level: 1, text: 'Museについて' },
+            { level: 2, text: 'はじめに' },
+            { level: 2, text: 'Museの特徴' },
+            { level: 1, text: '次の文書' },
+        ];
+
+        it('そのまま形式では H 見出しとしてコピーすること', () => {
+            const result = formatOutline(headings, 'plain');
+            assertEquals(result, 'H1 Museについて\nH2 はじめに\nH2 Museの特徴\nH1 次の文書');
+        });
+
+        it('Markdown形式では入れ子の箇条書きにすること', () => {
+            const result = formatOutline(headings, 'markdown');
+            assertEquals(result, '- Museについて\n  - はじめに\n  - Museの特徴\n- 次の文書');
+        });
+
+        it('Tree形式では罫線で階層を表すこと', () => {
+            const result = formatOutline(headings, 'tree');
+            assertEquals(result, '├─ Museについて\n│ ├─ はじめに\n│ └─ Museの特徴\n└─ 次の文書');
+        });
+
+        it('AsciiDoc形式では * の数で階層を表すこと', () => {
+            const result = formatOutline(headings, 'asciidoc');
+            assertEquals(result, '* Museについて\n** はじめに\n** Museの特徴\n* 次の文書');
+        });
+
+        it('見出しがない場合は空文字を返すこと', () => {
+            assertEquals(formatOutline([], 'markdown'), '');
+            assertEquals(formatOutline(parseHeadings('本文だけ'), 'tree'), '');
+        });
+
+        it('レベルが飛んでいる場合でも階層が崩れないこと', () => {
+            const skipped = parseHeadings('## 親\n\n#### 子\n');
+            assertEquals(formatOutline(skipped, 'markdown'), '- 親\n  - 子');
+            assertEquals(formatOutline(skipped, 'asciidoc'), '* 親\n** 子');
         });
     });
 
@@ -859,6 +899,7 @@ export default async function initTestRunner() {
         parseHeadings = modMd.parseHeadings;
         adjustHeadingLevels = modMd.adjustHeadingLevels;
         formatCopyText = modMd.formatCopyText;
+        formatOutline = modMd.formatOutline;
         extractText = modMd.extractText;
         changeHeadingLevelAtLine = modMd.changeHeadingLevelAtLine;
         changeHeadingLevelSingleAtLine = modMd.changeHeadingLevelSingleAtLine;

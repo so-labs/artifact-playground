@@ -12,7 +12,7 @@
     </div>
     <div class="tool-description" data-i18n="tool.outlineStudio.desc">
         Markdown
-        の見出し構造を操作・抽出するワークベンチです。アウトライン表示、見出しレベルの調整・移動、セクション単位のスマートコピー（全文・エリア・セクション、引用・コード形式）ができます。PWAとしてインストールすると、OSによっては共有メニューなどから直接ファイルを開けます。
+        の見出し構造を操作・抽出するワークベンチです。アウトライン表示、アウトライン自体のコピー（そのまま・Markdown・Tree・AsciiDoc）、見出しレベルの調整・移動、セクション単位のスマートコピー（全文・エリア・セクション、引用・コード形式）ができます。PWAとしてインストールすると、OSによっては共有メニューなどから直接ファイルを開けます。
     </div>
     <div class="os-layout">
         <div class="os-editor-wrap">
@@ -43,7 +43,36 @@
 
         <div class="os-panel">
             <div class="os-panel-section">
-                <h3 class="os-panel-title" data-i18n="tool.outlineStudio.outline">アウトライン</h3>
+                <div class="os-outline-header">
+                    <h3 class="os-panel-title" data-i18n="tool.outlineStudio.outline">アウトライン</h3>
+                    <div class="os-outline-menu-wrap">
+                        <button id="os-btn-copy-outline" class="btn small os-btn-copy-outline" type="button"
+                            aria-haspopup="menu" aria-expanded="false" data-i18n="common.copy">コピー</button>
+                        <div id="os-outline-menu" class="os-outline-menu" role="menu" aria-label="アウトラインのコピー形式"
+                            data-i18n-aria="tool.outlineStudio.outlineCopyFormat" hidden>
+                            <button type="button" class="os-outline-menu-item" role="menuitem"
+                                data-outline-format="markdown">
+                                <span class="os-outline-menu-check" aria-hidden="true">✓</span>
+                                <span data-i18n="tool.outlineStudio.outlineFormatMarkdown">Markdown</span>
+                            </button>
+                            <button type="button" class="os-outline-menu-item" role="menuitem"
+                                data-outline-format="plain">
+                                <span class="os-outline-menu-check" aria-hidden="true">✓</span>
+                                <span data-i18n="tool.outlineStudio.outlineFormatPlain">そのまま</span>
+                            </button>
+                            <button type="button" class="os-outline-menu-item" role="menuitem"
+                                data-outline-format="tree">
+                                <span class="os-outline-menu-check" aria-hidden="true">✓</span>
+                                <span data-i18n="tool.outlineStudio.outlineFormatTree">Tree</span>
+                            </button>
+                            <button type="button" class="os-outline-menu-item" role="menuitem"
+                                data-outline-format="asciidoc">
+                                <span class="os-outline-menu-check" aria-hidden="true">✓</span>
+                                <span data-i18n="tool.outlineStudio.outlineFormatAsciidoc">AsciiDoc</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <div id="os-outline" class="os-outline">
                     <p class="os-empty" data-i18n="tool.outlineStudio.noHeadings">見出しがありません</p>
                 </div>

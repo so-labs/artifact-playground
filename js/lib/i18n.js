@@ -114,7 +114,7 @@ export const translations = {
 
         // Tool: Outline Studio
         'tool.outlineStudio.title': 'アウトライン・スタジオ',
-        'tool.outlineStudio.desc': 'Markdownの見出し構造を操作・抽出するワークベンチです。アウトライン表示、見出しレベルの調整・移動、セクション単位のスマートコピー（全文・エリア・セクション、引用・コード形式）ができます。PWAとしてインストールすると、OSによっては共有メニューなどから直接ファイルを開けます。',
+        'tool.outlineStudio.desc': 'Markdownの見出し構造を操作・抽出するワークベンチです。アウトライン表示、アウトライン自体のコピー（そのまま・Markdown・Tree・AsciiDoc）、見出しレベルの調整・移動、セクション単位のスマートコピー（全文・エリア・セクション、引用・コード形式）ができます。PWAとしてインストールすると、OSによっては共有メニューなどから直接ファイルを開けます。',
         'tool.outlineStudio.summary': 'Markdownの見出し構造を操作・抽出するワークベンチ。アウトライン表示、見出し調整、スマートコピーができます。',
         'tool.outlineStudio.openFile': 'ファイルを開く',
         'tool.outlineStudio.download': 'ダウンロード',
@@ -123,6 +123,11 @@ export const translations = {
         'tool.outlineStudio.saveFailed': 'ファイルの保存に失敗しました。',
         'tool.outlineStudio.lineInfo': '行 {0}',
         'tool.outlineStudio.outline': 'アウトライン',
+        'tool.outlineStudio.outlineCopyFormat': 'アウトラインのコピー形式',
+        'tool.outlineStudio.outlineFormatPlain': 'そのまま',
+        'tool.outlineStudio.outlineFormatMarkdown': 'Markdown',
+        'tool.outlineStudio.outlineFormatTree': 'Tree',
+        'tool.outlineStudio.outlineFormatAsciidoc': 'AsciiDoc',
         'tool.outlineStudio.noHeadings': '見出しがありません',
         'tool.outlineStudio.headingOps': '見出し操作',
         'tool.outlineStudio.levelSingle': 'レベル・単体',
@@ -352,7 +357,7 @@ export const translations = {
 
         // Tool: Outline Studio
         'tool.outlineStudio.title': 'Outline Studio',
-        'tool.outlineStudio.desc': 'A workbench for organizing and extracting Markdown headings. Features outline view, heading level adjustments/reordering, and smart copy by section/area/full in normal, quote, or code formats. When installed as a PWA, you can open files directly from the share menu on supported platforms.',
+        'tool.outlineStudio.desc': 'A workbench for organizing and extracting Markdown headings. Features outline view, copying the outline itself (Plain, Markdown, Tree, or AsciiDoc), heading level adjustments/reordering, and smart copy by section/area/full in normal, quote, or code formats. When installed as a PWA, you can open files directly from the share menu on supported platforms.',
         'tool.outlineStudio.summary': 'Workbench to view, adjust, and smart-copy Markdown heading structures.',
         'tool.outlineStudio.openFile': 'Open File',
         'tool.outlineStudio.download': 'Download',
@@ -361,6 +366,11 @@ export const translations = {
         'tool.outlineStudio.saveFailed': 'Failed to save file.',
         'tool.outlineStudio.lineInfo': 'Line {0}',
         'tool.outlineStudio.outline': 'Outline',
+        'tool.outlineStudio.outlineCopyFormat': 'Outline copy format',
+        'tool.outlineStudio.outlineFormatPlain': 'Plain',
+        'tool.outlineStudio.outlineFormatMarkdown': 'Markdown',
+        'tool.outlineStudio.outlineFormatTree': 'Tree',
+        'tool.outlineStudio.outlineFormatAsciidoc': 'AsciiDoc',
         'tool.outlineStudio.noHeadings': 'No headings found',
         'tool.outlineStudio.headingOps': 'Heading Operations',
         'tool.outlineStudio.levelSingle': 'Level (Single)',
