@@ -1,4 +1,4 @@
-﻿<section id="tool-outline-studio" class="tool-section">
+<section id="tool-outline-studio" class="tool-section">
     <div class="tool-title-area">
         <h2 data-i18n="tool.outlineStudio.title">アウトライン・スタジオ</h2>
         <button class="help-btn" aria-label="説明を表示" data-i18n-aria="common.helpAria" aria-expanded="false">
@@ -12,7 +12,7 @@
     </div>
     <div class="tool-description" data-i18n="tool.outlineStudio.desc">
         Markdown
-        の見出し構造を操作・抽出するワークベンチです。アウトライン表示、アウトライン自体のコピー（そのまま・Markdown・Tree・AsciiDoc）、見出しレベルの調整・移動、セクションの削除、セクション単位のスマートコピー（全文・エリア・セクション、引用・コード形式）ができます。PWAとしてインストールすると、OSによっては共有メニューなどから直接ファイルを開けます。
+        の見出し構造を操作・抽出するワークベンチです。アウトライン表示、アウトライン自体のコピー（Markdown（箇条書き）・Markdown（見出し）・そのまま（H1〜H6）・Tree・AsciiDoc（箇条書き））、見出しレベルの調整・移動、セクションの削除、セクション単位のスマートコピー（全文・エリア・セクション、引用・コード形式）ができます。PWAとしてインストールすると、OSによっては共有メニューなどから直接ファイルを開けます。
     </div>
     <div class="os-layout">
         <div class="os-editor-wrap">
@@ -53,12 +53,17 @@
                             <button type="button" class="os-outline-menu-item" role="menuitem"
                                 data-outline-format="markdown">
                                 <span class="os-outline-menu-check" aria-hidden="true">✓</span>
-                                <span data-i18n="tool.outlineStudio.outlineFormatMarkdown">Markdown</span>
+                                <span data-i18n="tool.outlineStudio.outlineFormatMarkdown">Markdown（箇条書き）</span>
+                            </button>
+                            <button type="button" class="os-outline-menu-item" role="menuitem"
+                                data-outline-format="markdown-heading">
+                                <span class="os-outline-menu-check" aria-hidden="true">✓</span>
+                                <span data-i18n="tool.outlineStudio.outlineFormatMarkdownHeading">Markdown（見出し）</span>
                             </button>
                             <button type="button" class="os-outline-menu-item" role="menuitem"
                                 data-outline-format="plain">
                                 <span class="os-outline-menu-check" aria-hidden="true">✓</span>
-                                <span data-i18n="tool.outlineStudio.outlineFormatPlain">そのまま</span>
+                                <span data-i18n="tool.outlineStudio.outlineFormatPlain">そのまま（H1〜H6）</span>
                             </button>
                             <button type="button" class="os-outline-menu-item" role="menuitem"
                                 data-outline-format="tree">
@@ -68,7 +73,7 @@
                             <button type="button" class="os-outline-menu-item" role="menuitem"
                                 data-outline-format="asciidoc">
                                 <span class="os-outline-menu-check" aria-hidden="true">✓</span>
-                                <span data-i18n="tool.outlineStudio.outlineFormatAsciidoc">AsciiDoc</span>
+                                <span data-i18n="tool.outlineStudio.outlineFormatAsciidoc">AsciiDoc（箇条書き）</span>
                             </button>
                         </div>
                     </div>
@@ -116,8 +121,9 @@
                 <div class="os-op-group">
                     <span class="os-op-label" data-i18n="tool.outlineStudio.delete">削除</span>
                     <div class="os-btn-grid">
-                        <button id="os-btn-delete-section" class="btn small secondary os-btn-delete-section" type="button"
-                            title="見出しと本文・子見出しを含むセクション全体を削除" data-i18n-title="tool.outlineStudio.deleteSectionTitle"
+                        <button id="os-btn-delete-section" class="btn small secondary os-btn-delete-section"
+                            type="button" title="見出しと本文・子見出しを含むセクション全体を削除"
+                            data-i18n-title="tool.outlineStudio.deleteSectionTitle"
                             data-i18n="tool.outlineStudio.deleteSection">セクションを削除</button>
                     </div>
                 </div>

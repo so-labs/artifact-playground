@@ -271,14 +271,19 @@ title: test
             { level: 1, text: '次の文書' },
         ];
 
-        it('そのまま形式では H 見出しとしてコピーすること', () => {
+        it('そのまま（H1〜H6）形式では H 見出しとしてコピーすること', () => {
             const result = formatOutline(headings, 'plain');
             assertEquals(result, 'H1 Museについて\nH2 はじめに\nH2 Museの特徴\nH1 次の文書');
         });
 
-        it('Markdown形式では入れ子の箇条書きにすること', () => {
+        it('Markdown（箇条書き）形式では入れ子の箇条書きにすること', () => {
             const result = formatOutline(headings, 'markdown');
             assertEquals(result, '- Museについて\n  - はじめに\n  - Museの特徴\n- 次の文書');
+        });
+
+        it('Markdown（見出し）形式では # の数で階層を表すこと', () => {
+            const result = formatOutline(headings, 'markdown-heading');
+            assertEquals(result, '# Museについて\n## はじめに\n## Museの特徴\n# 次の文書');
         });
 
         it('Tree形式では罫線で階層を表すこと', () => {
@@ -286,19 +291,21 @@ title: test
             assertEquals(result, '├─ Museについて\n│ ├─ はじめに\n│ └─ Museの特徴\n└─ 次の文書');
         });
 
-        it('AsciiDoc形式では * の数で階層を表すこと', () => {
+        it('AsciiDoc（箇条書き）形式では * の数で階層を表すこと', () => {
             const result = formatOutline(headings, 'asciidoc');
             assertEquals(result, '* Museについて\n** はじめに\n** Museの特徴\n* 次の文書');
         });
 
         it('見出しがない場合は空文字を返すこと', () => {
             assertEquals(formatOutline([], 'markdown'), '');
+            assertEquals(formatOutline([], 'markdown-heading'), '');
             assertEquals(formatOutline(parseHeadings('本文だけ'), 'tree'), '');
         });
 
         it('レベルが飛んでいる場合でも階層が崩れないこと', () => {
             const skipped = parseHeadings('## 親\n\n#### 子\n');
             assertEquals(formatOutline(skipped, 'markdown'), '- 親\n  - 子');
+            assertEquals(formatOutline(skipped, 'markdown-heading'), '# 親\n## 子');
             assertEquals(formatOutline(skipped, 'asciidoc'), '* 親\n** 子');
         });
     });

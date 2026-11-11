@@ -1,4 +1,4 @@
-﻿/* --- アウトライン・スタジオ --- */
+/* --- アウトライン・スタジオ --- */
 .os-layout {
     display: flex;
     gap: 1.5rem;
@@ -112,6 +112,8 @@
     top: calc(100% + 0.35rem);
     right: 0;
     min-width: 10rem;
+    width: max-content;
+    max-width: calc(100vw - 2rem);
     padding: 0.3rem;
     background-color: var(--panel-bg);
     border: 1px solid var(--border-color);
@@ -137,6 +139,7 @@
     color: var(--text-color);
     font-size: 0.85rem;
     text-align: left;
+    white-space: nowrap;
 }
 
 .os-outline-menu-item:hover {

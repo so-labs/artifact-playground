@@ -133,6 +133,11 @@ export function formatOutline(headings, format = 'markdown') {
         return headings.map(h => `H${h.level} ${h.text}`).join('\n');
     }
 
+    if (format === 'markdown-heading') {
+        // 抽出したアウトライン単体で成立するよう、先頭見出しを # とする相対表記にする
+        return headings.map((h, i) => `${'#'.repeat(depths[i] + 1)} ${h.text}`).join('\n');
+    }
+
     if (format === 'asciidoc') {
         // 抽出したアウトライン単体で成立するよう、先頭見出しを * とする相対表記にする
         return headings.map((h, i) => `${'*'.repeat(depths[i] + 1)} ${h.text}`).join('\n');
