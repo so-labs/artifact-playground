@@ -512,14 +512,44 @@ describe('ストレージ共通機能', () => {
             assert(typeof downloadFile === 'function', 'downloadFile が関数ではありません');
         });
 
-        it('ボタン要素を指定した場合、成功時に一時テキストが表示されること', async () => {
+        it('ボタン要素を指定した場合、実際にダウンロードせず成功時に一時テキストが表示されること', async () => {
             const btn = document.createElement('button');
             btn.textContent = 'ダウンロード';
-            const result = await downloadFile('テスト内容', 'test.txt', btn, {
-                resetDelay: 50
-            });
-            assert(result === true, 'downloadFileの戻り値がtrueではありません');
-            assertEquals(btn.textContent, 'ダウンロード完了！');
+
+            // downloadFile が生成する <a download> のクリックをそのまま実行すると、
+            // テストランナーを開くたびに test.txt が実際にダウンロードされてしまうため、
+            // Object URL の生成と <a> のクリックだけを差し替えて検証する
+            const originalCreateObjectURL = URL.createObjectURL;
+            const originalRevokeObjectURL = URL.revokeObjectURL;
+            const originalAnchorClick = HTMLAnchorElement.prototype.click;
+            let downloadedBlob = null;
+            let clickedAnchor = null;
+            URL.createObjectURL = (blob) => {
+                downloadedBlob = blob;
+                return 'blob:test-runner';
+            };
+            URL.revokeObjectURL = () => { };
+            HTMLAnchorElement.prototype.click = function () {
+                clickedAnchor = this;
+            };
+
+            try {
+                const result = await downloadFile('テスト内容', 'test.txt', btn, {
+                    resetDelay: 50
+                });
+                assert(result === true, 'downloadFileの戻り値がtrueではありません');
+                // 成功テキストは表示言語によって変わるため、固定文言ではなく i18n の文言と比較する
+                assertEquals(btn.textContent, t('common.downloaded'));
+                assert(downloadedBlob !== null, 'ダウンロード用のBlobが生成されていません');
+                assertEquals(downloadedBlob.type, 'text/plain');
+                assertEquals(await downloadedBlob.text(), 'テスト内容');
+                assert(clickedAnchor !== null, 'ダウンロード用リンクがクリックされていません');
+                assertEquals(clickedAnchor.download, 'test.txt');
+            } finally {
+                URL.createObjectURL = originalCreateObjectURL;
+                URL.revokeObjectURL = originalRevokeObjectURL;
+                HTMLAnchorElement.prototype.click = originalAnchorClick;
+            }
         });
     });
 });
@@ -1004,7 +1034,7 @@ export default async function initTestRunner() {
     let passedCount = 0;
     let failedCount = 0;
 
-    function renderSuite(suite, level = 1) {
+    async function renderSuite(suite, level = 1) {
         const suiteEl = document.createElement('div');
         suiteEl.className = level === 1 ? 'test-suite' : 'test-subsuite';
 
@@ -1015,7 +1045,10 @@ export default async function initTestRunner() {
             suiteEl.appendChild(titleEl);
         }
 
-        suite.cases.forEach(c => {
+        // 非同期テスト（async な it）は完了を待ってから成否を判定する。
+        // 待たずに PASS にすると、後続の検証が失敗しても見逃してしまうため、
+        // 1件ずつ順番に await して実行する
+        for (const c of suite.cases) {
             totalCount++;
             const caseEl = document.createElement('div');
             caseEl.className = 'test-case';
@@ -1032,7 +1065,7 @@ export default async function initTestRunner() {
             statusEl.className = 'test-status';
 
             try {
-                c.fn();
+                await c.fn();
                 statusEl.textContent = 'PASS';
                 statusEl.classList.add('pass');
                 passedCount++;
@@ -1050,18 +1083,18 @@ export default async function initTestRunner() {
             caseEl.appendChild(flexCol);
             caseEl.appendChild(statusEl);
             suiteEl.appendChild(caseEl);
-        });
+        }
 
-        suite.suites.forEach(sub => {
-            suiteEl.appendChild(renderSuite(sub, level + 1));
-        });
+        for (const sub of suite.suites) {
+            suiteEl.appendChild(await renderSuite(sub, level + 1));
+        }
 
         return suiteEl;
     }
 
-    suites.forEach(suite => {
-        resultsContainer.appendChild(renderSuite(suite, 1));
-    });
+    for (const suite of suites) {
+        resultsContainer.appendChild(await renderSuite(suite, 1));
+    }
 
     totalCountEl.textContent = totalCount;
     passedCountEl.textContent = passedCount;
