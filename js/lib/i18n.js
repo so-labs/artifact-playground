@@ -116,7 +116,7 @@ export const translations = {
 
         // Tool: Outline Studio
         'tool.outlineStudio.title': 'アウトライン・スタジオ',
-        'tool.outlineStudio.desc': 'Markdownの見出し構造を操作・抽出するワークベンチです。アウトライン表示、アウトライン自体のコピー（そのまま・Markdown・Tree・AsciiDoc）、見出しレベルの調整・移動、セクション単位のスマートコピー（全文・エリア・セクション、引用・コード形式）ができます。PWAとしてインストールすると、OSによっては共有メニューなどから直接ファイルを開けます。',
+        'tool.outlineStudio.desc': 'Markdownの見出し構造を操作・抽出するワークベンチです。アウトライン表示、アウトライン自体のコピー（そのまま・Markdown・Tree・AsciiDoc）、見出しレベルの調整・移動、セクションの削除、セクション単位のスマートコピー（全文・エリア・セクション、引用・コード形式）ができます。PWAとしてインストールすると、OSによっては共有メニューなどから直接ファイルを開けます。',
         'tool.outlineStudio.summary': 'Markdownの見出し構造を操作・抽出するワークベンチ。アウトライン表示、見出し調整、スマートコピーができます。',
         'tool.outlineStudio.openFile': 'ファイルを開く',
         'tool.outlineStudio.download': 'ダウンロード',
@@ -145,6 +145,11 @@ export const translations = {
         'tool.outlineStudio.moveDown': '下へ',
         'tool.outlineStudio.titleMoveUp': '見出しと子見出しを含むセクション全体を上に移動',
         'tool.outlineStudio.titleMoveDown': '見出しと子見出しを含むセクション全体を下に移動',
+        'tool.outlineStudio.delete': '削除',
+        'tool.outlineStudio.deleteSection': 'セクションを削除',
+        'tool.outlineStudio.deleteSectionTitle': '見出しと本文・子見出しを含むセクション全体を削除',
+        'tool.outlineStudio.deleteConfirmMessage': '見出し「{0}」から、次の同じか上位レベルの見出しの直前までを削除します。\n本文や子見出しも一緒に削除されます。',
+        'tool.outlineStudio.deleteExecute': '削除する',
         'tool.outlineStudio.smartCopy': 'スマートコピー',
         'tool.outlineStudio.scope': '範囲',
         'tool.outlineStudio.scopeFull': '全文',
@@ -361,7 +366,7 @@ export const translations = {
 
         // Tool: Outline Studio
         'tool.outlineStudio.title': 'Outline Studio',
-        'tool.outlineStudio.desc': 'A workbench for organizing and extracting Markdown headings. Features outline view, copying the outline itself (Plain, Markdown, Tree, or AsciiDoc), heading level adjustments/reordering, and smart copy by section/area/full in normal, quote, or code formats. When installed as a PWA, you can open files directly from the share menu on supported platforms.',
+        'tool.outlineStudio.desc': 'A workbench for organizing and extracting Markdown headings. Features outline view, copying the outline itself (Plain, Markdown, Tree, or AsciiDoc), heading level adjustments/reordering, section deletion, and smart copy by section/area/full in normal, quote, or code formats. When installed as a PWA, you can open files directly from the share menu on supported platforms.',
         'tool.outlineStudio.summary': 'Workbench to view, adjust, and smart-copy Markdown heading structures.',
         'tool.outlineStudio.openFile': 'Open File',
         'tool.outlineStudio.download': 'Download',
@@ -390,6 +395,11 @@ export const translations = {
         'tool.outlineStudio.moveDown': 'Down',
         'tool.outlineStudio.titleMoveUp': 'Move entire section up',
         'tool.outlineStudio.titleMoveDown': 'Move entire section down',
+        'tool.outlineStudio.delete': 'Delete',
+        'tool.outlineStudio.deleteSection': 'Delete Section',
+        'tool.outlineStudio.deleteSectionTitle': 'Delete the entire section, including its heading, body text, and subheadings',
+        'tool.outlineStudio.deleteConfirmMessage': 'This deletes from the heading "{0}" up to just before the next heading of the same or higher level.\nBody text and subheadings in that range will also be deleted.',
+        'tool.outlineStudio.deleteExecute': 'Delete',
         'tool.outlineStudio.smartCopy': 'Smart Copy',
         'tool.outlineStudio.scope': 'Scope',
         'tool.outlineStudio.scopeFull': 'Full',

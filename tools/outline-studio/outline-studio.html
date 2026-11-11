@@ -12,7 +12,7 @@
     </div>
     <div class="tool-description" data-i18n="tool.outlineStudio.desc">
         Markdown
-        の見出し構造を操作・抽出するワークベンチです。アウトライン表示、アウトライン自体のコピー（そのまま・Markdown・Tree・AsciiDoc）、見出しレベルの調整・移動、セクション単位のスマートコピー（全文・エリア・セクション、引用・コード形式）ができます。PWAとしてインストールすると、OSによっては共有メニューなどから直接ファイルを開けます。
+        の見出し構造を操作・抽出するワークベンチです。アウトライン表示、アウトライン自体のコピー（そのまま・Markdown・Tree・AsciiDoc）、見出しレベルの調整・移動、セクションの削除、セクション単位のスマートコピー（全文・エリア・セクション、引用・コード形式）ができます。PWAとしてインストールすると、OSによっては共有メニューなどから直接ファイルを開けます。
     </div>
     <div class="os-layout">
         <div class="os-editor-wrap">
@@ -111,6 +111,14 @@
                         <button id="os-btn-move-group-down" class="btn small secondary" type="button"
                             title="見出しと子見出しを含むセクション全体を下に移動" data-i18n-title="tool.outlineStudio.titleMoveDown"
                             data-i18n="tool.outlineStudio.moveDown">下へ</button>
+                    </div>
+                </div>
+                <div class="os-op-group">
+                    <span class="os-op-label" data-i18n="tool.outlineStudio.delete">削除</span>
+                    <div class="os-btn-grid">
+                        <button id="os-btn-delete-section" class="btn small secondary os-btn-delete-section" type="button"
+                            title="見出しと本文・子見出しを含むセクション全体を削除" data-i18n-title="tool.outlineStudio.deleteSectionTitle"
+                            data-i18n="tool.outlineStudio.deleteSection">セクションを削除</button>
                     </div>
                 </div>
             </div>

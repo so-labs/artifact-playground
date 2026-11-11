@@ -418,6 +418,45 @@ export function moveSection(text, cursorLine, direction, mode = 'full') {
     };
 }
 
+export function deleteSection(text, headingLine) {
+    const lines = splitLines(text);
+    const headings = parseHeadings(text);
+    const current = headings.find(h => h.line === headingLine);
+    if (!current) {
+        return { text, deleted: false, headingLine: null, headingText: '', startLine: -1, endLine: -1 };
+    }
+
+    // 削除範囲は、対象の見出し行から「次の同じか上位レベルの見出し」の直前まで。
+    // 本文と、それより深い子見出しは丸ごと含まれる
+    let endLine = lines.length;
+    for (const h of headings) {
+        if (h.line > headingLine && h.level <= current.level) {
+            endLine = h.line;
+            break;
+        }
+    }
+
+    const before = lines.slice(0, headingLine);
+    if (endLine === lines.length) {
+        // 文末のセクションを消す場合は、区切りとして残る末尾の空行も一緒に取り除く
+        while (before.length > 0 && before[before.length - 1].trim() === '') {
+            before.pop();
+        }
+    }
+    // 抽出・移動とは違い途中の範囲では末尾の空行を切り取らない:
+    // 範囲ごと消すことで、残る側の区切りの空行が二重にならない
+    const newText = [...before, ...lines.slice(endLine)].join('\n');
+
+    return {
+        text: newText,
+        deleted: true,
+        headingLine,
+        headingText: current.text,
+        startLine: headingLine,
+        endLine,
+    };
+}
+
 export function jumpToHeading(text, cursorLine, direction) {
     const headings = parseHeadings(text);
     if (headings.length === 0) return null;

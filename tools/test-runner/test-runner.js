@@ -1,7 +1,7 @@
 import { getAppVersion } from '../../js/lib/version.js';
 
 let reduceText, makeNorinori, sliceText, canCopyAll, getReversedChunks, checkWeight, parseData, toMarkdown, sortGridData;
-let parseHeadings, adjustHeadingLevels, formatCopyText, formatOutline, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, jumpToHeading, checkStructureIssues;
+let parseHeadings, adjustHeadingLevels, formatCopyText, formatOutline, extractText, changeHeadingLevelAtLine, changeHeadingLevelSingleAtLine, moveSection, deleteSection, jumpToHeading, checkStructureIssues;
 let parseHtmlTable, parseTsv;
 let formatBytes, countUtf8Bytes, toHexDump, categorizeFormat, isTextLikeType, looksLikeText, getImageExtension;
 let createToolStorage, isTempMode, setTempMode, copyToClipboard, pasteFromClipboard, downloadFile;
@@ -347,6 +347,48 @@ title: test
             const result = moveSection(text, 5, 'up', 'single');
             assertEquals(result.moved, true);
             assertEquals(result.text, '## B\nparaB\n### subA\n\n## A\nparaA');
+        });
+    });
+
+    describe('deleteSection [js/lib/markdown-headings.js]', () => {
+        it('H2を削除すると本文と子見出しを含む範囲が丸ごと消えること', () => {
+            const result = deleteSection(sample, 8);
+            assertEquals(result.deleted, true);
+            assertEquals(result.headingText, 'セクションA');
+            assertEquals(result.text, '---\ntitle: test\n---\n\n# タイトル\n\n本文です。\n\n## セクションB\n\n内容B\n');
+        });
+
+        it('H3を削除すると内包される範囲だけが消え、親セクションは残ること', () => {
+            const result = deleteSection(sample, 12);
+            assertEquals(result.deleted, true);
+            assertEquals(result.headingText, 'サブA-1');
+            assertEquals(result.text, '---\ntitle: test\n---\n\n# タイトル\n\n本文です。\n\n## セクションA\n\n内容A\n\n## セクションB\n\n内容B\n');
+        });
+
+        it('文末のセクションを削除すると末尾の空行が残らないこと', () => {
+            const result = deleteSection(sample, 16);
+            assertEquals(result.deleted, true);
+            assertEquals(result.text, '---\ntitle: test\n---\n\n# タイトル\n\n本文です。\n\n## セクションA\n\n内容A\n\n### サブA-1\n\n詳細');
+        });
+
+        it('H1を削除すると文書全体が消えること', () => {
+            const text = '# タイトル\n\n本文です。\n\n## セクションA\n\n内容A';
+            const result = deleteSection(text, 0);
+            assertEquals(result.deleted, true);
+            assertEquals(result.text, '');
+        });
+
+        it('コードブロック内の # を範囲の終端として扱わないこと', () => {
+            const text = '## A\n\n```\n## コード内\n```\n\n## B\n\n内容B';
+            const result = deleteSection(text, 0);
+            assertEquals(result.deleted, true);
+            assertEquals(result.text, '## B\n\n内容B');
+        });
+
+        it('見出しでない行を指定すると何も変更しないこと', () => {
+            const result = deleteSection(sample, 6);
+            assertEquals(result.deleted, false);
+            assertEquals(result.text, sample);
         });
     });
 
@@ -973,6 +1015,7 @@ export default async function initTestRunner() {
         changeHeadingLevelAtLine = modMd.changeHeadingLevelAtLine;
         changeHeadingLevelSingleAtLine = modMd.changeHeadingLevelSingleAtLine;
         moveSection = modMd.moveSection;
+        deleteSection = modMd.deleteSection;
         jumpToHeading = modMd.jumpToHeading;
         checkStructureIssues = modMd.checkStructureIssues;
     } catch (e) { console.warn('Failed to import markdown-headings:', e); }

@@ -1,6 +1,7 @@
 // Tool: アウトライン・スタジオ
 import { createToolStorage, copyToClipboard, pasteFromClipboard, downloadFile } from '../../js/lib/storage.js';
 import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
+import { showConfirmDialog } from '../../js/lib/confirm-dialog.js';
 import {
     parseHeadings,
     formatOutline,
@@ -9,11 +10,15 @@ import {
     changeHeadingLevelSingleAtLine,
     changeHeadingLevelAtLine,
     moveSection,
+    deleteSection,
     findHeadingLineAtCursor,
     checkStructureIssues,
     getLineNumberFromPosition,
     getLineStartPosition,
 } from '../../js/lib/markdown-headings.js';
+
+// アウトライン各行の削除ボタンに表示するゴミ箱アイコン（確認モーダルと同じ図形）
+const DELETE_ICON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>';
 
 const PENDING_FILE_KEY = 'os-pending-file';
 
@@ -110,6 +115,8 @@ function updateUI(state) {
 
     renderOutline(outlineEl, headings, activeHeadingLine, (line) => {
         focusLineAtTop(inputEl, line);
+    }, (heading) => {
+        handleDeleteSection(state, heading);
     });
 
     // 見出しがなければアウトライン自体はコピーできない（開いているメニューも閉じる）
@@ -157,7 +164,7 @@ function updateUI(state) {
     }
 }
 
-function renderOutline(container, headings, activeLine, onClick) {
+function renderOutline(container, headings, activeLine, onClick, onDelete) {
     container.innerHTML = '';
 
     if (headings.length === 0) {
@@ -181,10 +188,40 @@ function renderOutline(container, headings, activeLine, onClick) {
         btn.addEventListener('click', () => onClick(h.line));
 
         li.appendChild(btn);
+
+        if (onDelete) {
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'os-outline-delete-btn';
+            deleteBtn.innerHTML = DELETE_ICON;
+            deleteBtn.title = t('tool.outlineStudio.deleteSectionTitle');
+            deleteBtn.setAttribute('aria-label', `${t('tool.outlineStudio.deleteSection')}: ${h.text}`);
+            deleteBtn.addEventListener('click', () => onDelete(h));
+            li.appendChild(deleteBtn);
+        }
+
         ul.appendChild(li);
     });
 
     container.appendChild(ul);
+}
+
+// 見出しのセクション（本文・子見出しを含む範囲）を、確認モーダルを挟んで削除する
+async function handleDeleteSection(state, heading) {
+    const ok = await showConfirmDialog({
+        title: t('tool.outlineStudio.deleteSection'),
+        message: t('tool.outlineStudio.deleteConfirmMessage', [heading.text]),
+        confirmText: t('tool.outlineStudio.deleteExecute'),
+        cancelText: t('common.cancel'),
+        danger: true,
+    });
+    if (!ok) return;
+
+    const result = deleteSection(state.inputEl.value, heading.line);
+    if (!result.deleted) return;
+
+    // 削除した位置（次のセクションが繰り上がってくる行）にカーソルを合わせる
+    applyTextChange(state, result.text, result.startLine);
 }
 
 function escapeHtml(str) {
@@ -439,6 +476,14 @@ export default function init() {
 
     bindSectionMove('os-btn-move-group-up', 'up', 'full');
     bindSectionMove('os-btn-move-group-down', 'down', 'full');
+
+    // 見出し操作パネルからも、カーソル位置の見出しのセクションを削除できるようにする
+    document.getElementById('os-btn-delete-section')?.addEventListener('click', () => {
+        const line = findHeadingLineAtCursor(inputEl.value, getLineNumberFromPosition(inputEl.value, inputEl.selectionStart));
+        if (line === null) return;
+        const heading = parseHeadings(inputEl.value).find(h => h.line === line);
+        if (heading) handleDeleteSection(state, heading);
+    });
 
     consumePendingFile(state);
     window.addEventListener('os-pending-file', () => consumePendingFile(state));

@@ -172,11 +172,15 @@
 
 .os-outline-item {
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
 }
 
 .os-outline-btn {
     display: block;
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     text-align: left;
     background: none;
     border: none;
@@ -204,6 +208,32 @@
     margin-right: 0.3rem;
 }
 
+/* 各見出しのセクション削除ボタン。タッチ操作でも押せるよう常時表示にし、
+   控えめな濃さからホバーで削除色を出す */
+.os-outline-delete-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-color);
+    opacity: 0.45;
+    transition: opacity 0.15s, background-color 0.15s, color 0.15s;
+}
+
+.os-outline-delete-btn:hover,
+.os-outline-delete-btn:focus-visible {
+    opacity: 1;
+    color: #dc2626;
+    background-color: var(--panel-bg);
+}
+
 .os-empty {
     margin: 0;
     opacity: 0.6;
@@ -218,6 +248,11 @@
 
 .os-op-group+.os-op-group {
     margin-top: 0.65rem;
+}
+
+/* セクション削除ボタンは2列グリッドの幅いっぱいに広げる */
+.os-btn-delete-section {
+    grid-column: 1 / -1;
 }
 
 .os-op-label {
