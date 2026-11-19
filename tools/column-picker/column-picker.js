@@ -1,5 +1,5 @@
 ﻿import { copyToClipboard, pasteFromClipboard } from '../../js/lib/storage.js';
-import { t, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
+import { t, getLanguage, onLanguageChange, applyTranslations } from '../../js/lib/i18n.js';
 
 export function parseHtmlTable(html) {
     try {

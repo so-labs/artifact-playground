@@ -199,6 +199,9 @@ export const translations = {
         'tool.metroGrid.alignLeft': '左揃え',
         'tool.metroGrid.alignCenter': '中央揃え',
         'tool.metroGrid.alignRight': '右揃え',
+        'tool.metroGrid.sortTitle': 'クリックで並び替え',
+        'tool.metroGrid.alignTitle': '配置を切り替え',
+        'tool.metroGrid.delColTitle': '列を削除',
         'tool.metroGrid.sample': '| 識別コード | 被検体クラス | 危険度 | 好物 | 主な出現場所 |\n| :---: | :--- | :---: | :--- | :--- |\n| UO-01 | 未確認ネコ型重力球 | ★★★★☆ | おかかチュール | 飼い主の顔の上（午前4時） |\n| UF-02 | 電脳クラゲ（バグ食い） | ★★☆☆☆ | 404エラーページ | 古いサーバーラックの奥 |\n| US-03 | 異次元自動ルンバ | ★★★★★ | 観葉植物の土 | 主のいないリビングルーム |\n| UA-04 | 窓際光合成おじさん | ★☆☆☆☆ | 縁側の緑茶と羊羹 | 日当たりの良い畳の上 |\n| UX-05 | 締め切り前ファントム | ★★★★★★ | 缶コーヒー、現実逃避 | 進捗率50%の作業スペース |',
 
         // Tool: Clipboard Inspector
@@ -450,6 +453,9 @@ export const translations = {
         'tool.metroGrid.alignLeft': 'Align left',
         'tool.metroGrid.alignCenter': 'Align center',
         'tool.metroGrid.alignRight': 'Align right',
+        'tool.metroGrid.sortTitle': 'Click to sort',
+        'tool.metroGrid.alignTitle': 'Change alignment',
+        'tool.metroGrid.delColTitle': 'Delete column',
         'tool.metroGrid.sample': '| ID | Subject Class | Threat Level | Favorite Food | Spawn Location |\n| :---: | :--- | :---: | :--- | :--- |\n| UO-01 | Unidentified Gravity Cat | ★★★★☆ | Tuna Churu | Owner\'s face (at 4 AM) |\n| UF-02 | Cyber Jellyfish (Bug Eater) | ★★☆☆☆ | 404 Error Pages | Behind old server racks |\n| US-03 | Interdimensional Roomba | ★★★★★ | Houseplant Soil | Masterless living room |\n| UA-04 | Window Photosynthesis Guy | ★☆☆☆☆ | Green tea & Yokan | Sunlit tatami mat |\n| UX-05 | Pre-Deadline Phantom | ★★★★★★ | Canned coffee, escapism | 50% progress workstation |',
 
         // Tool: Clipboard Inspector
